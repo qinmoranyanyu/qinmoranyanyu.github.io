@@ -47,9 +47,4 @@ jobs:
         run: |
           npx hexo-seo-submit@1.5.0 baidu -t ${{ secrets.baidu_token }} -s https://blog.chenjiabin.xyz -f baidu.txt
 
-      - name: push search engine bing
-        if: env.is_owner
-        continue-on-error: true
-        run: |
-          npx hexo-seo-submit@1.5.0 bing -k ${{ secrets.bing_apikey }} -f bing.json
 
