@@ -377,8 +377,8 @@
   const loadWaline = (el, path) => {
     if (initFn) initWaline(initFn, el, path)
     else {
-      btf.getCSS('https://cdnjs.cloudflare.com/ajax/libs/waline/3.5.2/waline.min.css')
-        .then(() => import('https://cdnjs.cloudflare.com/ajax/libs/waline/3.5.2/waline.min.js'))
+      btf.getCSS('https://npm.elemecdn.com/@waline/client/dist/waline.css')
+        .then(() => import('https://npm.elemecdn.com/@waline/client/dist/waline.js'))
         .then(({ init }) => {
           initFn = init || Waline.init
           initWaline(initFn, el, path)
