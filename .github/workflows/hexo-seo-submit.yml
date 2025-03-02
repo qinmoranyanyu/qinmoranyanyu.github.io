@@ -41,10 +41,10 @@ jobs:
           npm init -y
           npm install hexo-seo-submit
 
-      - name: push search engine baidu
+
+
+      - name: push search engine google
         if: env.is_owner
         continue-on-error: true
         run: |
-          npx hexo-seo-submit@1.5.0 baidu -t ${{ secrets.baidu_token }} -s https://blog.chenjiabin.xyz -f baidu.txt
-
-
+          npx hexo-seo-submit@1.5.0 google -f google.txt -m ${{ secrets.google_client_email }} -k "${{ secrets.google_private_key }}"
