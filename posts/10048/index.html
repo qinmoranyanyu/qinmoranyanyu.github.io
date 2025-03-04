@@ -1,0 +1,553 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Docker学习笔记 | 青墨染烟雨</title><meta name="author" content="Chen Jiabin,2948429338@qq.com"><meta name="copyright" content="Chen Jiabin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Docker的安装和扫盲，以及学习网站">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker学习笔记">
+<meta property="og:url" content="https://blog.chenjiabin.xyz/posts/10048/index.html">
+<meta property="og:site_name" content="青墨染烟雨">
+<meta property="og:description" content="Docker的安装和扫盲，以及学习网站">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png">
+<meta property="article:published_time" content="2025-03-04T14:20:33.000Z">
+<meta property="article:modified_time" content="2025-03-04T14:23:13.988Z">
+<meta property="article:author" content="Chen Jiabin">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker学习笔记",
+  "url": "https://blog.chenjiabin.xyz/posts/10048/",
+  "image": "https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png",
+  "datePublished": "2025-03-04T14:20:33.000Z",
+  "dateModified": "2025-03-04T14:23:13.988Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Chen Jiabin",
+      "url": "https://blog.chenjiabin.xyz/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011641807.svg"><link rel="canonical" href="https://blog.chenjiabin.xyz/posts/10048/index.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="4yH3_EEqHZ9_glXp2Ey1UlNzL_EQ2NQ0TO1lAXhBrvE"/><meta name="baidu-site-verification" content="codeva-dQzACO1Fjm"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+          
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.12.0/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Docker学习笔记',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011603481.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 图片</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-bars"></i><span> 推荐</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/songs/"><i class="fa-fw fa-solid fa-headphones"></i><span> 歌曲</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fa-solid fa-film"></i><span> 电影</span></a></li><li><a class="site-page child" href="/books/"><i class="fa-fw fa-solid fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011641807.svg" alt="Logo"><span class="site-name">青墨染烟雨</span></a><a class="nav-page-title" href="/"><span class="site-name">Docker学习笔记</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 图片</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-bars"></i><span> 推荐</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/songs/"><i class="fa-fw fa-solid fa-headphones"></i><span> 歌曲</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fa-solid fa-film"></i><span> 电影</span></a></li><li><a class="site-page child" href="/books/"><i class="fa-fw fa-solid fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Docker学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-04T14:20:33.000Z" title="发表于 2025-03-04 22:20:33">2025-03-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-04T14:23:13.988Z" title="更新于 2025-03-04 22:23:13">2025-03-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Docker/">Docker</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>20分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/10048/#post-comment"><span class="waline-comment-count" data-path="/posts/10048/"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p><strong>推荐使用 Docker for macOS&#x2F;windows</strong></p>
+<p>配置阿里云镜像加速（个人注册使用免费） <a target="_blank" rel="noopener" href="https://www.aliyun.com/">https://www.aliyun.com/</a></p>
+<p>Windows 下配置镜像加速地址</p>
+<p>先检查 windows 是否打开了虚拟化</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F4d52c17d7fb31f77d2351110af508ff4.png" alt="image-20250304212236012"></p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F90156a9c08e1ac17661a0e8b96809015.png" alt="image"></p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F15c1f725a34de537d2bb70a2f6ad25ba.png" alt="image-20250304212253115"></p>
+<h1 id="扫盲"><a href="#扫盲" class="headerlink" title="扫盲"></a>扫盲</h1><h2 id="Docker和传统虚拟机有什么区别？"><a href="#Docker和传统虚拟机有什么区别？" class="headerlink" title="Docker和传统虚拟机有什么区别？"></a>Docker和传统虚拟机有什么区别？</h2><p>我有一个程序员朋友，他每年情人节都要送女朋友一台服务器。</p>
+<p>他说：“谁不想在过节当天收到一台 <code>4核8g</code> 的服务器呢？”</p>
+<p>“万一对方不要，我还能留着自己用。” 给他一次过节的机会，他能把<strong>浪漫</strong>玩的明明白白。<br>所以今年情人节，他自己一个人过。<br>太痛了，是那种<strong>布洛芬都不知道他哪里痛</strong>的痛。</p>
+<p>虽然人跑了，但起码还有服务器陪着他，但屏幕前依然单身的你呢？ <strong>你连服务器都没有</strong>。那么问题就来了，你买过服务器吗？看着云厂商各种产品是不是有点懵。<br>你知道 ecs，vps，docker 容器 是什么吗？它们有啥区别呢？</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faff5915c95b393b2279308ddabb6d6ec.webp" alt="图片"></p>
+<p>我们今天来聊聊这个话题。</p>
+<h2 id="物理服务器是什么？"><a href="#物理服务器是什么？" class="headerlink" title="物理服务器是什么？"></a>物理服务器是什么？</h2><p>我的柜子里有一台大学时候用的废弃电脑，自带 cpu、 内存等硬件和操作系统，根据一些教程视频，是可以做成服务器的。</p>
+<p>像这样一台看得见摸得着的机器，其实就是云厂商页面里提到的<strong>物理服务器</strong>或<strong>物理机</strong>。不同厂商叫法不同，有的厂商叫它<strong>独立服务器</strong>。</p>
+<p>跟家里电脑不一样的是，云厂商的机器性能更好，核数更高，还有专业的机房和空调伺候着。那既然这样，是不是就不需要买云厂商的服务器呢？</p>
+<p>糊涂啊，一台家用电脑跑起来 50 瓦，一年下来电费都好几百，还得花精力伺候着不让它关机，还真不如买别人家的划算。</p>
+<p>但问题又来了，云厂商的物理服务器一般都是核数较高，很多时候我们根本不需要这么高配的机器。怎么办呢？这一点云厂商当然也考虑到了。</p>
+<h2 id="vps-和-ecs-是什么"><a href="#vps-和-ecs-是什么" class="headerlink" title="vps 和 ecs 是什么"></a>vps 和 ecs 是什么</h2><p>云厂商一般会<strong>将一台物理服务器分割成多个虚拟机</strong>。它跟我们在 windows 用 <code>VMware</code>, <code>VirtualBox</code> 建的虚拟机其实是一回事。每个虚拟机都拥有独立的操作系统、资源（比如 CPU、内存、存储空间）和公网 IP 地址。然后对外出售，这样的虚拟机就是所谓的 <strong>VPS</strong>（Virtual Private Server，虚拟专用服务器）。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Ffce6cf84e00a16c26dbe22b77242417c.webp" alt="图片">VPS</p>
+<p>但传统 VPS 有个缺点，不支持用户<strong>自主升降级</strong>，它的资源是预先分配的，不易动态调整。举个例子，假设你买了 <code>1c1g</code> 的服务器，想在页面上点点两下升级成 <code>2c2g</code>，这在传统 VPS 里是不支持的。如果给 VPS 加入自主升降级的功能，那它就成了 <strong>ECS</strong>（Elastic Compute Service，弹性计算服务）</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Ff510c587c5dcd4a11045503f927d0558.webp" alt="图片">ECS支持自主升降级</p>
+<p>用户可以根据需要随时调整 CPU、内存、磁盘和带宽，主打一个<strong>弹性</strong>。我们可以利用 ecs 学习 linux 命令，部署个人博客，做私人云盘存储，甚至可以将自己做的游戏部署到 ecs 上邀请朋友来玩。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F0b3a4c55c4764189111a580b2a72088f.webp" alt="图片">ecs的用途</p>
+<h2 id="docker-容器-是什么"><a href="#docker-容器-是什么" class="headerlink" title="docker 容器 是什么"></a>docker 容器 是什么</h2><p>买了 ecs 后，我们一般会开始部署自己的软件应用。机器少的时候手动部署问题不大，机器多了后各种问题就来了，其中最明显的就是，ecs 之间，如果<strong>底层操作系统</strong>不同，比如有些是 <code>ubuntu</code>，有些是 <code>centos</code>，部署应用的时候就会有各种环境问题。如果能让软件带着操作系统环境一起去部署就好了，最简单的方案是将软件和操作系统一起打包成虚拟机部署在 <code>ecs</code> 中。但这样就成了在 ECS（也就是虚拟机）中再运行一个完整的虚拟机，<strong>太重了</strong>。有解法吗？</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Ffceda0d17530903bf48bdb94d59cd824.webp" alt="图片">虚拟机上再运行一个虚拟机</p>
+<p>有。既然多加一个操作系统太重，那我就只打包<strong>软件和系统依赖库加配置</strong>就好了。然后将这部分系统文件挂到 ecs 的操作系统下，利用一个叫 <strong>Namespace</strong> 的能力让它看起来就像是一个独立操作系统一样。再利用一个叫 <strong>Cgroup</strong> 的能力限制它能使用的计算资源。这就省掉了一层笨重的操作系统，同时还让软件轻松跑在各类操作系统上。这就是我们常说的 <strong>Docker 容器技术</strong>。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F55c5e7aa6d80264db8e9d444c36b03de.webp" alt="图片">Docker容器是什么</p>
+<p>总的来说就是，<strong>物理服务器上跑 ecs，ecs 跑 Docker 容器。多个 Docker 容器共享一个 ecs 实例 操作系统内核。</strong></p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F54b8578f406dae9fe966d8aa2f530cbc.webp" alt="图片">ecs和docker容器的关系</p>
+<h2 id="Docker-和-k8s-之间是什么关系？"><a href="#Docker-和-k8s-之间是什么关系？" class="headerlink" title="Docker 和 k8s 之间是什么关系？"></a>Docker 和 k8s 之间是什么关系？</h2><p>作为一个程序员，如果你想安装一个 <code>vim</code> 编辑下文本，在不同环境里你得执行不同的命令。在 ubuntu，你需要执行 <code>apt-get install vim</code>，在 centos 里，你需要执行 <code>yum install vim</code>.</p>
+<p>装个小软件尚且如此，要是你想将自己写的代码部署到各个不同操作系统的服务器上，那依赖的软件和配置就更多了，需要针对每个环境单独写一套部署脚本。<br>难受，太难受了。</p>
+<p>那么问题就来了，有没有更好的解决方案？<br>当然有，<strong>没有什么是加一层中间层不能解决的，如果有，那就再加一层</strong>，这次我们要加的中间层是 <strong>Docker</strong>。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fbdfda9da6c12b952b25a68aa537cd67d.webp" alt="图片">Docker是代码和操作系统之间的中间层</p>
+<p>哦不，准确来说是 <strong>Docker容器</strong>。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F305f14d8a4018e68610bdf14f0e0225f.webp" alt="图片">容器技术</p>
+<h2 id="Docker-是什么？"><a href="#Docker-是什么？" class="headerlink" title="Docker 是什么？"></a>Docker 是什么？</h2><p>我们经常能听到程序员说”这个程序在我环境里明明是好的啊，怎么到你这就不行了呢”？注意这里的关键词，<strong>程序</strong>和<strong>环境</strong>。程序是跑在操作系统上的，而操作系统上又装了各种不同版本的依赖库和配置，这些被程序所依赖的信息，我们统称为”<strong>环境</strong>“。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F1e159bc531230c78f1c761edb889b806.webp" alt="图片">程序和环境</p>
+<p>程序依赖环境，环境不同，程序就可能跑不起来。如果我们能将环境和程序一起打包，给到对方运行，那问题不就解决了吗。Docker 就是这样一款可以将<strong>程序和环境打包并运行</strong>的工具软件。我们来看下它是怎么做的？</p>
+<h2 id="基础镜像是什么"><a href="#基础镜像是什么" class="headerlink" title="基础镜像是什么"></a>基础镜像是什么</h2><p>既然上面提到环境不同，会导致程序运行结果不同，那么我们首先要做的最重要的事情，就是<strong>统一环境</strong>。而环境中，最最重要的就是<strong>操作系统</strong>。比如 centos 还是 ubuntu，我们得选一个，让所有程序都跑在<strong>同一个</strong>操作系统上。并且我们知道操作系统分为用户空间和内核空间，应用程序运行在用户空间。因此，我们可以阉割操作系统，只需要利用操作系统的用户空间部分，就能构建出应用所需的环境。其次就是统一<strong>程序语言</strong>依赖，比如要跑 python 应用，你得装个 python 解释器，要跑个 java 应用，得装个 JVM，要跑 go 应用，那就。。什么都不需要装。选中一个基础操作系统和语言后，我们将它们对应的文件系统，依赖库，配置等放一起打包成一个类似压缩包的文件，这就是所谓的<strong>基础镜像</strong>(Base Image)。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fa28fe0392ff696e311280b506d508347.webp" alt="图片">基础镜像是什么</p>
+<h2 id="Dockerfile-是什么"><a href="#Dockerfile-是什么" class="headerlink" title="Dockerfile 是什么"></a>Dockerfile 是什么</h2><p>有了基础镜像之后还不够，我们经常还需要安装一些依赖，比如<code>yum install gcc</code>，甚至还要创建一些文件夹。最后才是运行我们的目标<strong>应用程序</strong>。我们知道 linux 中，所有工作都可以通过<strong>命令行</strong>完成，所以我们可以将要做的事情以命令行的形式一行行列出来。就像一份 <strong>todo list</strong>。意思是要求在基础镜像的基础上按着 todo list 挨个执行命令。这份 todo list 长下面这样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 指定基础镜像</span><br><span class="line">FROM python:3.9</span><br><span class="line"></span><br><span class="line"># 设置工作目录</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line"># 复制依赖文件到容器中</span><br><span class="line">COPY requirements.txt .</span><br><span class="line"></span><br><span class="line">RUN yum install gcc</span><br><span class="line"># 安装依赖</span><br><span class="line">RUN pip install --no-cache-dir -r requirements.txt</span><br><span class="line"></span><br><span class="line"># 将当前目录下的所有文件复制到容器的 /app 目录下</span><br><span class="line">COPY . /app</span><br><span class="line"></span><br><span class="line"># 设置容器启动时执行的命令</span><br><span class="line">CMD [&quot;python&quot;, &quot;app.py&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>具体含义是，基于一个装了 python3.9 解释器的操作系统（基础镜像），再执行 pip install 等命令安装其他依赖，从而构建出一个适合程序运行的环境，最后用 <code>python app.py</code> 运行我们的目标应用程序。像这样一份列清楚了，从操作系统到应用服务启动，需要做哪些事情的清单文件（todo list），就是所谓的 <strong>Dockerfile</strong>。</p>
+<h2 id="容器镜像-是什么"><a href="#容器镜像-是什么" class="headerlink" title="容器镜像 是什么"></a>容器镜像 是什么</h2><p>注意 Dockerfile 只是描述了要做哪些事情，并没有真正开始做。当我们用命令行执行 <strong>docker build</strong> 的时候，Docker 软件就会按着 Dockerfile 的说明，一行行构建环境+应用程序。最终将这个环境+程序，打包成一个类似”压缩包”的东西，我们叫它<strong>容器镜像</strong>(container image)。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F7faf1b3d731c1724461d72d739d9ff6a.webp" alt="图片">容器镜像</p>
+<p>只要将容器镜像传到任意一台服务器上，对这个”压缩包”执行”解压缩”，我们就能同时运行环境和程序。太完美了！但是现在还有个问题，怎么将容器镜像传到那么多服务器上呢？</p>
+<h2 id="Registry-是什么"><a href="#Registry-是什么" class="headerlink" title="Registry 是什么"></a>Registry 是什么</h2><p>服务器那么多，挨个将容器镜像传过去也不是不行，就是将压力全给到发送方的<strong>网络带宽</strong>了。有没有更好的解决方案？有。可以参考 <code>github</code> 代码仓库 的做法，我们通常会使用 <code>git push</code> 将代码传到 github，有需要的人自己通过 <code>git pull</code> 的方式将代码从 github 拉到自己的机器上。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F7309e1285902628f4479309f52f7807f.webp" alt="图片">github仓库</p>
+<p>那 Docker 也一样，弄一个<strong>镜像仓库</strong>，通过 <strong>docker push</strong> 将镜像推到仓库，有需要的时候再通过 <strong>docker pull</strong> 将镜像拉到机器上。这个负责管理镜像仓库推拉能力的服务，就叫 <strong>Docker Registry</strong>。基于 Docker Registry 的能力，我们可以搭建各种<strong>官方或私人镜像仓库</strong>，比如官方的叫 DockerHub，非官方的有清华大学的 Tuna 等等，一般公司内部也会有自己的镜像仓库。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F7c531cab2694558006b3bda227a6b327.webp" alt="图片">Registry是什么</p>
+<h2 id="容器是什么"><a href="#容器是什么" class="headerlink" title="容器是什么"></a>容器是什么</h2><p>现在，我们解决了服务器间<strong>传输容器镜像</strong>的问题。我们可以跑到目的服务器上，执行 docker pull 拿到容器镜像。然后执行 docker run 命令，将这个类似”压缩包”的容器镜像给”解压缩”，获得一个<strong>独立的环境和应用程序</strong>并运行起来。这样一个独立的环境和应用程序，就是所谓的<strong>容器</strong>(container)。我们可以在一个操作系统上同时跑多个容器。且这些容器之间都是互相独立，互相隔离的。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fcffc13dc52255ca51ff6a6052e9f25b7.webp" alt="图片">容器是什么</p>
+<h2 id="Docker-和虚拟机的关系？"><a href="#Docker-和虚拟机的关系？" class="headerlink" title="Docker 和虚拟机的关系？"></a>Docker 和虚拟机的关系？</h2><p>眼熟不，这个<strong>容器</strong>是不是很像我们用 vmware 或 kvm 整出来的<strong>传统虚拟机</strong>？但不同的是，传统虚拟机自带一个完整操作系统，而容器本身不带完整操作系统，容器的基础镜像实际上只包含了操作系统的核心依赖库和配置文件等必要组件。它利用一个叫 <strong>Namespace</strong> 的能力让它看起来就像是一个独立操作系统一样。再利用一个叫 <strong>Cgroup</strong> 的能力限制它能使用的计算资源。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F76f764c55f88619a5bce15339407ad77.webp" alt="图片">Docker和虚拟机的区别</p>
+<p>所以说，容器本质上只是个自带独立运行环境的<strong>特殊进程</strong>，底层用的其实是<strong>宿主机的操作系统内核</strong>。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F8d4a0871487be707ddf5d65b9bb1035a.webp" alt="图片">容器本质是一个特殊进程</p>
+<h2 id="Docker-的架构原理"><a href="#Docker-的架构原理" class="headerlink" title="Docker 的架构原理"></a>Docker 的架构原理</h2><p>现在，我们回到日常使用场景中，聊聊 Docker 的架构原理。它是经典的 Client&#x2F;Server 架构。Client 对应 Docker-cli， Server 对应 Docker daemon。我们在命令行里敲 Docker 命令，使用的就是 Docker-cli.</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fb433bfec5d984921c1fed2e684c73cfe.webp" alt="图片">Docker是C&#x2F;S软件架构</p>
+<p>Docker-cli 会解析我们输入的 cmd 命令，然后调用 Docker daemon 守护进程提供的 RESTful API，守护进程收到命令后，会根据指令创建和管理各个容器。再具体点，Docker Daemon 内部分为 Docker Server、Engine 两层。Docker Server 本质上就是个 HTTP 服务，负责对外提供操作容器和镜像的 api 接口，接收到 API 请求后，会分发任务给 Engine 层，Engine 层负责创建 Job，由 Job 实际执行各种工作。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F2d94d0396aeff1b0514c0e9b6aa53779.webp" alt="图片">Docker daemon内部架构</p>
+<p>不同的 Docker 命令会执行不同类型的 Job 任务。</p>
+<h3 id="docker-build"><a href="#docker-build" class="headerlink" title="docker build"></a>docker build</h3><p>如果你执行的是 docker build 命令，Job 则会根据 Dockerfile 指令，像包洋葱皮似的一层层构建容器镜像文件。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F67ce3a40c8c39e943be007ff2748dac6.webp" alt="图片">docker build执行逻辑</p>
+<h3 id="docker-pull-push"><a href="#docker-pull-push" class="headerlink" title="docker pull&#x2F;push"></a>docker pull&#x2F;push</h3><p>如果你执行的是 docker pull 或 push 之类的镜像推拉操作，Job 则会跟外部的 <code>Docker Registry</code> 交互，将镜像上传或下载。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F3f836eeadda32a065236fcba28da0398.webp" alt="图片">docker pull&#x2F;push执行逻辑</p>
+<h3 id="docker-run"><a href="#docker-run" class="headerlink" title="docker run"></a>docker run</h3><p>如果你执行的是 docker run 命令，Job 就会基于镜像文件调用 containerd 组件，驱使 runC 组件创建和运行容器。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F5c3ec8c388304a93053ee28071b1e263.webp" alt="图片">docker run执行逻辑</p>
+<h2 id="Docker-到底是什么？"><a href="#Docker-到底是什么？" class="headerlink" title="Docker 到底是什么？"></a>Docker 到底是什么？</h2><p>现在我们再回过头来看这句话，Docker 本质上就是一个将<strong>程序和环境打包并运行</strong>的工具软件。具体点来说就是，它通过 Dockerfile 描述环境和应用程序的依赖关系， docker build 构建镜像， docker pull&#x2F;push 跟 Docker Registry 交互实现存储和分发镜像，docker run 命令基于镜像启动容器，基于容器技术运行程序和它对应的环境，从而解决环境依赖导致的各种问题。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Feacf210324464f72cb3366d92a1b0439.webp" alt="图片">Docker到底是什么</p>
+<p>好了，到这里，我们就了解了 Docker 的架构和基本运行原理了。接下来，我们再来聊聊跟 Docker 相关的几个周边。</p>
+<h2 id="Docker-Compose-是什么？"><a href="#Docker-Compose-是什么？" class="headerlink" title="Docker Compose 是什么？"></a>Docker Compose 是什么？</h2><p>我们现在知道了 Docker 容器 本身只是<strong>一个</strong>特殊进程，但如果我想要部署<strong>多个</strong>容器，且对这些容器的顺序有一定要求呢？比如一个博客系统，当然是先启动数据库，再启动身份验证服务，最后才能启动博客 web 服务。按理说挨个执行 docker run 命令当然是没问题的，但有没有更优雅的解决方案？有。我们可以通过一个 <strong>YAML</strong> 文件写清楚要部署的<strong>容器有哪些</strong>，<strong>部署顺序</strong>是怎么样的，以及这些容器占用的 <strong>cpu 和内存</strong>等信息。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">&quot;3.8&quot;</span></span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  A:</span><br><span class="line">    image: <span class="string">&quot;some-image-for-a&quot;</span></span><br><span class="line">    deploy:</span><br><span class="line">      resources:</span><br><span class="line">        limits:</span><br><span class="line">          cpus: <span class="string">&quot;0.50&quot;</span> <span class="comment"># 限制 CPU 使用率为 50%</span></span><br><span class="line">          memory: <span class="number">256</span>M <span class="comment"># 限制内存使用量为 256MB</span></span><br><span class="line"></span><br><span class="line">  B:</span><br><span class="line">    image: <span class="string">&quot;some-image-for-b&quot;</span></span><br><span class="line">    depends_on:</span><br><span class="line">      - A</span><br><span class="line"></span><br><span class="line">  C:</span><br><span class="line">    image: <span class="string">&quot;some-image-for-c&quot;</span></span><br><span class="line">    depends_on:</span><br><span class="line">      - B</span><br></pre></td></tr></table></figure>
+
+<p>然后，通过一行<code>Docker-compose up</code>命令，开始解析 YAML 文件，将容器们一键按顺序部署，就完成<strong>一整套服务</strong>的部署。这其实就是 <strong>Docker Compose</strong> 干的事情。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F2d85af5aadac68405c6cf415bb63b20d.webp" alt="图片">Docker compose原理</p>
+<h2 id="Docker-Swarm-是什么？"><a href="#Docker-Swarm-是什么？" class="headerlink" title="Docker Swarm 是什么？"></a>Docker Swarm 是什么？</h2><p>Docker 解决的是<strong>一个容器</strong>的部署。Docker Compose 解决的是<strong>多个容器组成的一整套服务</strong>的部署。那 Docker Swarm 就更高维度了，它解决的其实是这一整套服务<strong>在多台服务器上的集群部署</strong>问题。比如在 A 服务器坏了，就将服务在 B 服务器上重新部署一套，实现迁移，还能根据需要对服务做扩缩容。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fd581aef06bb3c42ed2307f2c59bc9f2e.webp" alt="图片">Docker swarm是什么</p>
+<h2 id="Docker-和-k8s-的关系是什么？"><a href="#Docker-和-k8s-的关系是什么？" class="headerlink" title="Docker 和 k8s 的关系是什么？"></a>Docker 和 k8s 的关系是什么？</h2><p>还记得之前的文章里提到的 k8s 吗？它会在多台 Node 服务器上调度 Pod，进行部署和扩缩容。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F3dacfd8240217f5b87297701270185c9.webp" alt="图片">k8s的node内部</p>
+<p>每个 Pod 内部可以含有多个 container，每个 container 本质上就是一个服务进程。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fceb888dbf66937f81b614c6891f17604.webp" alt="图片">pod内部</p>
+<p>是不是感觉<strong>k8s</strong>跟 <strong>Docker Swarm</strong> 做的事情很像？没错，其实 Docker Swarm 是 k8s 的<strong>竞品</strong>，既然是竞品，那它们做的事情其实区别就不大了。现在回过头来看 Docker 容器和 k8s 之间的关系，思路就清晰了。Docker 部署的<strong>容器</strong>，其实就是 k8s 调度的 Pod 里的 <strong>container</strong>，它们都叫<strong>容器</strong>，其实是一回事。只不过 k8s 除了支持 Docker 的容器外，还支持别人家的容器。Docker Compose 基于多个 container 创建的<strong>一整套服务</strong>，其实就是 k8s 里的 <strong>pod</strong>。而 Docker Swarm 做的事情和 k8s 一样，本质上就是在调度 pod。回过头来看下 k8s 的官方定义，叫容器编排引擎，将它理解为，以 API <strong>编</strong>程的方式管理安<strong>排</strong>各个容器的引擎，是不是就特别精辟。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F60a817ab7bbe8281478765efbc351e13.webp" alt="图片">容器编排引擎的含义</p>
+<p>现在，我们再回过头来看下 Docker 的图标，是一个个<strong>集装箱</strong>，放在一艘船上，这一个个集装箱指的就是互相隔离的<strong>容器</strong>，而 k8s 的图标，则是一个轮船上的<strong>方向盘</strong>，意思是 k8s 控制着轮船的航向，其实指的就是<strong>调度</strong>容器。这波联想就非常形象了。</p>
+<p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F6afd58f2ce5fcd888626aa1eee593412.webp" alt="图片">Docker和k8s</p>
+<p>现在大家通了吗？</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Docker 本质上就是一个将<strong>程序和环境打包并运行</strong>的工具软件，而 Docker 容器本质上只是个自带独立运行环境的<strong>特殊进程</strong>，底层用的其实是<strong>宿主机的操作系统内核</strong>。</li>
+<li>Docker 软件 通过 Dockerfile 描述环境和应用程序的依赖关系， docker build 构建镜像， docker pull&#x2F;push 跟 Docker Registry 交互实现存储和分发镜像，docker run 命令基于镜像启动容器，基于容器技术运行程序和它对应的环境，从而解决环境依赖导致的各种问题。</li>
+<li>Docker 解决的是<strong>一个容器</strong>的部署问题，Docker Compose 解决的是<strong>多个容器组成的一套服务</strong>的部署问题，Docker Swarm 解决的是多个容器组成的<strong>一套服务在多台服务器上的部署问题</strong>，k8s 则是 Docker Swarm 的竞品，在更高维度上<strong>兼容</strong>了 Docker 容器，实现了容器编排调度。</li>
+</ul>
+<h1 id="Docker-—-从入门到实践"><a href="#Docker-—-从入门到实践" class="headerlink" title="Docker — 从入门到实践"></a>Docker — 从入门到实践</h1><h2 id="https-yeasy-gitbook-io-docker-practice"><a href="#https-yeasy-gitbook-io-docker-practice" class="headerlink" title="https://yeasy.gitbook.io/docker_practice"></a><a target="_blank" rel="noopener" href="https://yeasy.gitbook.io/docker_practice">https://yeasy.gitbook.io/docker_practice</a></h2><h1 id="Docker原理"><a href="#Docker原理" class="headerlink" title="Docker原理"></a>Docker原理</h1><ul>
+<li>[00 溯本求源，吃透 Docker！.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;00 溯本求源，吃透 Docker！.md)</li>
+<li>[01 Docker 安装：入门案例带你了解容器技术原理.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;01  Docker 安装：入门案例带你了解容器技术原理.md)</li>
+<li>[02 核心概念：镜像、容器、仓库，彻底掌握 Docker 架构核心设计理念.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;02  核心概念：镜像、容器、仓库，彻底掌握 Docker 架构核心设计理念.md)</li>
+<li>[03 镜像使用：Docker 环境下如何配置你的镜像？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;03  镜像使用：Docker 环境下如何配置你的镜像？.md)</li>
+<li>[04 容器操作：得心应手掌握 Docker 容器基本操作.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;04  容器操作：得心应手掌握 Docker 容器基本操作.md)</li>
+<li>[05 仓库访问：怎样搭建属于你的私有仓库？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;05  仓库访问：怎样搭建属于你的私有仓库？.md)</li>
+<li>[06 最佳实践：如何在生产中编写最优 Dockerfile？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;06  最佳实践：如何在生产中编写最优 Dockerfile？.md)</li>
+<li>[07 Docker 安全：基于内核的弱隔离系统如何保障安全性？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;07  Docker 安全：基于内核的弱隔离系统如何保障安全性？.md)</li>
+<li>[08 容器监控：容器监控原理及 cAdvisor 的安装与使用.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;08  容器监控：容器监控原理及 cAdvisor 的安装与使用.md)</li>
+<li>[09 资源隔离：为什么构建容器需要 Namespace ？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;09  资源隔离：为什么构建容器需要 Namespace ？.md)</li>
+<li>[10 资源限制：如何通过 Cgroups 机制实现资源限制？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;10  资源限制：如何通过 Cgroups 机制实现资源限制？.md)</li>
+<li>[11 组件组成：剖析 Docker 组件作用及其底层工作原理.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;11  组件组成：剖析 Docker 组件作用及其底层工作原理.md)</li>
+<li>[12 网络模型：剖析 Docker 网络实现及 Libnetwork 底层原理.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;12  网络模型：剖析 Docker 网络实现及 Libnetwork 底层原理.md)</li>
+<li>[13 数据存储：剖析 Docker 卷与持久化数据存储的底层原理.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;13  数据存储：剖析 Docker 卷与持久化数据存储的底层原理.md)</li>
+<li>[14 文件存储驱动：AUFS 文件系统原理及生产环境的最佳配置.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;14  文件存储驱动：AUFS 文件系统原理及生产环境的最佳配置.md)</li>
+<li>[15 文件存储驱动：Devicemapper 文件系统原理及生产环境的最佳配置.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;15  文件存储驱动：Devicemapper 文件系统原理及生产环境的最佳配置.md)</li>
+<li>[16 文件存储驱动：OverlayFS 文件系统原理及生产环境的最佳配置.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;16  文件存储驱动：OverlayFS 文件系统原理及生产环境的最佳配置.md)</li>
+<li>[17 原理实践：自己动手使用 Golang 开发 Docker（上）.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;17  原理实践：自己动手使用 Golang 开发 Docker（上）.md)</li>
+<li>[18 原理实践：自己动手使用 Golang 开发 Docker（下）.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;18  原理实践：自己动手使用 Golang 开发 Docker（下）.md)</li>
+<li>[19 如何使用 Docker Compose 解决开发环境的依赖？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;19  如何使用 Docker Compose 解决开发环境的依赖？.md)</li>
+<li>[20 如何在生产环境中使用 Docker Swarm 调度容器？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;20  如何在生产环境中使用 Docker Swarm 调度容器？.md)</li>
+<li>[21 如何使 Docker 和 Kubernetes 结合发挥容器的最大价值？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;21  如何使 Docker 和 Kubernetes 结合发挥容器的最大价值？.md)</li>
+<li>[22 多阶级构建：Docker 下如何实现镜像多阶级构建？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;22  多阶级构建：Docker 下如何实现镜像多阶级构建？.md)</li>
+<li>[23 DevOps：容器化后如何通过 DevOps 提高协作效能？.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;23  DevOps：容器化后如何通过 DevOps 提高协作效能？.md)</li>
+<li>[24 CICD：容器化后如何实现持续集成与交付？（上）.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;24  CICD：容器化后如何实现持续集成与交付？（上）.md)</li>
+<li>[25 CICD：容器化后如何实现持续集成与交付？（下）.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;25  CICD：容器化后如何实现持续集成与交付？（下）.md)</li>
+<li>[26 结束语 展望未来：Docker 的称霸之路.md](<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%90%83%E9%80%8F">https://learn.lianglianglee.com/专栏/由浅入深吃透</a> Docker-完&#x2F;26 结束语  展望未来：Docker 的称霸之路.md)</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.chenjiabin.xyz">Chen Jiabin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.chenjiabin.xyz/posts/10048/">https://blog.chenjiabin.xyz/posts/10048/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.chenjiabin.xyz" target="_blank">青墨染烟雨</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020504.jpg" target="_blank"><img class="post-qr-code-img" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020504.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020503.png" target="_blank"><img class="post-qr-code-img" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020503.png" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/28980/" title="测试文档"><img class="cover" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F546d1ae418f905dccc0f7b3674a0f6e0.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">测试文档</div></div><div class="info-2"><div class="info-item-1">这只是一个测试文件</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/8520/" title="Git学习笔记"><img class="cover" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011819971.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-01</div><div class="info-item-2">Git学习笔记</div></div><div class="info-2"><div class="info-item-1">Git学习，包括Git的原理和再idea中的使用</div></div></div></a><a class="pagination-related" href="/posts/39886/" title="Nginx学习笔记"><img class="cover" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011821873.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-01</div><div class="info-item-2">Nginx学习笔记</div></div><div class="info-2"><div class="info-item-1">Nginx的学习笔记，包括Nginx的部署，配置文件的含义，集群化等内容</div></div></div></a><a class="pagination-related" href="/posts/48798/" title="Java八股学习"><img class="cover" src="https://cdn.xiaolincoding.com//picgo/image-20240725230247664.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-01</div><div class="info-item-2">Java八股学习</div></div><div class="info-2"><div class="info-item-1">Java八股学习总结</div></div></div></a><a class="pagination-related" href="/posts/59639/" title="Python算法学习笔记"><img class="cover" src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011807922.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-01</div><div class="info-item-2">Python算法学习笔记</div></div><div class="info-2"><div class="info-item-1">包括各种数据结构和常用算法</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Waline</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011603481.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chen Jiabin</div><div class="author-info-description">回首向来萧瑟处,归去,也无风雨也无晴</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/qinmoranyanyu"><i class="fab fa-github"></i><span>My GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://www.cnblogs.com/chenjiabin" target="_blank" title="博客园"><i class="fa-solid fa-blog" style="color: #000000;"></i></a><a class="social-icon" href="https://gitee.com/forever-or-moment" target="_blank" title="gitee"><i class="fa-solid fa-rss" style="color: #000000;"></i></a><a class="social-icon" href="mailto:2948429338@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">基于hexo的博客网站,终于搭好了!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%AB%E7%9B%B2"><span class="toc-number">2.</span> <span class="toc-text">扫盲</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E5%92%8C%E4%BC%A0%E7%BB%9F%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">Docker和传统虚拟机有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">物理服务器是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vps-%E5%92%8C-ecs-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.3.</span> <span class="toc-text">vps 和 ecs 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-%E5%AE%B9%E5%99%A8-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.4.</span> <span class="toc-text">docker 容器 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E5%92%8C-k8s-%E4%B9%8B%E9%97%B4%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">2.5.</span> <span class="toc-text">Docker 和 k8s 之间是什么关系？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.6.</span> <span class="toc-text">Docker 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.7.</span> <span class="toc-text">基础镜像是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.8.</span> <span class="toc-text">Dockerfile 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.9.</span> <span class="toc-text">容器镜像 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Registry-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.10.</span> <span class="toc-text">Registry 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.11.</span> <span class="toc-text">容器是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E5%92%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">2.12.</span> <span class="toc-text">Docker 和虚拟机的关系？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%9A%84%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86"><span class="toc-number">2.13.</span> <span class="toc-text">Docker 的架构原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-build"><span class="toc-number">2.13.1.</span> <span class="toc-text">docker build</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-pull-push"><span class="toc-number">2.13.2.</span> <span class="toc-text">docker pull&#x2F;push</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-run"><span class="toc-number">2.13.3.</span> <span class="toc-text">docker run</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.14.</span> <span class="toc-text">Docker 到底是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-Compose-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.15.</span> <span class="toc-text">Docker Compose 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-Swarm-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.16.</span> <span class="toc-text">Docker Swarm 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E5%92%8C-k8s-%E7%9A%84%E5%85%B3%E7%B3%BB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.17.</span> <span class="toc-text">Docker 和 k8s 的关系是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.18.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker-%E2%80%94-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%AE%9E%E8%B7%B5"><span class="toc-number">3.</span> <span class="toc-text">Docker — 从入门到实践</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#https-yeasy-gitbook-io-docker-practice"><span class="toc-number">3.1.</span> <span class="toc-text">https:&#x2F;&#x2F;yeasy.gitbook.io&#x2F;docker_practice</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker%E5%8E%9F%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">Docker原理</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/10048/" title="Docker学习笔记"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker学习笔记"/></a><div class="content"><a class="title" href="/posts/10048/" title="Docker学习笔记">Docker学习笔记</a><time datetime="2025-03-04T14:20:33.000Z" title="发表于 2025-03-04 22:20:33">2025-03-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/28980/" title="测试文档"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F546d1ae418f905dccc0f7b3674a0f6e0.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="测试文档"/></a><div class="content"><a class="title" href="/posts/28980/" title="测试文档">测试文档</a><time datetime="2025-03-01T17:55:30.000Z" title="发表于 2025-03-02 01:55:30">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/8520/" title="Git学习笔记"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011819971.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Git学习笔记"/></a><div class="content"><a class="title" href="/posts/8520/" title="Git学习笔记">Git学习笔记</a><time datetime="2025-03-01T10:15:02.000Z" title="发表于 2025-03-01 18:15:02">2025-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/39886/" title="Nginx学习笔记"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011821873.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Nginx学习笔记"/></a><div class="content"><a class="title" href="/posts/39886/" title="Nginx学习笔记">Nginx学习笔记</a><time datetime="2025-03-01T10:15:02.000Z" title="发表于 2025-03-01 18:15:02">2025-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/52220/" title="OJ在线代码测评系统"><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011817797.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OJ在线代码测评系统"/></a><div class="content"><a class="title" href="/posts/52220/" title="OJ在线代码测评系统">OJ在线代码测评系统</a><time datetime="2025-03-01T10:15:02.000Z" title="发表于 2025-03-01 18:15:02">2025-03-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png);"><div id="footer-wrap"><div class="copyright">&copy;2025 By Chen Jiabin</div><div class="footer_custom_text">我的心是簇拥烈日的花,在你的眼里找到了家</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.2.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  let initFn = window.walineFn || null
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const destroyWaline = ele => ele.destroy()
+
+  const initWaline = (Fn, el = document, path = window.location.pathname) => {
+    const waline = Fn({
+      el: el.querySelector('#waline-wrap'),
+      serverURL: 'https://blog.meng-project.top/',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      comment: true,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyWaline = () => {
+        destroyWaline(waline)
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const loadWaline = (el, path) => {
+    if (initFn) initWaline(initFn, el, path)
+    else {
+      btf.getCSS('https://unpkg.com/@waline/client@v3/dist/waline.css')
+        .then(() => import('https://unpkg.com/@waline/client@v3/dist/waline.js'))
+        .then(({ init }) => {
+          initFn = init || Waline.init
+          initWaline(initFn, el, path)
+          window.walineFn = initFn
+        })
+    }
+  }
+
+  if (isShuoshuo) {
+    'Waline' === 'Waline'
+      ? window.shuoshuoComment = { loadComment: loadWaline } 
+      : window.loadOtherComment = loadWaline
+    return
+  }
+
+  if ('Waline' === 'Waline' || !false) {
+    if (false) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+    else setTimeout(loadWaline, 0)
+  } else {
+    window.loadOtherComment = loadWaline
+  }
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://lustrous-frangollo-1c41d7.netlify.app/.netlify/functions/twikoo',
+      region: 'ap-chengdu',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://lustrous-frangollo-1c41d7.netlify.app/.netlify/functions/twikoo',
+      region: 'ap-chengdu',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.41/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Waline' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Waline' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="3136952023" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false"> </div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/canvas-fluttering-ribbon.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/click-heart.min.js" async="async" mobile="true"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/metingjs/dist/Meting.min.js"></script><script>(() => {
+  const destroyAplayer = () => {
+    if (window.aplayers) {
+      for (let i = 0; i < window.aplayers.length; i++) {
+        if (!window.aplayers[i].options.fixed) {
+          window.aplayers[i].destroy()
+        }
+      }
+    }
+  }
+
+  const runMetingJS = () => {
+    typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+  }
+
+  btf.addGlobalFn('pjaxSend', destroyAplayer, 'destroyAplayer')
+  btf.addGlobalFn('pjaxComplete', loadMeting, 'runMetingJS')
+})()</script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="开始搜索" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
