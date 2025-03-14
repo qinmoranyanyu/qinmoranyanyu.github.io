@@ -1549,30 +1549,6 @@ blockquote > :last-child {
   --hlscrollbar-bg: #1f1f1f;
   --hlexpand-bg: linear-gradient(180deg, rgba(23,23,23,0.6), rgba(23,23,23,0.9));
 }
-.container figure.highlight .line.marked {
-  background-color: rgba(128,203,196,0.251);
-}
-.container figure.highlight table {
-  display: block;
-  overflow: auto;
-  border: none;
-}
-.container figure.highlight table td {
-  padding: 0;
-  border: none;
-}
-.container figure.highlight .gutter pre {
-  padding-right: 10px;
-  padding-left: 10px;
-  background-color: var(--hlnumber-bg);
-  color: var(--hlnumber-color);
-  text-align: right;
-}
-.container figure.highlight .code pre {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: 100%;
-}
 .container pre,
 .container figure.highlight {
   overflow: auto;
