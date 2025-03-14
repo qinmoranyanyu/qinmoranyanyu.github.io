@@ -139,7 +139,7 @@
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
   translate: undefined,
-  highlight: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
     success: '复制成功',
     error: '复制失败',
@@ -363,18 +363,8 @@
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F7c23dac69793cdeded68acf9e0c8bba8.png" alt="img"></p>
 <h3 id="2-1-2-微服务配置namespace"><a href="#2-1-2-微服务配置namespace" class="headerlink" title="2.1.2.微服务配置namespace"></a>2.1.2.微服务配置namespace</h3><p>默认情况下，所有的微服务注册发现、配置管理都是走<code>public</code>这个命名空间。如果要指定命名空间则需要修改<code>application.yml</code>文件。</p>
 <p>比如，我们修改<code>item-service</code>服务的bootstrap.yml文件，添加服务发现配置，指定其<code>namespace</code>：</p>
-<pre><code class="YAML">spring:
-  application:
-    name: item-service # 服务名称
-  profiles:
-    active: dev
-  cloud:
-    nacos:
-      server-addr: 192.168.150.101 # nacos地址
-      discovery: # 服务发现配置
-        namespace: 8c468c63-b650-48da-a632-311c75e6d235 # 设置namespace，必须用id
-      # 。。。略
-</code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">item-service</span> <span class="comment"># 服务名称</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">server-addr:</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span> <span class="comment"># nacos地址</span></span><br><span class="line">      <span class="attr">discovery:</span> <span class="comment"># 服务发现配置</span></span><br><span class="line">        <span class="attr">namespace:</span> <span class="string">8c468c63-b650-48da-a632-311c75e6d235</span> <span class="comment"># 设置namespace，必须用id</span></span><br><span class="line">      <span class="comment"># 。。。略</span></span><br></pre></td></tr></table></figure>
+
 <p>启动<code>item-service</code>，查看服务列表，会发现<code>item-service</code>出现在<code>dev</code>下：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F97d75fe54b39dbad949bbf011f32a6af.png" alt="img"></p>
 <p>而其它服务则出现在<code>public</code>下：</p>
@@ -416,12 +406,8 @@
 <p>查看nacos控制台，会发现默认情况下所有服务的集群都是default：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F5b29997ad640391258e5e61f4eff31e6.png" alt="img"></p>
 <p>如果我们要修改服务所在集群，只需要修改<code>bootstrap.yml</code>即可：</p>
-<pre><code class="YAML">spring:
-  cloud:
-    nacos:
-      discovery:
-        cluster-name: BJ # 集群名称，自定义
-</code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">cluster-name:</span> <span class="string">BJ</span> <span class="comment"># 集群名称，自定义</span></span><br></pre></td></tr></table></figure>
+
 <p>我们修改<code>item-service</code>的<code>bootstrap.yml</code>，然后重新创建一个实例：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Ff4e7760b5748177d30b0dd5d8043e529.png" alt="img"></p>
 <p>再次查看nacos：</p>
@@ -573,30 +559,8 @@
 <p>我们在<code>hm-cart</code>模块中的添加一个配置类：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fca72830dd1bf882a50336c9e0d717ece.png" alt="img"></p>
 <p>代码如下：</p>
-<pre><code class="Java">package com.hmall.cart.config;
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hmall.cart.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.cloud.nacos.NacosDiscoveryProperties;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.cloud.nacos.loadbalancer.NacosLoadBalancer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.client.ServiceInstance;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OpenFeignConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ReactorLoadBalancer&lt;ServiceInstance&gt; <span class="title function_">reactorServiceInstanceLoadBalancer</span><span class="params">(</span></span><br><span class="line"><span class="params">            Environment environment, NacosDiscoveryProperties properties,</span></span><br><span class="line"><span class="params">            LoadBalancerClientFactory loadBalancerClientFactory)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">NacosLoadBalancer</span>(</span><br><span class="line">                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name, properties);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.loadbalancer.NacosLoadBalancer;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
-import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
-import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-
-public class OpenFeignConfig &#123;
-
-    @Bean
-    public ReactorLoadBalancer&lt;ServiceInstance&gt; reactorServiceInstanceLoadBalancer(
-            Environment environment, NacosDiscoveryProperties properties,
-            LoadBalancerClientFactory loadBalancerClientFactory) &#123;
-        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
-        return new NacosLoadBalancer(
-                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name, properties);
-    &#125;
-
-&#125;
-</code></pre>
 <p><strong>注意</strong>：</p>
 <p>这个配置类千万不要加<code>@Configuration</code>注解，也不要被SpringBootApplication扫描到。</p>
 <p>由于这个OpenFeignConfig没有加<code>@Configuration</code>注解，也就没有被Spring加载，因此是不会生效的。接下来，我们要在启动类上通过注解来声明这个配置。</p>
@@ -604,15 +568,13 @@ public class OpenFeignConfig &#123;
 <ul>
 <li>全局配置：对所有服务生效</li>
 </ul>
-<pre><code class="Java">@LoadBalancerClients(defaultConfiguration = OpenFeignConfig.class)
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@LoadBalancerClients(defaultConfiguration = OpenFeignConfig.class)</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>局部配置：只对某个服务生效</li>
 </ul>
-<pre><code class="Java">@LoadBalancerClients(&#123;
-        @LoadBalancerClient(value = &quot;item-service&quot;, configuration = OpenFeignConfig.class)
-&#125;)
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@LoadBalancerClients(&#123;</span></span><br><span class="line"><span class="meta">        @LoadBalancerClient(value = &quot;item-service&quot;, configuration = OpenFeignConfig.class)</span></span><br><span class="line"><span class="meta">&#125;)</span></span><br></pre></td></tr></table></figure>
+
 <p>我们选择全局配置：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F8f1f4504247c235655a061c3d24d8c9d.png" alt="img"></p>
 <p>DEBUG重启后测试，会发现负载均衡器的类型确实切换成功：</p>

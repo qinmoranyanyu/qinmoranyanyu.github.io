@@ -139,7 +139,7 @@
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
   translate: undefined,
-  highlight: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
     success: '复制成功',
     error: '复制失败',
@@ -257,30 +257,13 @@
 <h3 id="1-2-1-启动多个Redis实例"><a href="#1-2-1-启动多个Redis实例" class="headerlink" title="1.2.1.启动多个Redis实例"></a>1.2.1.启动多个Redis实例</h3><p>我们利用课前资料提供的docker-compose文件来构建主从集群：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fe5dd3db13363ee779f8b96cc3b06a953.png" alt="img"></p>
 <p>文件内容如下：</p>
-<pre><code class="YAML">version: &quot;3.2&quot;
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">r1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r1</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7001&quot;</span>]</span><br><span class="line">  <span class="attr">r2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r2</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7002&quot;</span>]</span><br><span class="line">  <span class="attr">r3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r3</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7003&quot;</span>]</span><br></pre></td></tr></table></figure>
 
-services:
-  r1:
-    image: redis
-    container_name: r1
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7001&quot;]
-  r2:
-    image: redis
-    container_name: r2
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7002&quot;]
-  r3:
-    image: redis
-    container_name: r3
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7003&quot;]
-</code></pre>
 <p>将其上传至虚拟机的<code>/root/redis</code>目录下：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fa7d62a85d01ae98eff0c10e5a56c7f15.png" alt="img"></p>
 <p>执行命令，运行集群：</p>
-<pre><code class="Bash">docker compose up -d
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+
 <p>结果：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F459f3003d40eabe223d09f8302d2575d.png" alt="img"></p>
 <p>查看docker容器，发现都正常启动了：</p>
@@ -288,61 +271,33 @@ services:
 <p>由于采用的是host模式，我们看不到端口映射。不过能直接在宿主机通过ps命令查看到Redis进程：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F5817b8676d8cb1901b7b9c49dcdaf783.png" alt="img"></p>
 <h3 id="1-2-2-建立集群"><a href="#1-2-2-建立集群" class="headerlink" title="1.2.2.建立集群"></a>1.2.2.建立集群</h3><p>虽然我们启动了3个Redis实例，但是它们并没有形成主从关系。我们需要通过命令来配置主从关系：</p>
-<pre><code class="Bash"># Redis5.0以前
-slaveof &lt;masterip&gt; &lt;masterport&gt;
-# Redis5.0以后
-replicaof &lt;masterip&gt; &lt;masterport&gt;
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Redis5.0以前</span></span><br><span class="line">slaveof &lt;masterip&gt; &lt;masterport&gt;</span><br><span class="line"><span class="comment"># Redis5.0以后</span></span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure>
+
 <p>有临时和永久两种模式：</p>
 <ul>
 <li>永久生效：在redis.conf文件中利用<code>slaveof</code>命令指定<code>master</code>节点</li>
 <li>临时生效：直接利用redis-cli控制台输入<code>slaveof</code>命令，指定<code>master</code>节点</li>
 </ul>
 <p>我们测试临时模式，首先连接<code>r2</code>，让其以<code>r1</code>为master</p>
-<pre><code class="Bash"># 连接r2
-docker exec -it r2 redis-cli -p 7002
-# 认r1主，也就是7001
-slaveof 192.168.150.101 7001
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 连接r2</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r2 redis-cli -p 7002</span><br><span class="line"><span class="comment"># 认r1主，也就是7001</span></span><br><span class="line">slaveof 192.168.150.101 7001</span><br></pre></td></tr></table></figure>
+
 <p>然后连接<code>r3</code>，让其以<code>r1</code>为master</p>
-<pre><code class="Bash"># 连接r3
-docker exec -it r3 redis-cli -p 7003
-# 认r1主，也就是7001
-slaveof 192.168.150.101 7001
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 连接r3</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r3 redis-cli -p 7003</span><br><span class="line"><span class="comment"># 认r1主，也就是7001</span></span><br><span class="line">slaveof 192.168.150.101 7001</span><br></pre></td></tr></table></figure>
+
 <p>然后连接<code>r1</code>，查看集群状态：</p>
-<pre><code class="Bash"># 连接r1
-docker exec -it r1 redis-cli -p 7001
-# 查看集群状态
-info replication
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 连接r1</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r1 redis-cli -p 7001</span><br><span class="line"><span class="comment"># 查看集群状态</span></span><br><span class="line">info replication</span><br></pre></td></tr></table></figure>
+
 <p>结果如下：</p>
-<pre><code class="Bash">127.0.0.1:7001&gt; info replication
-# Replication
-role:master
-connected_slaves:2
-slave0:ip=192.168.150.101,port=7002,state=online,offset=140,lag=1
-slave1:ip=192.168.150.101,port=7003,state=online,offset=140,lag=1
-master_failover_state:no-failover
-master_replid:16d90568498908b322178ca12078114e6c518b86
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:140
-second_repl_offset:-1
-repl_backlog_active:1
-repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:140
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:7001&gt; info replication</span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=192.168.150.101,port=7002,state=online,offset=140,lag=1</span><br><span class="line">slave1:ip=192.168.150.101,port=7003,state=online,offset=140,lag=1</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:16d90568498908b322178ca12078114e6c518b86</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:140</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:1</span><br><span class="line">repl_backlog_histlen:140</span><br></pre></td></tr></table></figure>
+
 <p>可以看到，当前节点<code>r1:7001</code>的角色是<code>master</code>，有两个slave与其连接：</p>
 <ul>
 <li><code>slave0</code>：<code>port</code>是<code>7002</code>，也就是<code>r2</code>节点</li>
 <li><code>slave1</code>：<code>port</code>是<code>7003</code>，也就是<code>r3</code>节点</li>
 </ul>
 <h3 id="1-2-3-测试"><a href="#1-2-3-测试" class="headerlink" title="1.2.3.测试"></a>1.2.3.测试</h3><p>依次在<code>r1</code>、<code>r2</code>、<code>r3</code>节点上执行下面命令：</p>
-<pre><code class="Bash">set num 123
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> num 123</span><br><span class="line"></span><br><span class="line">get num</span><br></pre></td></tr></table></figure>
 
-get num
-</code></pre>
 <p>你会发现，只有在<code>r1</code>这个节点上可以执行<code>set</code>命令（<strong>写操作</strong>），其它两个节点只能执行<code>get</code>命令（<strong>读操作</strong>）。也就是说读写操作已经分离了。</p>
 <h2 id="1-3-主从同步原理"><a href="#1-3-主从同步原理" class="headerlink" title="1.3.主从同步原理"></a>1.3.主从同步原理</h2><p>在刚才的主从测试中，我们发现<code>r1</code>上写入Redis的数据，在<code>r2</code>和<code>r3</code>上也能看到，这说明主从之间确实完成了数据同步。</p>
 <p>那么这个同步是如何完成的呢？</p>
@@ -482,20 +437,13 @@ get num
 <p>3）最后，当故障节点恢复后会接收到哨兵信号，执行<code>slaveof 192.168.150.101 7002</code>命令，成为<code>slave</code>：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fd3e983736a37de829961752fad39c9c9.png" alt="img"></p>
 <h2 id="2-2-搭建哨兵集群"><a href="#2-2-搭建哨兵集群" class="headerlink" title="2.2.搭建哨兵集群"></a>2.2.搭建哨兵集群</h2><p>首先，我们停掉之前的redis集群：</p>
-<pre><code class="Bash"># 老版本DockerCompose
-docker-compose down
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 老版本DockerCompose</span></span><br><span class="line">docker-compose down</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新版本Docker</span></span><br><span class="line">docker compose down</span><br></pre></td></tr></table></figure>
 
-# 新版本Docker
-docker compose down
-</code></pre>
 <p>然后，我们找到课前资料提供的sentinel.conf文件：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fd06de6242d076a93a2442d8cf4b6aed1.png" alt="img"></p>
 <p>其内容如下：</p>
-<pre><code class="Bash">sentinel announce-ip &quot;192.168.150.101&quot;
-sentinel monitor hmaster 192.168.150.101 7001 2
-sentinel down-after-milliseconds hmaster 5000
-sentinel failover-timeout hmaster 60000
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sentinel announce-ip <span class="string">&quot;192.168.150.101&quot;</span></span><br><span class="line">sentinel monitor hmaster 192.168.150.101 7001 2</span><br><span class="line">sentinel down-after-milliseconds hmaster 5000</span><br><span class="line">sentinel failover-timeout hmaster 60000</span><br></pre></td></tr></table></figure>
+
 <p>说明：</p>
 <ul>
 <li><code>sentinel announce-ip &quot;192.168.150.101&quot;</code>：声明当前sentinel的ip</li>
@@ -512,59 +460,16 @@ sentinel failover-timeout hmaster 60000
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F9159f90790496373ae8d7e450c5ea1c0.png" alt="img"></p>
 <p>将课前资料提供的<code>sentinel.conf</code>文件分别拷贝一份到3个文件夹中。</p>
 <p>接着修改<code>docker-compose.yaml</code>文件，内容如下：</p>
-<pre><code class="YAML">version: &quot;3.2&quot;
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">r1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r1</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7001&quot;</span>]</span><br><span class="line">  <span class="attr">r2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r2</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7002&quot;</span>, <span class="string">&quot;--slaveof&quot;</span>, <span class="string">&quot;192.168.150.101&quot;</span>, <span class="string">&quot;7001&quot;</span>]</span><br><span class="line">  <span class="attr">r3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r3</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7003&quot;</span>, <span class="string">&quot;--slaveof&quot;</span>, <span class="string">&quot;192.168.150.101&quot;</span>, <span class="string">&quot;7001&quot;</span>]</span><br><span class="line">  <span class="attr">s1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">s1</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/redis/s1:/etc/redis</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-sentinel&quot;</span>, <span class="string">&quot;/etc/redis/sentinel.conf&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;27001&quot;</span>]</span><br><span class="line">  <span class="attr">s2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">s2</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/redis/s2:/etc/redis</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-sentinel&quot;</span>, <span class="string">&quot;/etc/redis/sentinel.conf&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;27002&quot;</span>]</span><br><span class="line">  <span class="attr">s3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">s3</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/redis/s3:/etc/redis</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-sentinel&quot;</span>, <span class="string">&quot;/etc/redis/sentinel.conf&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;27003&quot;</span>]</span><br></pre></td></tr></table></figure>
 
-services:
-  r1:
-    image: redis
-    container_name: r1
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7001&quot;]
-  r2:
-    image: redis
-    container_name: r2
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7002&quot;, &quot;--slaveof&quot;, &quot;192.168.150.101&quot;, &quot;7001&quot;]
-  r3:
-    image: redis
-    container_name: r3
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7003&quot;, &quot;--slaveof&quot;, &quot;192.168.150.101&quot;, &quot;7001&quot;]
-  s1:
-    image: redis
-    container_name: s1
-    volumes:
-      - /root/redis/s1:/etc/redis
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-sentinel&quot;, &quot;/etc/redis/sentinel.conf&quot;, &quot;--port&quot;, &quot;27001&quot;]
-  s2:
-    image: redis
-    container_name: s2
-    volumes:
-      - /root/redis/s2:/etc/redis
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-sentinel&quot;, &quot;/etc/redis/sentinel.conf&quot;, &quot;--port&quot;, &quot;27002&quot;]
-  s3:
-    image: redis
-    container_name: s3
-    volumes:
-      - /root/redis/s3:/etc/redis
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-sentinel&quot;, &quot;/etc/redis/sentinel.conf&quot;, &quot;--port&quot;, &quot;27003&quot;]
-</code></pre>
 <p>直接运行命令，启动集群：</p>
-<pre><code class="Shell">docker-compose up -d
-</code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
 <p>运行结果：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fdc4d682ffa5949937714f41c8f0debf5.png" alt="img"></p>
 <p>我们以s1节点为例，查看其运行日志：</p>
-<pre><code class="Bash"># Sentinel ID is 8e91bd24ea8e5eb2aee38f1cf796dcb26bb88acf
-# +monitor master hmaster 192.168.150.101 7001 quorum 2
-* +slave slave 192.168.150.101:7003 192.168.150.101 7003 @ hmaster 192.168.150.101 7001
-* +sentinel sentinel 5bafeb97fc16a82b431c339f67b015a51dad5e4f 192.168.150.101 27002 @ hmaster 192.168.150.101 7001
-* +sentinel sentinel 56546568a2f7977da36abd3d2d7324c6c3f06b8d 192.168.150.101 27003 @ hmaster 192.168.150.101 7001
-* +slave slave 192.168.150.101:7002 192.168.150.101 7002 @ hmaster 192.168.150.101 7001
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Sentinel ID is 8e91bd24ea8e5eb2aee38f1cf796dcb26bb88acf</span></span><br><span class="line"><span class="comment"># +monitor master hmaster 192.168.150.101 7001 quorum 2</span></span><br><span class="line">* +slave slave 192.168.150.101:7003 192.168.150.101 7003 @ hmaster 192.168.150.101 7001</span><br><span class="line">* +sentinel sentinel 5bafeb97fc16a82b431c339f67b015a51dad5e4f 192.168.150.101 27002 @ hmaster 192.168.150.101 7001</span><br><span class="line">* +sentinel sentinel 56546568a2f7977da36abd3d2d7324c6c3f06b8d 192.168.150.101 27003 @ hmaster 192.168.150.101 7001</span><br><span class="line">* +slave slave 192.168.150.101:7002 192.168.150.101 7002 @ hmaster 192.168.150.101 7001</span><br></pre></td></tr></table></figure>
+
 <p>可以看到<code>sentinel</code>已经联系到了<code>7001</code>这个节点，并且与其它几个哨兵也建立了链接。哨兵信息如下：</p>
 <ul>
 <li><code>27001</code>：<code>Sentinel ID</code>是<code>8e91bd24ea8e5eb2aee38f1cf796dcb26bb88acf</code></li>
@@ -573,9 +478,8 @@ services:
 </ul>
 <h2 id="2-3-演示failover"><a href="#2-3-演示failover" class="headerlink" title="2.3.演示failover"></a>2.3.演示failover</h2><p>接下来，我们演示一下当主节点故障时，哨兵是如何完成集群故障恢复（failover）的。</p>
 <p>我们连接<code>7001</code>这个<code>master</code>节点，然后通过命令让其休眠60秒，模拟宕机：</p>
-<pre><code class="Bash"># 连接7001这个master节点，通过sleep模拟服务宕机，60秒后自动恢复
-docker exec -it r1 redis-cli -p 7001 DEBUG sleep 60
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 连接7001这个master节点，通过sleep模拟服务宕机，60秒后自动恢复</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r1 redis-cli -p 7001 DEBUG <span class="built_in">sleep</span> 60</span><br></pre></td></tr></table></figure>
+
 <p>稍微等待一段时间后，会发现sentinel节点触发了<code>failover</code>：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F66f2df897963c8d3da62b61a8cc82c25.png" alt="img"></p>
 <h2 id="2-4-总结"><a href="#2-4-总结" class="headerlink" title="2.4.总结"></a>2.4.总结</h2><p>Sentinel的三个作用是什么？</p>
@@ -616,27 +520,14 @@ docker exec -it r1 redis-cli -p 7001 DEBUG sleep 60
 <li>3）配置读写分离</li>
 </ul>
 <h3 id="2-5-1-引入依赖"><a href="#2-5-1-引入依赖" class="headerlink" title="2.5.1.引入依赖"></a>2.5.1.引入依赖</h3><p>就是SpringDataRedis的依赖：</p>
-<pre><code class="XML">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
-&lt;/dependency&gt;
-</code></pre>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="2-5-2-配置哨兵地址"><a href="#2-5-2-配置哨兵地址" class="headerlink" title="2.5.2.配置哨兵地址"></a>2.5.2.配置哨兵地址</h3><p>连接哨兵集群与传统单点模式不同，不再需要设置每一个redis的地址，而是直接指定哨兵地址：</p>
-<pre><code class="YAML">spring:
-  redis:
-    sentinel:
-      master: hmaster # 集群名
-      nodes: # 哨兵地址列表
-        - 192.168.150.101:27001
-        - 192.168.150.101:27002
-        - 192.168.150.101:27003
-</code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">sentinel:</span></span><br><span class="line">      <span class="attr">master:</span> <span class="string">hmaster</span> <span class="comment"># 集群名</span></span><br><span class="line">      <span class="attr">nodes:</span> <span class="comment"># 哨兵地址列表</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:27001</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:27002</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:27003</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="2-5-3-配置读写分离"><a href="#2-5-3-配置读写分离" class="headerlink" title="2.5.3.配置读写分离"></a>2.5.3.配置读写分离</h3><p>最后，还要配置读写分离，让java客户端将写请求发送到master节点，读请求发送到slave节点。定义一个bean即可：</p>
-<pre><code class="Java">@Bean
-public LettuceClientConfigurationBuilderCustomizer clientConfigurationBuilderCustomizer()&#123;
-    return clientConfigurationBuilder -&gt; clientConfigurationBuilder.readFrom(ReadFrom.REPLICA_PREFERRED);
-&#125;
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> LettuceClientConfigurationBuilderCustomizer <span class="title function_">clientConfigurationBuilderCustomizer</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> clientConfigurationBuilder -&gt; clientConfigurationBuilder.readFrom(ReadFrom.REPLICA_PREFERRED);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这个bean中配置的就是读写策略，包括四种：</p>
 <ul>
 <li><code>MASTER</code>：从主节点读取</li>
@@ -664,12 +555,8 @@ public LettuceClientConfigurationBuilderCustomizer clientConfigurationBuilderCus
 <p>计划部署的节点信息如下：</p>
 <p>表格 还在加载中，请等待加载完成后再尝试复制</p>
 <h3 id="3-1-1-集群配置"><a href="#3-1-1-集群配置" class="headerlink" title="3.1.1.集群配置"></a>3.1.1.集群配置</h3><p>分片集群中的Redis节点必须开启集群模式，一般在配置文件中添加下面参数：</p>
-<pre><code class="Bash">port 7000
-cluster-enabled yes
-cluster-config-file nodes.conf
-cluster-node-timeout 5000
-appendonly yes
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">port 7000</span><br><span class="line">cluster-enabled <span class="built_in">yes</span></span><br><span class="line">cluster-config-file nodes.conf</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line">appendonly <span class="built_in">yes</span></span><br></pre></td></tr></table></figure>
+
 <p>其中有3个我们没见过的参数：</p>
 <ul>
 <li><code>cluster-enabled</code>：是否开启集群模式</li>
@@ -678,63 +565,19 @@ appendonly yes
 </ul>
 <p>一般搭建部署集群肯定是给每个节点都配置上述参数，不过考虑到我们计划用<code>docker-compose</code>部署，因此可以直接在启动命令中指定参数，偷个懒。</p>
 <p>在虚拟机的<code>/root</code>目录下新建一个<code>redis-cluster</code>目录，然后在其中新建一个<code>docker-compose.yaml</code>文件，内容如下：</p>
-<pre><code class="YAML">version: &quot;3.2&quot;
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">r1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r1</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7001&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br><span class="line">  <span class="attr">r2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r2</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7002&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br><span class="line">  <span class="attr">r3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r3</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7003&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br><span class="line">  <span class="attr">r4:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r4</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7004&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br><span class="line">  <span class="attr">r5:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r5</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7005&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br><span class="line">  <span class="attr">r6:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">r6</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host&quot;</span></span><br><span class="line">    <span class="attr">entrypoint:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;7006&quot;</span>, <span class="string">&quot;--cluster-enabled&quot;</span>, <span class="string">&quot;yes&quot;</span>, <span class="string">&quot;--cluster-config-file&quot;</span>, <span class="string">&quot;node.conf&quot;</span>]</span><br></pre></td></tr></table></figure>
 
-services:
-  r1:
-    image: redis
-    container_name: r1
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7001&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-  r2:
-    image: redis
-    container_name: r2
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7002&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-  r3:
-    image: redis
-    container_name: r3
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7003&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-  r4:
-    image: redis
-    container_name: r4
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7004&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-  r5:
-    image: redis
-    container_name: r5
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7005&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-  r6:
-    image: redis
-    container_name: r6
-    network_mode: &quot;host&quot;
-    entrypoint: [&quot;redis-server&quot;, &quot;--port&quot;, &quot;7006&quot;, &quot;--cluster-enabled&quot;, &quot;yes&quot;, &quot;--cluster-config-file&quot;, &quot;node.conf&quot;]
-</code></pre>
 <p><strong>注意</strong>：使用Docker部署Redis集群，network模式必须采用host</p>
 <h3 id="3-1-2-启动集群"><a href="#3-1-2-启动集群" class="headerlink" title="3.1.2.启动集群"></a>3.1.2.启动集群</h3><p>进入<code>/root/redis-cluster</code>目录，使用命令启动redis：</p>
-<pre><code class="Bash">docker-compose up -d
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
 <p>启动成功，可以通过命令查看启动进程：</p>
-<pre><code class="Bash">ps -ef | grep redis
-# 结果：
-root       4822   4743  0 14:29 ?        00:00:02 redis-server *:7002 [cluster]
-root       4827   4745  0 14:29 ?        00:00:01 redis-server *:7005 [cluster]
-root       4897   4778  0 14:29 ?        00:00:01 redis-server *:7004 [cluster]
-root       4903   4759  0 14:29 ?        00:00:01 redis-server *:7006 [cluster]
-root       4905   4775  0 14:29 ?        00:00:02 redis-server *:7001 [cluster]
-root       4912   4732  0 14:29 ?        00:00:01 redis-server *:7003 [cluster]
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep redis</span><br><span class="line"><span class="comment"># 结果：</span></span><br><span class="line">root       4822   4743  0 14:29 ?        00:00:02 redis-server *:7002 [cluster]</span><br><span class="line">root       4827   4745  0 14:29 ?        00:00:01 redis-server *:7005 [cluster]</span><br><span class="line">root       4897   4778  0 14:29 ?        00:00:01 redis-server *:7004 [cluster]</span><br><span class="line">root       4903   4759  0 14:29 ?        00:00:01 redis-server *:7006 [cluster]</span><br><span class="line">root       4905   4775  0 14:29 ?        00:00:02 redis-server *:7001 [cluster]</span><br><span class="line">root       4912   4732  0 14:29 ?        00:00:01 redis-server *:7003 [cluster]</span><br></pre></td></tr></table></figure>
+
 <p>可以发现每个redis节点都以cluster模式运行。不过节点与节点之间并未建立连接。</p>
 <p>接下来，我们使用命令创建集群：</p>
-<pre><code class="Bash"># 进入任意节点容器
-docker exec -it r1 bash
-# 然后，执行命令
-redis-cli --cluster create --cluster-replicas 1 \
-192.168.150.101:7001 192.168.150.101:7002 192.168.150.101:7003 \
-192.168.150.101:7004 192.168.150.101:7005 192.168.150.101:7006
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入任意节点容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r1 bash</span><br><span class="line"><span class="comment"># 然后，执行命令</span></span><br><span class="line">redis-cli --cluster create --cluster-replicas 1 \</span><br><span class="line">192.168.150.101:7001 192.168.150.101:7002 192.168.150.101:7003 \</span><br><span class="line">192.168.150.101:7004 192.168.150.101:7005 192.168.150.101:7006</span><br></pre></td></tr></table></figure>
+
 <p>命令说明：</p>
 <ul>
 <li><code>redis-cli --cluster</code>：代表集群操作命令</li>
@@ -758,8 +601,8 @@ redis-cli --cluster create --cluster-replicas 1 \
 <p>输入<code>yes</code>然后回车。会发现集群开始创建，并输出下列信息：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F20a678c00f0241db6a41da09dea87cd2.png" alt="img"></p>
 <p>接着，我们可以通过命令查看集群状态：</p>
-<pre><code class="Bash">redis-cli -p 7001 cluster nodes
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -p 7001 cluster nodes</span><br></pre></td></tr></table></figure>
+
 <p>结果：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F8c1851268021f6023acd5552b84fa5a0.png" alt="img"></p>
 <h2 id="3-2-散列插槽"><a href="#3-2-散列插槽" class="headerlink" title="3.2.散列插槽"></a>3.2.散列插槽</h2><p>数据要分片存储到不同的Redis节点，肯定需要有分片的依据，这样下次查询的时候才能知道去哪个节点查询。很多数据分片都会采用一致性hash算法。而Redis则是利用散列插槽（**<code>hash slot</code>**）的方式实现数据分片。</p>
@@ -785,44 +628,32 @@ redis-cli --cluster create --cluster-replicas 1 \
 <li>key是<code>user:&#123;age&#125;</code>，则根据<code>age</code>来计算hash slot</li>
 </ul>
 <p>我们来测试一下，先于<code>7001</code>建立连接：</p>
-<pre><code class="Bash"># 进入容器
-docker exec -it r1 bash
-# 进入redis-cli
-redis-cli -p 7001
-# 测试
-set user jack
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it r1 bash</span><br><span class="line"><span class="comment"># 进入redis-cli</span></span><br><span class="line">redis-cli -p 7001</span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line"><span class="built_in">set</span> user jack</span><br></pre></td></tr></table></figure>
+
 <p>会发现报错了：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F8b5c02a089a69f05d8164b5fc5675bd8.png" alt="img"></p>
 <p>提示我们<code>MOVED 5474</code>，其实就是经过计算，得出<code>user</code>这个<code>key</code>的<code>hash slot</code> 是<code>5474</code>，而<code>5474</code>是在<code>7002</code>节点，不能在<code>7001</code>上写入！！</p>
 <p>说好的任意节点都可以读写呢？</p>
 <p>这是因为我们连接的方式有问题，连接集群时，要加<code>-c</code>参数：</p>
-<pre><code class="Bash"># 通过7001连接集群
-redis-cli -c -p 7001
-# 存入数据
-set user jack
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过7001连接集群</span></span><br><span class="line">redis-cli -c -p 7001</span><br><span class="line"><span class="comment"># 存入数据</span></span><br><span class="line"><span class="built_in">set</span> user jack</span><br></pre></td></tr></table></figure>
+
 <p>结果如下：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F42ea2497c2cb550ca922648f79a197b5.png" alt="img"></p>
 <p>可以看到，客户端自动跳转到了<code>5474</code>这个<code>slot</code>所在的<code>7002</code>节点。</p>
 <p>现在，我们添加一个新的key，这次加上<code>&#123;&#125;</code>：</p>
-<pre><code class="Bash"># 试一下key中带&#123;&#125;
-set user:&#123;age&#125; 21
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 试一下key中带&#123;&#125;</span></span><br><span class="line"><span class="built_in">set</span> user:&#123;age&#125; 21</span><br><span class="line"></span><br><span class="line"><span class="comment"># 再试一下key中不带&#123;&#125;</span></span><br><span class="line"><span class="built_in">set</span> age 20</span><br></pre></td></tr></table></figure>
 
-# 再试一下key中不带&#123;&#125;
-set age 20
-</code></pre>
 <p>结果如下：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F27780019f584d2d21c17e230435ea9f9.png" alt="img"></p>
 <p>可以看到<code>user:&#123;age&#125;</code>和<code>age</code>计算出的<code>slot</code>都是<code>741</code>。</p>
 <h2 id="3-3-故障转移"><a href="#3-3-故障转移" class="headerlink" title="3.3.故障转移"></a>3.3.故障转移</h2><p>分片集群的节点之间会互相通过ping的方式做心跳检测，超时未回应的节点会被标记为下线状态。当发现master下线时，会将这个master的某个slave提升为master。</p>
 <p>我们先打开一个控制台窗口，利用命令监测集群状态：</p>
-<pre><code class="Bash">watch docker exec -it r1 redis-cli -p 7001 cluster nodes
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">watch docker <span class="built_in">exec</span> -it r1 redis-cli -p 7001 cluster nodes</span><br></pre></td></tr></table></figure>
+
 <p>命令前面的watch可以每隔一段时间刷新执行结果，方便我们实时监控集群状态变化。</p>
 <p>接着，我们故技重施，利用命令让某个master节点休眠。比如这里我们让<code>7002</code>节点休眠，打开一个新的ssh控制台，输入下面命令：</p>
-<pre><code class="Bash">docker exec -it r2 redis-cli -p 7002 DEBUG sleep 30
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it r2 redis-cli -p 7002 DEBUG <span class="built_in">sleep</span> 30</span><br></pre></td></tr></table></figure>
+
 <p>可以观察到，集群发现7002宕机，标记为下线：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F2754634fe8347d370a40c759752c8b7f.png" alt="img"></p>
 <p>过了一段时间后，7002原本的小弟7006变成了<code>master</code>：</p>
@@ -844,17 +675,8 @@ set age 20
 <p>2）配置分片集群地址</p>
 <p>3）配置读写分离</p>
 <p>与哨兵模式相比，其中只有分片集群的配置方式略有差异，如下：</p>
-<pre><code class="YAML">spring:
-  redis:
-    cluster:
-      nodes:
-        - 192.168.150.101:7001
-        - 192.168.150.101:7002
-        - 192.168.150.101:7003
-        - 192.168.150.101:8001
-        - 192.168.150.101:8002
-        - 192.168.150.101:8003
-</code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">cluster:</span></span><br><span class="line">      <span class="attr">nodes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:7001</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:7002</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:7003</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:8001</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:8002</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:8003</span></span><br></pre></td></tr></table></figure>
+
 <h1 id="4-Redis数据结构"><a href="#4-Redis数据结构" class="headerlink" title="4.Redis数据结构"></a>4.Redis数据结构</h1><p>我们常用的Redis数据类型有5种，分别是：</p>
 <ul>
 <li>String</li>
@@ -989,27 +811,12 @@ set age 20
 </ul>
 <p>这种多级指针的查询方式就避免了传统链表的逐个遍历导致的查询效率下降问题。在对有序数据做随机查询和排序时效率非常高。</p>
 <p>跳表的结构体如下：</p>
-<pre><code class="C">typedef struct zskiplist &#123;
-    // 头尾节点指针
-    struct zskiplistNode *header, *tail;
-    // 节点数量
-    unsigned long length;
-    // 最大的索引层级
-    int level;
-&#125; zskiplist;
-</code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="comment">// 头尾节点指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="comment">// 节点数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="comment">// 最大的索引层级</span></span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+
 <p>可以看到SkipList主要属性是header和tail，也就是头尾指针，因此它是支持双向遍历的。</p>
 <p>跳表中节点的结构体如下：</p>
-<pre><code class="C">typedef struct zskiplistNode &#123;
-    sds ele; // 节点存储的字符串
-    double score;// 节点分数，排序、查找用
-    struct zskiplistNode *backward; // 前一个节点指针
-    struct zskiplistLevel &#123;
-        struct zskiplistNode *forward; // 下一个节点指针
-        unsigned long span; // 索引跨度
-    &#125; level[]; // 多级索引数组
-&#125; zskiplistNode;
-</code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele; <span class="comment">// 节点存储的字符串</span></span><br><span class="line">    <span class="type">double</span> score;<span class="comment">// 节点分数，排序、查找用</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span> <span class="comment">// 前一个节点指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span> <span class="comment">// 下一个节点指针</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">long</span> span; <span class="comment">// 索引跨度</span></span><br><span class="line">    &#125; level[]; <span class="comment">// 多级索引数组</span></span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
 <p>每个节点中都包含ele和score两个属性，其中score是得分，也就是节点排序的依据。ele则是节点存储的字符串数据指针。</p>
 <p>其内存结构如下：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fc5a56e2c356874bb72cee15ed8ae3f35.png" alt="img"></p>
@@ -1025,17 +832,14 @@ set age 20
 <p>加分项：因为SortedSet底层需要用到两种数据结构，对内存占用比较高。因此Redis底层会对SortedSet中的元素大小做判断。如果<strong>元素大小****小于128</strong>且<strong>每个元素都小于64字节</strong>，SortedSet底层会采用<strong>ZipList</strong>，也就是<strong>压缩列</strong>表来代替<strong>HashTable</strong>和<strong>SkipList</strong></p>
 <p>不过，<code>ZipList</code>存在连锁更新问题，因此而在Redis7.0版本以后，<code>ZipList</code>又被替换为<strong>Listpack</strong>（紧凑列表）。</p>
 <p>Redis源码中<code>zset</code>，也就是<code>SortedSet</code>的结构体如下：</p>
-<pre><code class="C">typedef struct zset &#123;
-    dict *dict; // dict，底层就是HashTable
-    zskiplist *zsl; // 跳表
-&#125; zset;
-</code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict; <span class="comment">// dict，底层就是HashTable</span></span><br><span class="line">    zskiplist *zsl; <span class="comment">// 跳表</span></span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+
 <p>其内存结构如图：</p>
 <p><img src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F68fcb8ceadd233eebd9a434f483f2111.png" alt="img"></p>
 <h1 id="5-Redis内存回收"><a href="#5-Redis内存回收" class="headerlink" title="5.Redis内存回收"></a>5.Redis内存回收</h1><p>Redis之所以性能强，最主要的原因就是基于内存存储。然而单节点的Redis其内存大小不宜过大，会影响持久化或主从同步性能。</p>
 <p>我们可以通过修改redis.conf文件，添加下面的配置来配置Redis的最大内存：</p>
-<pre><code class="Properties">maxmemory 1gb
-</code></pre>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">maxmemory</span> <span class="string">1gb</span></span><br></pre></td></tr></table></figure>
+
 <p>当内存达到上限，就无法存储更多数据了。因此，Redis内部会有两套内存回收的策略：</p>
 <ul>
 <li>内存过期策略</li>
@@ -1043,15 +847,11 @@ set age 20
 </ul>
 <h2 id="5-1-内存过期处理"><a href="#5-1-内存过期处理" class="headerlink" title="5.1.内存过期处理"></a>5.1.内存过期处理</h2><p>存入Redis中的数据可以配置过期时间，到期后再次访问会发现这些数据都不存在了，也就是被过期清理了。</p>
 <h3 id="5-1-1-过期命令"><a href="#5-1-1-过期命令" class="headerlink" title="5.1.1.过期命令"></a>5.1.1.过期命令</h3><p>Redis中通过<code>expire</code>命令可以给KEY设置<code>TTL</code>（过期时间），例如：</p>
-<pre><code class="Bash"># 写入一条数据
-set num 123
-# 设置20秒过期时间
-expire num 20
-</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入一条数据</span></span><br><span class="line"><span class="built_in">set</span> num 123</span><br><span class="line"><span class="comment"># 设置20秒过期时间</span></span><br><span class="line">expire num 20</span><br></pre></td></tr></table></figure>
+
 <p>不过set命令本身也可以支持过期时间的设置：</p>
-<pre><code class="Shell"># 写入一条数据并设置20s过期时间
-set num EX 20
-</code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">写入一条数据并设置20s过期时间</span></span><br><span class="line">set num EX 20</span><br></pre></td></tr></table></figure>
+
 <p>当过期时间到了以后，再去查询数据，会发现数据已经不存在。 </p>
 <h3 id="5-1-2-过期策略"><a href="#5-1-2-过期策略" class="headerlink" title="5.1.2.过期策略"></a>5.1.2.过期策略</h3><p>那么问题来了：</p>
 <ul>
@@ -1060,18 +860,8 @@ set num EX 20
 </ul>
 <p>Redis不管有多少种数据类型，本质是一个<code>KEY-VALUE</code>的键值型数据库，而这种键值映射底层正式基于HashTable来实现的，在Redis中叫做Dict.</p>
 <p>来看下RedisDB的底层源码：</p>
-<pre><code class="C">typedef struct redisDb &#123;
-    dict dict;                 / The keyspace for this DB , 也就是存放KEY和VALUE的哈希表*/
-    dict *expires;              /* 同样是哈希表，但保存的是设置了TTL的KEY，及其到期时间*/
-    dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/
-    dict *ready_keys;           /* Blocked keys that received a PUSH */
-    dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS /
-    int id;                     / Database ID, 0 ~ 15 /
-    long long avg_ttl;          / Average TTL, just for stats /
-    unsigned long expires_cursor; / Cursor of the active expire cycle. */
-    list *defrag_later;         /* List of key names to attempt to defrag one by one, gradually. */
-&#125; redisDb;
-</code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span> &#123;</span></span><br><span class="line">    dict dict;                 / The keyspace <span class="keyword">for</span> this DB , 也就是存放KEY和VALUE的哈希表*/</span><br><span class="line">    dict *expires;              <span class="comment">/* 同样是哈希表，但保存的是设置了TTL的KEY，及其到期时间*/</span></span><br><span class="line">    dict *blocking_keys;        <span class="comment">/* Keys with clients waiting for data (BLPOP)*/</span></span><br><span class="line">    dict *ready_keys;           <span class="comment">/* Blocked keys that received a PUSH */</span></span><br><span class="line">    dict *watched_keys;         <span class="comment">/* WATCHED keys for MULTI/EXEC CAS /</span></span><br><span class="line"><span class="comment">    int id;                     / Database ID, 0 ~ 15 /</span></span><br><span class="line"><span class="comment">    long long avg_ttl;          / Average TTL, just for stats /</span></span><br><span class="line"><span class="comment">    unsigned long expires_cursor; / Cursor of the active expire cycle. */</span></span><br><span class="line">    <span class="built_in">list</span> *defrag_later;         <span class="comment">/* List of key names to attempt to defrag one by one, gradually. */</span></span><br><span class="line">&#125; redisDb;</span><br></pre></td></tr></table></figure>
+
 <p>现在回答第一个问题：</p>
 <p><strong>面试题</strong>：Redis如何判断KEY是否过期呢？</p>
 <p><strong>答</strong>：在Redis中会有两个Dict，也就是HashTable，其中一个记录KEY-VALUE键值对，另一个记录KEY和过期时间。要判断一个KEY是否过期，只需要到记录过期时间的Dict中根据KEY查询即可。</p>
@@ -1084,28 +874,8 @@ set num EX 20
 </ul>
 <p><strong>惰性删除</strong>，顾明思议就是过期后不会立刻删除。那在什么时候删除呢？</p>
 <p>Redis会在每次访问KEY的时候判断当前KEY有没有设置过期时间，如果有，过期时间是否已经到期。对应的源码如下：</p>
-<pre><code class="C">// db.c
-// 寻找要执行写操作的key
-robj *lookupKeyWriteWithFlags(redisDb *db, robj *key, int flags) &#123;
-    // 检查key是否过期，如果过期则删除
-    expireIfNeeded(db,key);
-    return lookupKey(db,key,flags);
-&#125;
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// db.c</span></span><br><span class="line"><span class="comment">// 寻找要执行写操作的key</span></span><br><span class="line">robj *<span class="title function_">lookupKeyWriteWithFlags</span><span class="params">(redisDb *db, robj *key, <span class="type">int</span> flags)</span> &#123;</span><br><span class="line">    <span class="comment">// 检查key是否过期，如果过期则删除</span></span><br><span class="line">    expireIfNeeded(db,key);</span><br><span class="line">    <span class="keyword">return</span> lookupKey(db,key,flags);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 寻找要执行读操作的key</span></span><br><span class="line">robj *<span class="title function_">lookupKeyReadWithFlags</span><span class="params">(redisDb *db, robj *key, <span class="type">int</span> flags)</span> &#123;</span><br><span class="line">    robj *val;</span><br><span class="line">    <span class="comment">// 检查key是否过期，如果过期则删除</span></span><br><span class="line">    <span class="keyword">if</span> (expireIfNeeded(db,key) == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 略 ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    val = lookupKey(db,key,flags);</span><br><span class="line">    <span class="keyword">if</span> (val == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">goto</span> keymiss;</span><br><span class="line">    server.stat_keyspace_hits++;</span><br><span class="line">    <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-// 寻找要执行读操作的key
-robj *lookupKeyReadWithFlags(redisDb *db, robj *key, int flags) &#123;
-    robj *val;
-    // 检查key是否过期，如果过期则删除
-    if (expireIfNeeded(db,key) == 1) &#123;
-        // 略 ...
-    &#125;
-    val = lookupKey(db,key,flags);
-    if (val == NULL)
-        goto keymiss;
-    server.stat_keyspace_hits++;
-    return val;
-&#125;
-</code></pre>
 <p><strong>周期删除</strong>：顾明思议是通过一个定时任务，周期性的抽样部分过期的key，然后执行删除。</p>
 <p>执行周期有两种：</p>
 <ul>
@@ -1129,21 +899,8 @@ robj *lookupKeyReadWithFlags(redisDb *db, robj *key, int flags) &#123;
 <h2 id="5-2-内存淘汰策略"><a href="#5-2-内存淘汰策略" class="headerlink" title="5.2.内存淘汰策略"></a>5.2.内存淘汰策略</h2><p>对于某些特别依赖于Redis的项目而言，仅仅依靠过期KEY清理是不够的，内存可能很快就达到上限。因此Redis允许设置内存告警阈值，当内存使用达到阈值时就会主动挑选部分KEY删除以释放更多内存。这叫做<strong>内存淘汰</strong>机制。</p>
 <h3 id="5-2-1-内存淘汰时机"><a href="#5-2-1-内存淘汰时机" class="headerlink" title="5.2.1.内存淘汰时机"></a>5.2.1.内存淘汰时机</h3><p>那么问题来了，当内存达到阈值时执行内存淘汰，但问题是Redis什么时候会执去判断内存是否达到预警呢？</p>
 <p>Redis每次执行任何命令时，都会判断内存是否达到阈值：</p>
-<pre><code class="C">// server.c中处理命令的部分源码
-int processCommand(client *c) &#123;
-    // ... 略
-    if (server.maxmemory &amp;&amp; !server.lua_timedout) &#123;
-        // 调用performEvictions()方法尝试进行内存淘汰
-        int out_of_memory = (performEvictions() == EVICT_FAIL);
-        // ... 略
-        if (out_of_memory &amp;&amp; reject_cmd_on_oom) &#123;
-            // 如果内存依然不足，直接拒绝命令
-            rejectCommand(c, shared.oomerr);
-            return C_OK;
-        &#125;
-    &#125;
-&#125;
-</code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server.c中处理命令的部分源码</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">processCommand</span><span class="params">(client *c)</span> &#123;</span><br><span class="line">    <span class="comment">// ... 略</span></span><br><span class="line">    <span class="keyword">if</span> (server.maxmemory &amp;&amp; !server.lua_timedout) &#123;</span><br><span class="line">        <span class="comment">// 调用performEvictions()方法尝试进行内存淘汰</span></span><br><span class="line">        <span class="type">int</span> out_of_memory = (performEvictions() == EVICT_FAIL);</span><br><span class="line">        <span class="comment">// ... 略</span></span><br><span class="line">        <span class="keyword">if</span> (out_of_memory &amp;&amp; reject_cmd_on_oom) &#123;</span><br><span class="line">            <span class="comment">// 如果内存依然不足，直接拒绝命令</span></span><br><span class="line">            rejectCommand(c, shared.oomerr);</span><br><span class="line">            <span class="keyword">return</span> C_OK;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="5-2-2-淘汰策略"><a href="#5-2-2-淘汰策略" class="headerlink" title="5.2.2.淘汰策略"></a>5.2.2.淘汰策略</h3><p>好了，知道什么时候尝试淘汰了，那具体Redis是如何判断该淘汰哪些<code>Key</code>的呢？</p>
 <p>Redis支持8种不同的内存淘汰策略：</p>
 <ul>
