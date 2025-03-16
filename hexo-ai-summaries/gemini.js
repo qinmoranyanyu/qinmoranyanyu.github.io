@@ -149,6 +149,9 @@
           .substring(0, 30000);
         let toAI = `文章标题：${postTile}；文章目录：${postToc?.textContent}；具体内容：${inputContent}`;
         const res = await fetch(GeminiFetch, {
+          headers: {
+           'X-Ca-Nonce': window.crypto.randomUUID()
+          },
           method: 'POST',
           body: JSON.stringify({
             model: 'gpt-4o',
