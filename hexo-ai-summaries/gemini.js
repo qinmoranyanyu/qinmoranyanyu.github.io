@@ -149,17 +149,13 @@
           .substring(0, 30000);
         let toAI = `文章标题：${postTile}；文章目录：${postToc?.textContent}；具体内容：${inputContent}`;
         const res = await fetch(GeminiFetch, {
-          headers: {
-           'X-Ca-Nonce': window.crypto.randomUUID()
-          },
           method: 'POST',
           body: JSON.stringify({
             model: 'gpt-4o',
             messages: [
               {
                 role: 'system',
-                content: "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the text delimited by triple quotes and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points.
-Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the Chinese language.",
+                content: "You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the text delimited by triple quotes and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points. Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the Chinese language.",
               },
               { role: 'user', content: toAI },
             ],
