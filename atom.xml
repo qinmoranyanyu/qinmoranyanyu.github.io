@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>青墨染烟雨</title>
+  <icon>https://www.gravatar.com/avatar/4974f1ced1324aa10aa7fb2f9ac0e724</icon>
+  <subtitle>悟已往之不谏，知来者之可追</subtitle>
+  <link href="https://blog.chenjiabin.xyz/atom.xml" rel="self"/>
+  
+  <link href="https://blog.chenjiabin.xyz/"/>
+  <updated>2025-03-13T17:15:04.204Z</updated>
+  <id>https://blog.chenjiabin.xyz/</id>
+  
+  <author>
+    <name>Chen Jiabin</name>
+    <email>2948429338@qq.com</email>
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MybatisPlus学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/18374/"/>
+    <id>https://blog.chenjiabin.xyz/posts/18374/</id>
+    <published>2025-03-13T14:09:22.000Z</published>
+    <updated>2025-03-13T17:15:04.204Z</updated>
+    
+    
+    <summary type="html">MybatisPlus学习笔记</summary>
+    
+    
+    
+    <category term="MybatisPlus" scheme="https://blog.chenjiabin.xyz/categories/MybatisPlus/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringCloud学习笔记(1)</title>
+    <link href="https://blog.chenjiabin.xyz/posts/11496/"/>
+    <id>https://blog.chenjiabin.xyz/posts/11496/</id>
+    <published>2025-03-13T14:08:58.000Z</published>
+    <updated>2025-03-13T17:18:02.118Z</updated>
+    
+    
+    <summary type="html">SpringCloud学习笔记(1)</summary>
+    
+    
+    
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringCloud学习笔记(2)</title>
+    <link href="https://blog.chenjiabin.xyz/posts/48361/"/>
+    <id>https://blog.chenjiabin.xyz/posts/48361/</id>
+    <published>2025-03-13T14:08:58.000Z</published>
+    <updated>2025-03-13T17:11:58.452Z</updated>
+    
+    
+    <summary type="html">SpringCloud学习笔记(2)</summary>
+    
+    
+    
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringCloud学习笔记(3)</title>
+    <link href="https://blog.chenjiabin.xyz/posts/11497/"/>
+    <id>https://blog.chenjiabin.xyz/posts/11497/</id>
+    <published>2025-03-13T14:08:58.000Z</published>
+    <updated>2025-03-13T17:11:58.453Z</updated>
+    
+    
+    <summary type="html">SpringCloud学习笔记(3)</summary>
+    
+    
+    
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringCloud面试题</title>
+    <link href="https://blog.chenjiabin.xyz/posts/39180/"/>
+    <id>https://blog.chenjiabin.xyz/posts/39180/</id>
+    <published>2025-03-13T14:08:33.000Z</published>
+    <updated>2025-03-13T17:11:58.454Z</updated>
+    
+    
+    <summary type="html">SpringCloud面试题</summary>
+    
+    
+    
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    
+    
+    <category term="面试" scheme="https://blog.chenjiabin.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis面试题</title>
+    <link href="https://blog.chenjiabin.xyz/posts/43042/"/>
+    <id>https://blog.chenjiabin.xyz/posts/43042/</id>
+    <published>2025-03-13T14:08:23.000Z</published>
+    <updated>2025-03-13T17:11:58.449Z</updated>
+    
+    
+    <summary type="html">Redis面试题</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="面试" scheme="https://blog.chenjiabin.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>RabbitMQ进阶</title>
+    <link href="https://blog.chenjiabin.xyz/posts/59211/"/>
+    <id>https://blog.chenjiabin.xyz/posts/59211/</id>
+    <published>2025-03-13T14:08:05.000Z</published>
+    <updated>2025-03-13T17:18:39.605Z</updated>
+    
+    
+    <summary type="html">RabbitMQ进阶</summary>
+    
+    
+    
+    <category term="RabbitMQ" scheme="https://blog.chenjiabin.xyz/categories/RabbitMQ/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>RabbitMQ基础</title>
+    <link href="https://blog.chenjiabin.xyz/posts/33842/"/>
+    <id>https://blog.chenjiabin.xyz/posts/33842/</id>
+    <published>2025-03-13T14:07:13.000Z</published>
+    <updated>2025-03-13T17:18:26.479Z</updated>
+    
+    
+    <summary type="html">RabbitMQ基础</summary>
+    
+    
+    
+    <category term="RabbitMQ" scheme="https://blog.chenjiabin.xyz/categories/RabbitMQ/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安装Docker</title>
+    <link href="https://blog.chenjiabin.xyz/posts/56896/"/>
+    <id>https://blog.chenjiabin.xyz/posts/56896/</id>
+    <published>2025-03-13T14:06:54.000Z</published>
+    <updated>2025-03-13T17:11:58.455Z</updated>
+    
+    
+    <summary type="html">安装Docker</summary>
+    
+    
+    
+    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    
+    
+    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker学习笔记-黑马</title>
+    <link href="https://blog.chenjiabin.xyz/posts/54987/"/>
+    <id>https://blog.chenjiabin.xyz/posts/54987/</id>
+    <published>2025-03-13T14:06:46.000Z</published>
+    <updated>2025-03-13T17:11:58.435Z</updated>
+    
+    
+    <summary type="html">Docker学习笔记-黑马</summary>
+    
+    
+    
+    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ElasticSearch学习笔记-黑马(2)</title>
+    <link href="https://blog.chenjiabin.xyz/posts/32160/"/>
+    <id>https://blog.chenjiabin.xyz/posts/32160/</id>
+    <published>2025-03-13T14:06:32.000Z</published>
+    <updated>2025-03-13T17:11:58.442Z</updated>
+    
+    
+    <summary type="html">ElasticSearch学习笔记-黑马(2)</summary>
+    
+    
+    
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ElasticSearch学习笔记-黑马(1)</title>
+    <link href="https://blog.chenjiabin.xyz/posts/36256/"/>
+    <id>https://blog.chenjiabin.xyz/posts/36256/</id>
+    <published>2025-03-13T14:06:23.000Z</published>
+    <updated>2025-03-13T17:11:58.444Z</updated>
+    
+    
+    <summary type="html">ElasticSearch学习笔记-黑马(1)</summary>
+    
+    
+    
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux环境搭建</title>
+    <link href="https://blog.chenjiabin.xyz/posts/6951/"/>
+    <id>https://blog.chenjiabin.xyz/posts/6951/</id>
+    <published>2025-03-13T14:06:09.000Z</published>
+    <updated>2025-03-13T17:11:58.443Z</updated>
+    
+    
+    <summary type="html">Linux环境搭建</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.chenjiabin.xyz/categories/Linux/"/>
+    
+    
+    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>帝可得实战项目学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/31714/"/>
+    <id>https://blog.chenjiabin.xyz/posts/31714/</id>
+    <published>2025-03-13T14:05:53.000Z</published>
+    <updated>2025-03-13T17:11:58.456Z</updated>
+    
+    
+    <summary type="html">帝可得实战项目学习笔记</summary>
+    
+    
+    
+    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>若依基础应用</title>
+    <link href="https://blog.chenjiabin.xyz/posts/16493/"/>
+    <id>https://blog.chenjiabin.xyz/posts/16493/</id>
+    <published>2025-03-13T14:05:53.000Z</published>
+    <updated>2025-03-13T17:11:58.460Z</updated>
+    
+    
+    <summary type="html">若依基础应用</summary>
+    
+    
+    
+    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>若依原理学习</title>
+    <link href="https://blog.chenjiabin.xyz/posts/62238/"/>
+    <id>https://blog.chenjiabin.xyz/posts/62238/</id>
+    <published>2025-03-13T14:05:53.000Z</published>
+    <updated>2025-03-13T17:11:58.459Z</updated>
+    
+    
+    <summary type="html">若依原理学习</summary>
+    
+    
+    
+    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="原理" scheme="https://blog.chenjiabin.xyz/tags/%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>程序员常用英语词汇</title>
+    <link href="https://blog.chenjiabin.xyz/posts/59644/"/>
+    <id>https://blog.chenjiabin.xyz/posts/59644/</id>
+    <published>2025-03-12T05:45:29.000Z</published>
+    <updated>2025-03-12T05:47:34.692Z</updated>
+    
+    
+    <summary type="html">程序员常用英语词汇</summary>
+    
+    
+    
+    <category term="英语" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%B1%E8%AF%AD/"/>
+    
+    
+    <category term="词汇" scheme="https://blog.chenjiabin.xyz/tags/%E8%AF%8D%E6%B1%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Markdown语法学习</title>
+    <link href="https://blog.chenjiabin.xyz/posts/3969/"/>
+    <id>https://blog.chenjiabin.xyz/posts/3969/</id>
+    <published>2025-03-06T15:42:14.000Z</published>
+    <updated>2025-03-06T15:44:26.983Z</updated>
+    
+    
+    <summary type="html">Markdown语法学习</summary>
+    
+    
+    
+    <category term="typora" scheme="https://blog.chenjiabin.xyz/categories/typora/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>typora图床搭建+完美解决PicGo图片上传重命名问题</title>
+    <link href="https://blog.chenjiabin.xyz/posts/47929/"/>
+    <id>https://blog.chenjiabin.xyz/posts/47929/</id>
+    <published>2025-03-05T16:58:31.000Z</published>
+    <updated>2025-03-05T17:08:57.456Z</updated>
+    
+    
+    <summary type="html">typora图床搭建+完美解决PicGo图片上传重命名问题</summary>
+    
+    
+    
+    <category term="typora" scheme="https://blog.chenjiabin.xyz/categories/typora/"/>
+    
+    
+    <category term="技巧" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>测试文件2</title>
+    <link href="https://blog.chenjiabin.xyz/posts/60895/"/>
+    <id>https://blog.chenjiabin.xyz/posts/60895/</id>
+    <published>2025-03-05T16:00:00.000Z</published>
+    <updated>2025-03-08T04:18:50.864Z</updated>
+    
+    
+    <summary type="html">这只是一个测试文件</summary>
+    
+    
+    
+    <category term="测试" scheme="https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/"/>
+    
+    
+    <category term="测试" scheme="https://blog.chenjiabin.xyz/tags/%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>离散数学学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/13423/"/>
+    <id>https://blog.chenjiabin.xyz/posts/13423/</id>
+    <published>2025-03-04T16:00:47.000Z</published>
+    <updated>2025-03-04T16:04:11.764Z</updated>
+    
+    
+    <summary type="html">离散数学学习笔记，图，关系，计数，基本结构，命题</summary>
+    
+    
+    
+    <category term="离散数学" scheme="https://blog.chenjiabin.xyz/categories/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ElasticSearch入门到精通</title>
+    <link href="https://blog.chenjiabin.xyz/posts/52481/"/>
+    <id>https://blog.chenjiabin.xyz/posts/52481/</id>
+    <published>2025-03-04T15:34:24.000Z</published>
+    <updated>2025-03-05T07:32:05.080Z</updated>
+    
+    
+    <summary type="html">ElasticSearch入门到精通</summary>
+    
+    
+    
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    
+    
+    <category term="入门到精通" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka入门到精通</title>
+    <link href="https://blog.chenjiabin.xyz/posts/14310/"/>
+    <id>https://blog.chenjiabin.xyz/posts/14310/</id>
+    <published>2025-03-04T15:34:11.000Z</published>
+    <updated>2025-03-04T15:39:57.933Z</updated>
+    
+    
+    <summary type="html">Kafka入门到精通</summary>
+    
+    
+    
+    <category term="Kafka" scheme="https://blog.chenjiabin.xyz/categories/Kafka/"/>
+    
+    
+    <category term="入门到精通" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/10048/"/>
+    <id>https://blog.chenjiabin.xyz/posts/10048/</id>
+    <published>2025-03-04T14:20:33.000Z</published>
+    <updated>2025-03-04T15:39:29.080Z</updated>
+    
+    
+    <summary type="html">Docker的安装和扫盲，以及学习网站</summary>
+    
+    
+    
+    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>测试文档</title>
+    <link href="https://blog.chenjiabin.xyz/posts/28980/"/>
+    <id>https://blog.chenjiabin.xyz/posts/28980/</id>
+    <published>2025-03-01T17:55:30.000Z</published>
+    <updated>2025-03-16T13:46:14.703Z</updated>
+    
+    
+    <summary type="html">这只是一个测试文件</summary>
+    
+    
+    
+    <category term="测试" scheme="https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/"/>
+    
+    
+    <category term="测试" scheme="https://blog.chenjiabin.xyz/tags/%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/8520/"/>
+    <id>https://blog.chenjiabin.xyz/posts/8520/</id>
+    <published>2025-03-01T10:15:02.000Z</published>
+    <updated>2025-03-02T09:21:03.466Z</updated>
+    
+    
+    <summary type="html">Git学习，包括Git的原理和再idea中的使用</summary>
+    
+    
+    
+    <category term="Git" scheme="https://blog.chenjiabin.xyz/categories/Git/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Nginx学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/39886/"/>
+    <id>https://blog.chenjiabin.xyz/posts/39886/</id>
+    <published>2025-03-01T10:15:02.000Z</published>
+    <updated>2025-03-02T09:21:03.466Z</updated>
+    
+    
+    <summary type="html">Nginx的学习笔记，包括Nginx的部署，配置文件的含义，集群化等内容</summary>
+    
+    
+    
+    <category term="Nginx" scheme="https://blog.chenjiabin.xyz/categories/Nginx/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OJ在线代码测评系统</title>
+    <link href="https://blog.chenjiabin.xyz/posts/52220/"/>
+    <id>https://blog.chenjiabin.xyz/posts/52220/</id>
+    <published>2025-03-01T10:15:02.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">我的OJ在线判题系统介绍</summary>
+    
+    
+    
+    <category term="项目" scheme="https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+    <category term="介绍" scheme="https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>自定义博客网站搭建教程（2）</title>
+    <link href="https://blog.chenjiabin.xyz/posts/23403/"/>
+    <id>https://blog.chenjiabin.xyz/posts/23403/</id>
+    <published>2025-03-01T10:09:30.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">如何在本地撰写博文并上传的方法教程</summary>
+    
+    
+    
+    <category term="博客" scheme="https://blog.chenjiabin.xyz/categories/%E5%8D%9A%E5%AE%A2/"/>
+    
+    
+    <category term="教程" scheme="https://blog.chenjiabin.xyz/tags/%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="技术" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>自定义博客网站搭建教程（1）</title>
+    <link href="https://blog.chenjiabin.xyz/posts/8043/"/>
+    <id>https://blog.chenjiabin.xyz/posts/8043/</id>
+    <published>2025-03-01T10:08:30.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">关于我的博客网站搭建过程</summary>
+    
+    
+    
+    <category term="博客" scheme="https://blog.chenjiabin.xyz/categories/%E5%8D%9A%E5%AE%A2/"/>
+    
+    
+    <category term="教程" scheme="https://blog.chenjiabin.xyz/tags/%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="技术" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/30369/"/>
+    <id>https://blog.chenjiabin.xyz/posts/30369/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">Nginx的学习笔记，包括Nginx的部署，配置文件的含义，集群化等内容</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.chenjiabin.xyz/categories/Linux/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java八股学习</title>
+    <link href="https://blog.chenjiabin.xyz/posts/48798/"/>
+    <id>https://blog.chenjiabin.xyz/posts/48798/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-16T07:25:19.644Z</updated>
+    
+    
+    <summary type="html">Java八股学习总结</summary>
+    
+    
+    
+    <category term="Java" scheme="https://blog.chenjiabin.xyz/categories/Java/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="八股文" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%AB%E8%82%A1%E6%96%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python算法学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/59639/"/>
+    <id>https://blog.chenjiabin.xyz/posts/59639/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">包括各种数据结构和常用算法</summary>
+    
+    
+    
+    <category term="Python" scheme="https://blog.chenjiabin.xyz/categories/Python/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="算法" scheme="https://blog.chenjiabin.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Xtimer定时微服务</title>
+    <link href="https://blog.chenjiabin.xyz/posts/17805/"/>
+    <id>https://blog.chenjiabin.xyz/posts/17805/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">定时微服务项目，分布式架构下的定时器</summary>
+    
+    
+    
+    <category term="项目" scheme="https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+    <category term="介绍" scheme="https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>vi和vim快捷键</title>
+    <link href="https://blog.chenjiabin.xyz/posts/61951/"/>
+    <id>https://blog.chenjiabin.xyz/posts/61951/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">vi和vim常用的一些快捷键</summary>
+    
+    
+    
+    <category term="vim" scheme="https://blog.chenjiabin.xyz/categories/vim/"/>
+    
+    
+    <category term="技巧" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
+    
+    <category term="总结" scheme="https://blog.chenjiabin.xyz/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数学建模学习笔记</title>
+    <link href="https://blog.chenjiabin.xyz/posts/43478/"/>
+    <id>https://blog.chenjiabin.xyz/posts/43478/</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">为了应对数学建模比赛准备的笔记，内容包括各类的评价方法和优化方法</summary>
+    
+    
+    
+    <category term="数学建模" scheme="https://blog.chenjiabin.xyz/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+</feed>
