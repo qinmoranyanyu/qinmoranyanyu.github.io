@@ -4,20 +4,50 @@
   font-display: swap;
   font-weight: lighter;
 } */
+
 @font-face {
     font-family: ZhuZiAYuanJWD;
-    src: url(https://npm.elemecdn.com/anzhiyu-blog@1.1.6/fonts/ZhuZiAWan.woff2);
+    /* src: url(https://npm.elemecdn.com/anzhiyu-blog@1.1.6/fonts/ZhuZiAWan.woff2); */
+    src: url(LXGWWenKaiMonoLite-Regular.woff2);
     font-display: swap;
     font-weight: lighter;
   }
   
+  @font-face {
+    font-family: chenjiabin;
+    /* src: url(DunHuangFeiTian-XingKaiTi-2.woff2); */
+    src: url(LXGWWenKaiMonoLite-Regular.woff2);
+    font-display: swap;
+    font-weight: lighter;
+  }
+  
+  .article-sort-item-title {
+    font-family: ZhuZiAYuanJWD !important;
+    font-size: 1.5em !important;
+  }
+
+
+  #subtitle,
+  #nav .site-page {
+    font-family: chenjiabin;
+    font-size: 0.9em !important;
+  }
+
+  a.article-title {
+    font-weight: bold;
+  }
+
   div#menus {
     font-family: "ZhuZiAYuanJWD";
   }
-  /* h1#site-title {
-    font-family: ZhuZiAYuanJWD;
-    font-size: 3em !important;
-  } */
+  h1#site-title {
+    font-family: chenjiabin;
+    font-size: 3.5em !important;
+    font-weight: 800;
+  }
+
+  .author-info-description,
+  .author-info-name,
   a.article-title,
   a.blog-slider__title,
   a.categoryBar-list-link,
@@ -25,6 +55,7 @@
     font-family: ZhuZiAYuanJWD;
   }
   
+
   .iconfont {
     font-family: "iconfont" !important;
     font-size: 3em;
@@ -412,4 +443,85 @@
     .blog-slider__text {
         display: none
     }
+}
+
+
+/* 设置文字内容 :nth-child(1)的作用是选择第几个 */
+.el-input.el-input--small.el-input-group.el-input-group--prepend:nth-child(1):before {
+  content: '输入QQ号会自动获取昵称和头像🐧';
+}
+
+.el-input.el-input--small.el-input-group.el-input-group--prepend:nth-child(2):before {
+  content: '收到回复将会发送到您的邮箱📧';
+}
+
+.el-input.el-input--small.el-input-group.el-input-group--prepend:nth-child(3):before {
+  content: '可以通过昵称访问您的网站🔗';
+}
+
+/* 当用户点击输入框时显示 */
+.el-input.el-input--small.el-input-group.el-input-group--prepend:focus-within::before,
+.el-input.el-input--small.el-input-group.el-input-group--prepend:focus-within::after {
+  display: block;
+}
+
+/* 主内容区 */
+.el-input.el-input--small.el-input-group.el-input-group--prepend::before {
+  /* 先隐藏起来 */
+  display: none;
+  /* 绝对定位 */
+  position: absolute;
+  /* 向上移动60像素 */
+  top: -60px;
+  /* 文字强制不换行，防止left:50%导致的文字换行 */
+  white-space: nowrap;
+  /* 圆角 */
+  border-radius: 10px;
+  /* 距离左边50% */
+  left: 50%;
+  /* 然后再向左边挪动自身的一半，即可实现居中 */
+  transform: translate(-50%);
+  /* 填充 */
+  padding: 14px 18px;
+  background: #444;
+  color: #fff;
+}
+
+/* 小角标 */
+.el-input.el-input--small.el-input-group.el-input-group--prepend::after {
+  display: none;
+  content: '';
+  position: absolute;
+  /* 内容大小（宽高）为0且边框大小不为0的情况下，每一条边（4个边）都是一个三角形，组成一个正方形。
+  我们先将所有边框透明，再给其中的一条边添加颜色就可以实现小三角图标 */
+  border: 12px solid transparent;
+  border-top-color: #444;
+  left: 50%;
+  transform: translate(-50%, -48px);
+}
+
+
+.tk-extras {
+  padding-bottom: 15px;
+  border-bottom: 2px dashed var(--hr-border)
+}
+
+.tk-extra {
+  border: var(--style-border);
+  padding: 4px 6px 4px 6px;
+  border-radius: 8px;
+  margin-right: 4px!important
+}
+
+.tk-expand {
+  margin-top: 16px;
+  background-color: var(--june-secondbg);
+  color: var(--june-fontcolor);
+  border-radius: 8px;
+  border: var(--style-border);
+}
+
+.tk-expand:hover {
+  background-color: var(--june)!important;
+  color: var(--june-white)
 }
