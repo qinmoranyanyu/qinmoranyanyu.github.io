@@ -146,7 +146,7 @@
 }
 
 .article-sort-item:hover:not(.year) .article-sort-item-categories{
-    border:1.5px solid #212F3C;
+    border:1.5px solid #eb6666;
 }
 
 .article-sort-item:hover:not(.year) .article-sort-item-tags{
@@ -155,7 +155,7 @@
 
 .article-sort-item:hover:not(.year) .article-sort-item-categories:hover{
     background: #eb6666;
-    box-shadow:0 0 5px #212F3C;
+    box-shadow:0 0 5px #eb6666;
 }
 
 .article-sort-item:hover:not(.year) .article-sort-item-tags:hover{
