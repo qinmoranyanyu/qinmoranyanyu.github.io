@@ -7,9 +7,10 @@ var latitude = 34.10847;            // 你的坐标纬度
 function welcometxmap() {
     // 从localStorage获取缓存数据
     let ipLocation = localStorage.getItem('ipLocation');
+    if (ipLocation){
+        ipLocation=JSON.parse(ipLocation)
+    }
     if (ipLocation!=null && ipLocation!=undefined && ipLocation.status===0) {
-        // 解析缓存数据
-        ipLocation = JSON.parse(ipLocation);
         // 检查缓存是否过期（1天）
         const cacheTime = 24 * 60 * 60 * 1000;
         if (Date.now() - ipLocation.timestamp < cacheTime) {
@@ -24,6 +25,7 @@ function welcometxmap() {
     script.src = url;
     
     window.QQmap = function (data) {
+        console.log(1111)
         // 添加时间戳用于判断过期
         data.timestamp = Date.now();
         // 存储数据到localStorage
@@ -255,33 +257,56 @@ function getTimeGreeting() {
     return "✨ 夜深了，早点休息，少熬夜";
 }
 
-// 添加错误处理
-window.addEventListener('error', function(e) {
-    console.error('Error:', e.message, 'at', e.filename, 'line:', e.lineno);
-});
+// // 添加错误处理
+// window.addEventListener('error', function(e) {
+//     console.error('Error:', e.message, 'at', e.filename, 'line:', e.lineno);
+// });
 
-// 页面加载时调用
-document.addEventListener('DOMContentLoaded', welcometxmap);
-
-
-// 同时监听多个事件确保触发
-function initGeoLocation() {
-    // 如果文档已经加载完成则立即执行
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      welcometxmap();
-    } 
-    // 否则等待文档加载事件
-    else {
-      document.addEventListener('DOMContentLoaded', welcometxmap);
-    }
-    
-    // 监听浏览器前进/后退的页面恢复事件
-    window.addEventListener('pageshow', (event) => {
-      if (event.persisted) { // 从缓存恢复的页面
-        welcometxmap();
+// 通用页面跳转监听方案
+function setupNavigationListener(callback) {
+    // 监听传统页面跳转 (多页应用)
+    const handlePageShow = (event) => {
+      if (event.persisted || performance.navigation.type === 2) {
+        // 处理从缓存恢复或浏览器前进/后退
+        callback();
       }
-    });
+    };
+  
+    // 监听单页应用路由变化
+    const observeSPARouting = () => {
+      // 监听 history 变化
+      const pushState = history.pushState;
+      history.pushState = function(...args) {
+        pushState.apply(history, args);
+        callback();
+      };
+  
+      // 监听 replaceState
+      const replaceState = history.replaceState;
+      history.replaceState = function(...args) {
+        replaceState.apply(history, args);
+        callback();
+      };
+  
+      // 监听 hash 变化
+      window.addEventListener('hashchange', callback);
+    };
+  
+    // 初始化监听
+    window.addEventListener('pageshow', handlePageShow);
+    window.addEventListener('popstate', callback); // 浏览器前进/后退
+    document.addEventListener('DOMContentLoaded', callback); // 常规加载
+    
+    // 检查是否单页应用
+    if (window.history.pushState !== undefined) {
+      observeSPARouting();
+    }
+  
+    // 立即执行一次 (当前页面)
+    if (document.readyState === 'complete') {
+      callback();
+    }
   }
   
-  // 初始化
-  initGeoLocation();
+  // 使用示例：替换原来的 DOMContentLoaded 调用
+  setupNavigationListener(welcometxmap);
