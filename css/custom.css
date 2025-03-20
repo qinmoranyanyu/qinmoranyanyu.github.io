@@ -525,3 +525,18 @@
   background-color: var(--june)!important;
   color: var(--june-white)
 }
+
+
+[data-theme="light"] #aside-content > .card-widget.card-info {
+  background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F4b2caff06dff2fef1390ba90c84b6a34.webp);
+  background-repeat: no-repeat;
+  background-attachment: inherit;
+  background-size: 100%;
+}
+
+[data-theme="dark"] #aside-content > .card-widget.card-info {
+  background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F9254617c31860e3074f5366df3db22f4.webp) !important;
+  background-repeat: no-repeat !important;
+  background-attachment: inherit !important;
+  background-size: 100% !important;
+}
