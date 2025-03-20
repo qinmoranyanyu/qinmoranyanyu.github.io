@@ -82,7 +82,7 @@ function showWelcome(ipData) {
             } 的小伙伴</span><br>
             ${timeChange}<br>
             <span class="welcome-message">${posdesc}</span><br>
-            当前位置距<b>博主</b>约 <b>${dist}</b> 公里！<br>
+            当前位置距<b> 博主 </b>约 <b>${dist}</b> 公里！<br>
             <span>IP地址为：<b>${ip}</b></span>`;
     }
 }
