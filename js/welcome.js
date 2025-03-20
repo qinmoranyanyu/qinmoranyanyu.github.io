@@ -5,9 +5,10 @@ var latitude = 34.10847;            // 你的坐标纬度
 
 // 获取来访者信息
 function welcometxmap() {
+    console.log("welcometxmap")
     // 从localStorage获取缓存数据
     let ipLocation = localStorage.getItem('ipLocation');
-    
+    console.log(ipLocation)
     if (ipLocation) {
         // 解析缓存数据
         ipLocation = JSON.parse(ipLocation);
@@ -32,6 +33,7 @@ function welcometxmap() {
         document.body.removeChild(script);
         delete window.QQmap;
         showWelcome(data);
+        console.log(data)
     };
     
     document.body.appendChild(script);
@@ -260,5 +262,3 @@ window.addEventListener('error', function(e) {
 
 // 页面加载时调用
 document.addEventListener('DOMContentLoaded', welcometxmap);
-
-console.log(11111111)
