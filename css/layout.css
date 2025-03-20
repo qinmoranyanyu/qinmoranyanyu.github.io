@@ -36,11 +36,12 @@
     padding:8px 10px;
     width:calc(50% - 0.8rem);
     margin:0.4rem;
-    border:2px solid #e1effa;
-    border-radius:15px;
+    /* border:2px solid #e1effa; */
+    border-radius:10px;
     background:var(--card-bg);
     transition:0.5s;
     height:120px;
+    -webkit-box-shadow: var(--card-box-shadow);
 }
 
 .article-sort-item-a{
@@ -56,7 +57,7 @@
 }
 
 .article-sort-item > a >img{
-    border-radius:15px;
+    border-radius:5px;
 }
 
 .article-sort-item-title {
@@ -162,7 +163,7 @@
     box-shadow:0 0 5px var(--june-blue);
 }
 
-@media screen and (max-width:768px) {
+@media screen and (max-width:800px) {
     .article-sort-item:not(.year) {
         width: 100%;
     }
