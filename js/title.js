@@ -15,4 +15,3 @@ document.addEventListener("visibilitychange", function () {
     }, 2000);
   }
 });
-console.log(1111)

@@ -540,3 +540,15 @@
   background-attachment: inherit !important;
   background-size: 100% !important;
 }
+
+
+.announcement_content {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+
+
+.announcement_content b {
+  color: var(--june-lighttext);
+}
