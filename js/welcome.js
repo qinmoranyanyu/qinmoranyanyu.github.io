@@ -5,11 +5,9 @@ var latitude = 34.10847;            // 你的坐标纬度
 
 // 获取来访者信息
 function welcometxmap() {
-    console.log("welcometxmap")
     // 从localStorage获取缓存数据
     let ipLocation = localStorage.getItem('ipLocation');
-    console.log(ipLocation)
-    if (ipLocation) {
+    if (ipLocation.status===0) {
         // 解析缓存数据
         ipLocation = JSON.parse(ipLocation);
         // 检查缓存是否过期（1天）
@@ -33,7 +31,6 @@ function welcometxmap() {
         document.body.removeChild(script);
         delete window.QQmap;
         showWelcome(data);
-        console.log(data)
     };
     
     document.body.appendChild(script);
@@ -248,11 +245,11 @@ function generatePosDesc(ipData) {
 function getTimeGreeting() {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 11) return "🌤️ 早上好，一日之计在于晨";
-    if (hour < 13) return "☀️ 中午好，记得午休喔~";
-    if (hour < 17) return "🕞 下午好，饮茶先啦！";
-    if (hour < 19) return "🚶‍♂️ 即将下班，记得按时吃饭~";
-    if (hour < 24) return "🌙 晚上好，夜生活嗨起来！";
-    return "夜深了，早点休息，少熬夜";
+    if (hour >= 11 && hour < 13) return "☀️ 中午好，记得午休喔~";
+    if (hour >=13 && hour < 17) return "🕞 下午好，饮茶先啦！";
+    if (hour >=17 && hour < 19) return "🚶‍♂️ 即将下班，记得按时吃饭~";
+    if (hour >=19 && hour < 24) return "🌙 晚上好，夜生活嗨起来！";
+    return "✨ 夜深了，早点休息，少熬夜";
 }
 
 // 添加错误处理
