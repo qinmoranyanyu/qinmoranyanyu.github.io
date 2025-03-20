@@ -262,3 +262,26 @@ window.addEventListener('error', function(e) {
 
 // 页面加载时调用
 document.addEventListener('DOMContentLoaded', welcometxmap);
+
+
+// 同时监听多个事件确保触发
+function initGeoLocation() {
+    // 如果文档已经加载完成则立即执行
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      welcometxmap();
+    } 
+    // 否则等待文档加载事件
+    else {
+      document.addEventListener('DOMContentLoaded', welcometxmap);
+    }
+    
+    // 监听浏览器前进/后退的页面恢复事件
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) { // 从缓存恢复的页面
+        welcometxmap();
+      }
+    });
+  }
+  
+  // 初始化
+  initGeoLocation();
