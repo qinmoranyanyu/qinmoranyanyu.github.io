@@ -260,3 +260,5 @@ window.addEventListener('error', function(e) {
 
 // 页面加载时调用
 document.addEventListener('DOMContentLoaded', welcometxmap);
+
+console.log(11111111)
