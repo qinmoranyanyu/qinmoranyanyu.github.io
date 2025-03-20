@@ -218,7 +218,7 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background-color: #37B2F3;
+    background-color: var(--btn-bg);
     border-radius: 2em;
   }
   
@@ -228,7 +228,7 @@
   
   ::-moz-selection {
     color: #fff;
-    background-color: #37B2F3;
+    background-color: var(--btn-bg);
   }
   
   /* 音乐播放器 */
@@ -412,7 +412,7 @@
 }
 
 .swiper-button-next:after, .swiper-button-prev:after {
-    color: var(--june) !important; /* 箭头的颜色 */
+    color: var(--btn-bg) !important; /* 箭头的颜色 */
 }
 
 @media screen and (min-width: 768px) {
