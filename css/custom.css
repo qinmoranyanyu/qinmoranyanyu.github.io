@@ -551,4 +551,9 @@
 
 .announcement_content b {
   color: var(--june-lighttext);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  display: inline-block;
+  max-width: 100%;
 }
