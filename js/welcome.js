@@ -49,7 +49,10 @@ function getDistance(e1, n1, e2, n2) {
     const a = getPoint(e1, n1);
     const b = getPoint(e2, n2);
     const c = hypot(a.x - b.x, a.y - b.y, a.z - b.z);
-    return Math.round(asin(c / 2) * 2 * R);
+    // 修改部分：保留两位小数
+    const distance = Math.asin(c / 2) * 2 * R;
+    return distance.toFixed(2); // 严格保留两位小数 // 强制保留两位小数
+    // return Math.round(asin(c / 2) * 2 * R);
 }
 
 function showWelcome(ipData) {
