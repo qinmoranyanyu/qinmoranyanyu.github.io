@@ -7,7 +7,7 @@ var latitude = 34.10847;            // 你的坐标纬度
 function welcometxmap() {
     // 从localStorage获取缓存数据
     let ipLocation = localStorage.getItem('ipLocation');
-    if (ipLocation.status===0) {
+    if (ipLocation!=null && ipLocation!=undefined && ipLocation.status===0) {
         // 解析缓存数据
         ipLocation = JSON.parse(ipLocation);
         // 检查缓存是否过期（1天）
