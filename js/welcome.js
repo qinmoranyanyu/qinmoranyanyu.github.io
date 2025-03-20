@@ -291,8 +291,8 @@
 
 // 全局变量定义（请确保在调用前定义txkey和坐标点）
 var txkey = 'DFBBZ-OMN6J-UFLF7-DHZCF-IDQGT-3XFRD'; // 需替换为真实key
-var longitude = 113.1234;         // 你的坐标经度
-var latitude = 22.5678;            // 你的坐标纬度
+var longitude = 108.7554;         // 你的坐标经度
+var latitude = 34.0107;            // 你的坐标纬度
 
 // 获取来访者信息
 function welcometxmap() {
