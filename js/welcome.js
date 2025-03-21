@@ -262,51 +262,60 @@ function getTimeGreeting() {
 //     console.error('Error:', e.message, 'at', e.filename, 'line:', e.lineno);
 // });
 
-// 通用页面跳转监听方案
-function setupNavigationListener(callback) {
-    // 监听传统页面跳转 (多页应用)
-    const handlePageShow = (event) => {
-      if (event.persisted || performance.navigation.type === 2) {
-        // 处理从缓存恢复或浏览器前进/后退
-        callback();
-      }
-    };
+// // 通用页面跳转监听方案
+// function setupNavigationListener(callback) {
+//     // 监听传统页面跳转 (多页应用)
+//     const handlePageShow = (event) => {
+//       if (event.persisted || performance.navigation.type === 2) {
+//         // 处理从缓存恢复或浏览器前进/后退
+//         callback();
+//       }
+//     };
   
-    // 监听单页应用路由变化
-    const observeSPARouting = () => {
-      // 监听 history 变化
-      const pushState = history.pushState;
-      history.pushState = function(...args) {
-        pushState.apply(history, args);
-        callback();
-      };
+//     // 监听单页应用路由变化
+//     const observeSPARouting = () => {
+//       // 监听 history 变化
+//       const pushState = history.pushState;
+//       history.pushState = function(...args) {
+//         pushState.apply(history, args);
+//         callback();
+//       };
   
-      // 监听 replaceState
-      const replaceState = history.replaceState;
-      history.replaceState = function(...args) {
-        replaceState.apply(history, args);
-        callback();
-      };
+//       // 监听 replaceState
+//       const replaceState = history.replaceState;
+//       history.replaceState = function(...args) {
+//         replaceState.apply(history, args);
+//         callback();
+//       };
   
-      // 监听 hash 变化
-      window.addEventListener('hashchange', callback);
-    };
+//       // 监听 hash 变化
+//       window.addEventListener('hashchange', callback);
+//     };
   
-    // 初始化监听
-    window.addEventListener('pageshow', handlePageShow);
-    window.addEventListener('popstate', callback); // 浏览器前进/后退
-    document.addEventListener('DOMContentLoaded', callback); // 常规加载
+//     // 初始化监听
+//     window.addEventListener('pageshow', handlePageShow);
+//     window.addEventListener('popstate', callback); // 浏览器前进/后退
+//     document.addEventListener('DOMContentLoaded', callback); // 常规加载
     
-    // 检查是否单页应用
-    if (window.history.pushState !== undefined) {
-      observeSPARouting();
-    }
+//     // 检查是否单页应用
+//     if (window.history.pushState !== undefined) {
+//       observeSPARouting();
+//     }
   
-    // 立即执行一次 (当前页面)
-    if (document.readyState === 'complete') {
-      callback();
-    }
-  }
+//     // 立即执行一次 (当前页面)
+//     if (document.readyState === 'complete') {
+//       callback();
+//     }
+//   }
   
-  // 使用示例：替换原来的 DOMContentLoaded 调用
-  setupNavigationListener(welcometxmap);
+//   // 使用示例：替换原来的 DOMContentLoaded 调用
+//   setupNavigationListener(welcometxmap);
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    welcometxmap();
+});
+
+document.addEventListener("pjax:complete", () => {
+    welcometxmap();
+});

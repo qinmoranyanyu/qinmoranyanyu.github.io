@@ -8,10 +8,22 @@ document.addEventListener("visibilitychange", function () {
     clearTimeout(titleTime);
   } else {
     //返回当前页面时标签显示内容
-    document.title = "烟雨：人生何处不相逢！" + OriginTitile;
+    document.title = "烟雨：人生何处不相逢！";
     //两秒后变回正常标题
     titleTime = setTimeout(function () {
       document.title = OriginTitile;
     }, 2000);
   }
+});
+
+function changeOriginTitle(){
+  OriginTitile = document.title;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  changeOriginTitle();
+});
+
+document.addEventListener("pjax:complete", () => {
+  changeOriginTitle();
 });
