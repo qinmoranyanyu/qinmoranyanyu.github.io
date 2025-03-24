@@ -445,6 +445,51 @@
     }
 }
 
+.wl-header-item:nth-child(1):before {
+  content: '输入QQ号会自动获取昵称和头像🐧';
+}
+
+.wl-header-item:nth-child(2):before {
+  content: '收到回复将会发送到您的邮箱📧';
+}
+
+.wl-header-item:nth-child(3):before {
+  content: '可以通过昵称访问您的网站🔗';
+}
+
+.wl-header-item:focus-within::before{
+  display: block;
+}
+
+/* 主内容区 */
+.wl-header-item::before {
+  /* 先隐藏起来 */
+  display: none;
+  /* 绝对定位 */
+  position: absolute;
+  /* 向上移动60像素 */
+  top: -31px;
+  /* 文字强制不换行，防止left:50%导致的文字换行 */
+  white-space: nowrap;
+  /* 圆角 */
+  border-radius: 10px;
+  /* 距离左边50% */
+  left: 50%;
+  /* 然后再向左边挪动自身的一半，即可实现居中 */
+  transform: translate(-50%);
+  /* 填充 */
+  padding: 0px 18px;
+  background: #37B2F3;
+  color: #fff;
+}
+
+.wl-header {
+  overflow: visible !important;
+}
+.wl-header-item {
+  position: relative  !important;
+}
+
 
 /* 设置文字内容 :nth-child(1)的作用是选择第几个 */
 .el-input.el-input--small.el-input-group.el-input-group--prepend:nth-child(1):before {
@@ -459,11 +504,17 @@
   content: '可以通过昵称访问您的网站🔗';
 }
 
+
 /* 当用户点击输入框时显示 */
 .el-input.el-input--small.el-input-group.el-input-group--prepend:focus-within::before,
 .el-input.el-input--small.el-input-group.el-input-group--prepend:focus-within::after {
   display: block;
 }
+
+.tk-nick.tk-nick-link {
+  color: #f56c6c!important;
+}
+
 
 /* 主内容区 */
 .el-input.el-input--small.el-input-group.el-input-group--prepend::before {
@@ -499,7 +550,6 @@
   left: 50%;
   transform: translate(-50%, -48px);
 }
-
 
 .tk-extras {
   padding-bottom: 15px;
