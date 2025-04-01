@@ -2436,8 +2436,8 @@
   const loadWaline = (el, path) => {
     if (initFn) initWaline(initFn, el, path)
     else {
-      btf.getCSS('https://unpkg.com/@waline/client@v3/dist/waline.css')
-        .then(() => import('https://unpkg.com/@waline/client@v3/dist/waline.js'))
+      btf.getCSS('/css/waline.css')
+        .then(() => import('/js/waline.js'))
         .then(({ init }) => {
           initFn = init || Waline.init
           initWaline(initFn, el, path)
@@ -2467,7 +2467,7 @@
     const countELement = document.getElementById('twikoo-count')
     if(!countELement) return
     twikoo.getCommentsCount({
-      envId: 'https://lustrous-frangollo-1c41d7.netlify.app/.netlify/functions/twikoo',
+      envId: 'https://blog.chenjiabin.love/.netlify/functions/twikoo',
       region: 'ap-chengdu',
       urls: [window.location.pathname],
       includeReply: false
@@ -2481,7 +2481,7 @@
   const init = (el = document, path = location.pathname) => {
     twikoo.init({
       el: el.querySelector('#twikoo-wrap'),
-      envId: 'https://lustrous-frangollo-1c41d7.netlify.app/.netlify/functions/twikoo',
+      envId: 'https://blog.chenjiabin.love/.netlify/functions/twikoo',
       region: 'ap-chengdu',
       onCommentLoaded: () => {
         btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
