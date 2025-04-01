@@ -1,0 +1,1101 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Redis高级篇-多级缓存 | 青墨染烟雨</title><meta name="author" content="青墨染烟雨,2948429338@qq.com"><meta name="copyright" content="青墨染烟雨"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Redis高级篇-多级缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis高级篇-多级缓存">
+<meta property="og:url" content="https://blog.chenjiabin.xyz/posts/14931/index.html">
+<meta property="og:site_name" content="青墨染烟雨">
+<meta property="og:description" content="Redis高级篇-多级缓存">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp">
+<meta property="article:published_time" content="2025-04-01T01:05:13.000Z">
+<meta property="article:modified_time" content="2025-04-01T13:09:00.836Z">
+<meta property="article:author" content="青墨染烟雨">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Redis高级篇-多级缓存",
+  "url": "https://blog.chenjiabin.xyz/posts/14931/index.html",
+  "image": "https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp",
+  "datePublished": "2025-04-01T01:05:13.000Z",
+  "dateModified": "2025-04-01T13:09:00.836Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "青墨染烟雨",
+      "url": "https://blog.chenjiabin.xyz/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011641807.svg"><link rel="canonical" href="https://blog.chenjiabin.xyz/posts/14931/index.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="google-site-verification" content="4yH3_EEqHZ9_glXp2Ey1UlNzL_EQ2NQ0TO1lAXhBrvE"><meta name="baidu-site-verification" content="codeva-dQzACO1Fjm"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" sizes="180x180" href="/img/pwa/64-64.png"><link rel="icon" type="image/png" sizes="32x32" href="/img/pwa/32-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/img/pwa/16-16.png"><link rel="mask-icon" href="/img/pwa/64-64.png" color="#5bbad5"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+          
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":true,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.12.0/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Redis高级篇-多级缓存',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/layout.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/color.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/calendar.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start --><link rel="stylesheet" href="/css/baiduhistory/main.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/5.4.5/css/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper-lyx/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="青墨染烟雨" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011603481.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 图片</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-newspaper"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-bars"></i><span> 推荐</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/songs/"><i class="fa-fw fa-solid fa-headphones"></i><span> 歌曲</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fa-solid fa-film"></i><span> 电影</span></a></li><li><a class="site-page child" href="/books/"><i class="fa-fw fa-solid fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/bookmark/"><i class="fa-fw fa-solid fa-bookmark"></i><span> 书签</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011641807.svg" alt="Logo"><span class="site-name">青墨染烟雨</span></a><a class="nav-page-title" href="/"><span class="site-name">Redis高级篇-多级缓存</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 图片</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言</span></a></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-newspaper"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><span class="site-page group hide"><i class="fa-fw fa-solid fa-bars"></i><span> 推荐</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/songs/"><i class="fa-fw fa-solid fa-headphones"></i><span> 歌曲</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fa-solid fa-film"></i><span> 电影</span></a></li><li><a class="site-page child" href="/books/"><i class="fa-fw fa-solid fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/bookmark/"><i class="fa-fw fa-solid fa-bookmark"></i><span> 书签</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Redis高级篇-多级缓存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T01:05:13.000Z" title="发表于 2025-04-01 09:05:13">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-01T13:09:00.836Z" title="更新于 2025-04-01 21:09:00">2025-04-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Redis/">Redis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">9.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>37分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/14931/index.html#post-comment"><span class="waline-comment-count" data-path="/posts/14931/index.html"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="postchat_postcontent"><link rel="stylesheet" href="/hexo-ai-summaries/gemini.css">
+<div class="post-gemini-ai">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="126" height="20" role="img" class="ai-summary-trigger">
+    <linearGradient id="s" x2="0" y2="100%">
+      <stop offset="0" stop-color="#bbb" stop-opacity=".1"></stop>
+      <stop offset="1" stop-opacity=".1"></stop>
+    </linearGradient>
+    <clipPath id="r">
+      <rect width="125" height="20" rx="3" fill="#fff"></rect>
+    </clipPath>
+    <g clip-path="url(#r)">
+      <rect width="25" height="20" fill="#555"></rect>
+      <rect class="ai-summary-rect" x="25" width="100" height="20" fill="#007ec6"></rect>
+      <rect width="25" height="20" fill="url(#s)"></rect>
+    </g>
+    <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110" class="ai-summary-icon-title">
+      <image class="ai-summary-pen" x="5" y="3" width="14" height="14" xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjIiIGQ9Im0yMS42NCAzLjY0bC0xLjI4LTEuMjhhMS4yMSAxLjIxIDAgMCAwLTEuNzIgMEwyLjM2IDE4LjY0YTEuMjEgMS4yMSAwIDAgMCAwIDEuNzJsMS4yOCAxLjI4YTEuMiAxLjIgMCAwIDAgMS43MiAwTDIxLjY0IDUuMzZhMS4yIDEuMiAwIDAgMCAwLTEuNzJNMTQgN2wzIDNNNSA2djRtMTQgNHY0TTEwIDJ2Mk03IDhIM20xOCA4aC00TTExIDNIOSIvPjwvc3ZnPg=="></image>
+      <text x="750" y="140" transform="scale(.1)" fill="#fff" textLength="900" data-content="点击获取文章摘要">
+
+      </text>
+      <text style="display: none" x="650" y="140" transform="scale(.1)" fill="#fff" textLength="600" data-content="文章摘要">
+
+      </text>
+    </g>
+  </svg>
+</div>
+
+<script src="/hexo-ai-summaries/gemini.js"></script>
+<h1 id="Redis高级篇-多级缓存"><a href="#Redis高级篇-多级缓存" class="headerlink" title="Redis高级篇-多级缓存"></a>Redis高级篇-多级缓存</h1><h1 id="1-什么是多级缓存"><a href="#1-什么是多级缓存" class="headerlink" title="1.什么是多级缓存"></a>1.什么是多级缓存</h1><p>传统的缓存策略一般是请求到达Tomcat后，先查询Redis，如果未命中则查询数据库，如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fb634641bd338e163dd6c4d81da085103.png" alt="image-20210821075259137"></p>
+<p>存在下面的问题：</p>
+<p>•请求要经过Tomcat处理，Tomcat的性能成为整个系统的瓶颈</p>
+<p>•Redis缓存失效时，会对数据库产生冲击</p>
+<p>多级缓存就是充分利用请求处理的每个环节，分别添加缓存，减轻Tomcat压力，提升服务性能：</p>
+<ul>
+<li>浏览器访问静态资源时，优先读取浏览器本地缓存</li>
+<li>访问非静态资源（ajax查询数据）时，访问服务端</li>
+<li>请求到达Nginx后，优先读取Nginx本地缓存</li>
+<li>如果Nginx本地缓存未命中，则去直接查询Redis（不经过Tomcat）</li>
+<li>如果Redis查询未命中，则查询Tomcat</li>
+<li>请求进入Tomcat后，优先查询JVM进程缓存</li>
+<li>如果JVM进程缓存未命中，则查询数据库</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F15db1bbb32bcadeb2d71cdf61407c800.png" alt="image-20210821075558137"></p>
+<p>在多级缓存架构中，Nginx内部需要编写本地缓存查询、Redis查询、Tomcat查询的业务逻辑，因此这样的nginx服务不再是一个<strong>反向代理服务器</strong>，而是一个编写<strong>业务的Web服务器了</strong>。</p>
+<p>因此这样的业务Nginx服务也需要搭建集群来提高并发，再有专门的nginx服务来做反向代理，如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fefcb989ddf2c9d0f60648ca43c00a17a.png" alt="image-20210821080511581"></p>
+<p>另外，我们的Tomcat服务将来也会部署为集群模式：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fd6750c17636c853f700fac1cbb3549ec.png" alt="image-20210821080954947"></p>
+<p>可见，多级缓存的关键有两个：</p>
+<ul>
+<li><p>一个是在nginx中编写业务，实现nginx本地缓存、Redis、Tomcat的查询</p>
+</li>
+<li><p>另一个就是在Tomcat中实现JVM进程缓存</p>
+</li>
+</ul>
+<p>其中Nginx编程则会用到OpenResty框架结合Lua这样的语言。</p>
+<p>这也是今天课程的难点和重点。</p>
+<h1 id="2-JVM进程缓存"><a href="#2-JVM进程缓存" class="headerlink" title="2.JVM进程缓存"></a>2.JVM进程缓存</h1><p>为了演示多级缓存的案例，我们先准备一个商品查询的业务。</p>
+<h2 id="2-1-导入案例"><a href="#2-1-导入案例" class="headerlink" title="2.1.导入案例"></a>2.1.导入案例</h2><p>参考课前资料的：《案例导入说明.md》</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F24958c093d6a6d2a52e7e5bdea6655e8.png" alt="image-20210821081418456"> </p>
+<h2 id="2-2-初识Caffeine"><a href="#2-2-初识Caffeine" class="headerlink" title="2.2.初识Caffeine"></a>2.2.初识Caffeine</h2><p>缓存在日常开发中启动至关重要的作用，由于是存储在内存中，数据的读取速度是非常快的，能大量减少对数据库的访问，减少数据库的压力。我们把缓存分为两类：</p>
+<ul>
+<li>分布式缓存，例如Redis：<ul>
+<li>优点：存储容量更大、可靠性更好、可以在集群间共享</li>
+<li>缺点：访问缓存有网络开销</li>
+<li>场景：缓存数据量较大、可靠性要求较高、需要在集群间共享</li>
+</ul>
+</li>
+<li>进程本地缓存，例如HashMap、GuavaCache：<ul>
+<li>优点：读取本地内存，没有网络开销，速度更快</li>
+<li>缺点：存储容量有限、可靠性较低、无法共享</li>
+<li>场景：性能要求较高，缓存数据量较小</li>
+</ul>
+</li>
+</ul>
+<p>我们今天会利用Caffeine框架来实现JVM进程缓存。</p>
+<p><strong>Caffeine</strong>是一个基于Java8开发的，提供了近乎最佳命中率的高性能的本地缓存库。目前Spring内部的缓存使用的就是Caffeine。GitHub地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ben-manes/caffeine">https://github.com/ben-manes/caffeine</a></p>
+<p>Caffeine的性能非常好，下图是官方给出的性能对比：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F31f119feaea2487e09f4e7a039a09f7c.png" alt="image-20210821081826399"></p>
+<p>可以看到Caffeine的性能遥遥领先！</p>
+<p>缓存使用的基本API：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">testBasicOps</span><span class="params">()</span> {</span><br><span class="line">    <span class="comment">// 构建cache对象</span></span><br><span class="line">    Cache&lt;String, String&gt; cache = Caffeine.newBuilder().build();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 存数据</span></span><br><span class="line">    cache.put(<span class="string">"gf"</span>, <span class="string">"迪丽热巴"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取数据</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">gf</span> <span class="operator">=</span> cache.getIfPresent(<span class="string">"gf"</span>);</span><br><span class="line">    System.out.println(<span class="string">"gf = "</span> + gf);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取数据，包含两个参数：</span></span><br><span class="line">    <span class="comment">// 参数一：缓存的key</span></span><br><span class="line">    <span class="comment">// 参数二：Lambda表达式，表达式参数就是缓存的key，方法体是查询数据库的逻辑</span></span><br><span class="line">    <span class="comment">// 优先根据key查询JVM缓存，如果未命中，则执行参数二的Lambda表达式</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">defaultGF</span> <span class="operator">=</span> cache.get(<span class="string">"defaultGF"</span>, key -&gt; {</span><br><span class="line">        <span class="comment">// 根据key去数据库查询数据</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"柳岩"</span>;</span><br><span class="line">    });</span><br><span class="line">    System.out.println(<span class="string">"defaultGF = "</span> + defaultGF);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<p>Caffeine既然是缓存的一种，肯定需要有缓存的清除策略，不然的话内存总会有耗尽的时候。</p>
+<p>Caffeine提供了三种缓存驱逐策略：</p>
+<ul>
+<li><p><strong>基于容量</strong>：设置缓存的数量上限</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建缓存对象</span></span><br><span class="line">Cache&lt;String, String&gt; cache = Caffeine.newBuilder()</span><br><span class="line">    .maximumSize(<span class="number">1</span>) <span class="comment">// 设置缓存大小上限为 1</span></span><br><span class="line">    .build();</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>基于时间</strong>：设置缓存的有效时间</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建缓存对象</span></span><br><span class="line">Cache&lt;String, String&gt; cache = Caffeine.newBuilder()</span><br><span class="line">    <span class="comment">// 设置缓存有效期为 10 秒，从最后一次写入开始计时 </span></span><br><span class="line">    .expireAfterWrite(Duration.ofSeconds(<span class="number">10</span>)) </span><br><span class="line">    .build();</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>基于引用</strong>：设置缓存为软引用或弱引用，利用GC来回收缓存数据。性能较差，不建议使用。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：在默认情况下，当一个缓存元素过期的时候，Caffeine不会自动立即将其清理和驱逐。而是在一次读或写操作后，或者在空闲时间完成对失效数据的驱逐。</p>
+</blockquote>
+<h2 id="2-3-实现JVM进程缓存"><a href="#2-3-实现JVM进程缓存" class="headerlink" title="2.3.实现JVM进程缓存"></a>2.3.实现JVM进程缓存</h2><h3 id="2-3-1-需求"><a href="#2-3-1-需求" class="headerlink" title="2.3.1.需求"></a>2.3.1.需求</h3><p>利用Caffeine实现下列需求：</p>
+<ul>
+<li>给根据id查询商品的业务添加缓存，缓存未命中时查询数据库</li>
+<li>给根据id查询商品库存的业务添加缓存，缓存未命中时查询数据库</li>
+<li>缓存初始大小为100</li>
+<li>缓存上限为10000</li>
+</ul>
+<h3 id="2-3-2-实现"><a href="#2-3-2-实现" class="headerlink" title="2.3.2.实现"></a>2.3.2.实现</h3><p>首先，我们需要定义两个Caffeine的缓存对象，分别保存商品、库存的缓存数据。</p>
+<p>在item-service的<code>com.heima.item.config</code>包下定义<code>CaffeineConfig</code>类：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.heima.item.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.github.benmanes.caffeine.cache.Cache;</span><br><span class="line"><span class="keyword">import</span> com.github.benmanes.caffeine.cache.Caffeine;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.Item;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.ItemStock;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CaffeineConfig</span> {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Cache&lt;Long, Item&gt; <span class="title function_">itemCache</span><span class="params">()</span>{</span><br><span class="line">        <span class="keyword">return</span> Caffeine.newBuilder()</span><br><span class="line">                .initialCapacity(<span class="number">100</span>)</span><br><span class="line">                .maximumSize(<span class="number">10_000</span>)</span><br><span class="line">                .build();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Cache&lt;Long, ItemStock&gt; <span class="title function_">stockCache</span><span class="params">()</span>{</span><br><span class="line">        <span class="keyword">return</span> Caffeine.newBuilder()</span><br><span class="line">                .initialCapacity(<span class="number">100</span>)</span><br><span class="line">                .maximumSize(<span class="number">10_000</span>)</span><br><span class="line">                .build();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>然后，修改item-service中的<code>com.heima.item.web</code>包下的ItemController类，添加缓存逻辑：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping("item")</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ItemController</span> {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemService itemService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemStockService stockService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Cache&lt;Long, Item&gt; itemCache;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Cache&lt;Long, ItemStock&gt; stockCache;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ...其它略</span></span><br><span class="line">    </span><br><span class="line">    <span class="meta">@GetMapping("/{id}")</span></span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">findById</span><span class="params">(<span class="meta">@PathVariable("id")</span> Long id)</span> {</span><br><span class="line">        <span class="keyword">return</span> itemCache.get(id, key -&gt; itemService.query()</span><br><span class="line">                .ne(<span class="string">"status"</span>, <span class="number">3</span>).eq(<span class="string">"id"</span>, key)</span><br><span class="line">                .one()</span><br><span class="line">        );</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping("/stock/{id}")</span></span><br><span class="line">    <span class="keyword">public</span> ItemStock <span class="title function_">findStockById</span><span class="params">(<span class="meta">@PathVariable("id")</span> Long id)</span> {</span><br><span class="line">        <span class="keyword">return</span> stockCache.get(id, key -&gt; stockService.getById(key));</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="3-Lua语法入门"><a href="#3-Lua语法入门" class="headerlink" title="3.Lua语法入门"></a>3.Lua语法入门</h1><p>Nginx编程需要用到Lua语言，因此我们必须先入门Lua的基本语法。</p>
+<h2 id="3-1-初识Lua"><a href="#3-1-初识Lua" class="headerlink" title="3.1.初识Lua"></a>3.1.初识Lua</h2><p>Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。官网：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.lua.org/">https://www.lua.org/</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Feac7f556a307f4f841d5cbdd425000d0.png" alt="image-20210821091437975"></p>
+<p>Lua经常嵌入到C语言开发的程序中，例如游戏开发、游戏插件等。</p>
+<p>Nginx本身也是C语言开发，因此也允许基于Lua做拓展。</p>
+<h2 id="3-1-HelloWorld"><a href="#3-1-HelloWorld" class="headerlink" title="3.1.HelloWorld"></a>3.1.HelloWorld</h2><p>CentOS7默认已经安装了Lua语言环境，所以可以直接运行Lua代码。</p>
+<p>1）在Linux虚拟机的任意目录下，新建一个hello.lua文件</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F5f40e420e66747dcc9a5a42cd23f2e68.png" alt="image-20210821091621308"></p>
+<p>2）添加下面的内容</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">"Hello World!"</span>)  </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>3）运行</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fe80bb482d7ebe8b91e3d94e423644bf6.png" alt="image-20210821091638140"></p>
+<h2 id="3-2-变量和循环"><a href="#3-2-变量和循环" class="headerlink" title="3.2.变量和循环"></a>3.2.变量和循环</h2><p>学习任何语言必然离不开变量，而变量的声明必须先知道数据的类型。</p>
+<h3 id="3-2-1-Lua的数据类型"><a href="#3-2-1-Lua的数据类型" class="headerlink" title="3.2.1.Lua的数据类型"></a>3.2.1.Lua的数据类型</h3><p>Lua中支持的常见数据类型包括：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F2a25f22f5e23b869a3a8e681af51508f.png" alt="image-20210821091835406"></p>
+<p>另外，Lua提供了type()函数来判断一个变量的数据类型：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F27f1f797062ab02a15fabb6381323622.png" alt="image-20210821091904332"></p>
+<h3 id="3-2-2-声明变量"><a href="#3-2-2-声明变量" class="headerlink" title="3.2.2.声明变量"></a>3.2.2.声明变量</h3><p>Lua声明变量的时候无需指定数据类型，而是用local来声明变量为局部变量：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 声明字符串，可以用单引号或双引号，</span></span><br><span class="line"><span class="keyword">local</span> str = <span class="string">'hello'</span></span><br><span class="line"><span class="comment">-- 字符串拼接可以使用 ..</span></span><br><span class="line"><span class="keyword">local</span> str2 = <span class="string">'hello'</span> .. <span class="string">'world'</span></span><br><span class="line"><span class="comment">-- 声明数字</span></span><br><span class="line"><span class="keyword">local</span> num = <span class="number">21</span></span><br><span class="line"><span class="comment">-- 声明布尔类型</span></span><br><span class="line"><span class="keyword">local</span> flag = <span class="literal">true</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>Lua中的table类型既可以作为数组，又可以作为Java中的map来使用。数组就是特殊的table，key是数组角标而已：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 声明数组 ，key为角标的 table</span></span><br><span class="line"><span class="keyword">local</span> arr = {<span class="string">'java'</span>, <span class="string">'python'</span>, <span class="string">'lua'</span>}</span><br><span class="line"><span class="comment">-- 声明table，类似java的map</span></span><br><span class="line"><span class="keyword">local</span> map =  {name=<span class="string">'Jack'</span>, age=<span class="number">21</span>}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Lua中的数组角标是从1开始，访问的时候与Java中类似：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 访问数组，lua数组的角标从1开始</span></span><br><span class="line"><span class="built_in">print</span>(arr[<span class="number">1</span>])</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Lua中的table可以用key来访问：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 访问table</span></span><br><span class="line"><span class="built_in">print</span>(map[<span class="string">'name'</span>])</span><br><span class="line"><span class="built_in">print</span>(map.name)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="3-2-3-循环"><a href="#3-2-3-循环" class="headerlink" title="3.2.3.循环"></a>3.2.3.循环</h3><p>对于table，我们可以利用for循环来遍历。不过数组和普通table遍历略有差异。</p>
+<p>遍历数组：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 声明数组 key为索引的 table</span></span><br><span class="line"><span class="keyword">local</span> arr = {<span class="string">'java'</span>, <span class="string">'python'</span>, <span class="string">'lua'</span>}</span><br><span class="line"><span class="comment">-- 遍历数组</span></span><br><span class="line"><span class="keyword">for</span> index,value <span class="keyword">in</span> <span class="built_in">ipairs</span>(arr) <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">print</span>(index, value) </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>遍历普通table</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 声明map，也就是table</span></span><br><span class="line"><span class="keyword">local</span> map = {name=<span class="string">'Jack'</span>, age=<span class="number">21</span>}</span><br><span class="line"><span class="comment">-- 遍历table</span></span><br><span class="line"><span class="keyword">for</span> key,value <span class="keyword">in</span> <span class="built_in">pairs</span>(map) <span class="keyword">do</span></span><br><span class="line">   <span class="built_in">print</span>(key, value) </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+<h2 id="3-3-条件控制、函数"><a href="#3-3-条件控制、函数" class="headerlink" title="3.3.条件控制、函数"></a>3.3.条件控制、函数</h2><p>Lua中的条件控制和函数声明与Java类似。</p>
+<h3 id="3-3-1-函数"><a href="#3-3-1-函数" class="headerlink" title="3.3.1.函数"></a>3.3.1.函数</h3><p>定义函数的语法：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> 函数名<span class="params">( argument1, argument2..., argumentn)</span></span></span><br><span class="line">    <span class="comment">-- 函数体</span></span><br><span class="line">    <span class="keyword">return</span> 返回值</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>例如，定义一个函数，用来打印数组：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printArr</span><span class="params">(arr)</span></span></span><br><span class="line">    <span class="keyword">for</span> index, value <span class="keyword">in</span> <span class="built_in">ipairs</span>(arr) <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">print</span>(value)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="3-3-2-条件控制"><a href="#3-3-2-条件控制" class="headerlink" title="3.3.2.条件控制"></a>3.3.2.条件控制</h3><p>类似Java的条件控制，例如if、else语法：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(布尔表达式)</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">   <span class="comment">--[ 布尔表达式为 true 时执行该语句块 --]</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">   <span class="comment">--[ 布尔表达式为 false 时执行该语句块 --]</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>与java不同，布尔表达式中的逻辑运算是基于英文单词：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F7c20f84f1c927c3229040ba1a30c166b.png" alt="image-20210821092657918"></p>
+<h3 id="3-3-3-案例"><a href="#3-3-3-案例" class="headerlink" title="3.3.3.案例"></a>3.3.3.案例</h3><p>需求：自定义一个函数，可以打印table，当参数为nil时，打印错误信息</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printArr</span><span class="params">(arr)</span></span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> arr <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'数组不能为空！'</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">for</span> index, value <span class="keyword">in</span> <span class="built_in">ipairs</span>(arr) <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">print</span>(value)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="4-实现多级缓存"><a href="#4-实现多级缓存" class="headerlink" title="4.实现多级缓存"></a>4.实现多级缓存</h1><p>多级缓存的实现离不开Nginx编程，而Nginx编程又离不开OpenResty。</p>
+<h2 id="4-1-安装OpenResty"><a href="#4-1-安装OpenResty" class="headerlink" title="4.1.安装OpenResty"></a>4.1.安装OpenResty</h2><p>OpenResty® 是一个基于 Nginx的高性能 Web 平台，用于方便地搭建能够处理超高并发、扩展性极高的动态 Web 应用、Web 服务和动态网关。具备下列特点：</p>
+<ul>
+<li>具备Nginx的完整功能</li>
+<li>基于Lua语言进行扩展，集成了大量精良的 Lua 库、第三方模块</li>
+<li>允许使用Lua<strong>自定义业务逻辑</strong>、<strong>自定义库</strong></li>
+</ul>
+<p>官方网站： <a target="_blank" rel="noopener external nofollow noreferrer" href="https://openresty.org/cn/">https://openresty.org/cn/</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fab0fade55fc4d19a83bd86c5ac015139.png" alt="image-20210821092902946"></p>
+<p>安装Lua可以参考课前资料提供的《安装OpenResty.md》：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F49c2d4460b977f44665deab8d608051a.png" alt="image-20210821092941139"> </p>
+<h2 id="4-2-OpenResty快速入门"><a href="#4-2-OpenResty快速入门" class="headerlink" title="4.2.OpenResty快速入门"></a>4.2.OpenResty快速入门</h2><p>我们希望达到的多级缓存架构如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F52360b72a4be621a6d1bdb09b7a29e22.png" alt="yeVDlwtfMx"></p>
+<p>其中：</p>
+<ul>
+<li><p>windows上的nginx用来做反向代理服务，将前端的查询商品的ajax请求代理到OpenResty集群</p>
+</li>
+<li><p>OpenResty集群用来编写多级缓存业务</p>
+</li>
+</ul>
+<h3 id="4-2-1-反向代理流程"><a href="#4-2-1-反向代理流程" class="headerlink" title="4.2.1.反向代理流程"></a>4.2.1.反向代理流程</h3><p>现在，商品详情页使用的是假的商品数据。不过在浏览器中，可以看到页面有发起ajax请求查询真实商品数据。</p>
+<p>这个请求如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Ffec130886266297924db693d1b4a471b.png" alt="image-20210821093144700"></p>
+<p>请求地址是localhost，端口是80，就被windows上安装的Nginx服务给接收到了。然后代理给了OpenResty集群：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F972c569734bfa66701c619494ec469ab.png" alt="image-20210821094447709"></p>
+<p>我们需要在OpenResty中编写业务，查询商品数据并返回到浏览器。</p>
+<p>但是这次，我们先在OpenResty接收请求，返回假的商品数据。</p>
+<h3 id="4-2-2-OpenResty监听请求"><a href="#4-2-2-OpenResty监听请求" class="headerlink" title="4.2.2.OpenResty监听请求"></a>4.2.2.OpenResty监听请求</h3><p>OpenResty的很多功能都依赖于其目录下的Lua库，需要在nginx.conf中指定依赖库的目录，并导入依赖：</p>
+<p>1）添加对OpenResty的Lua模块的加载</p>
+<p>修改<code>/usr/local/openresty/nginx/conf/nginx.conf</code>文件，在其中的http下面，添加下面代码：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#lua 模块</span></span><br><span class="line"><span class="attribute">lua_package_path</span> <span class="string">"/usr/local/openresty/lualib/?.lua;;"</span>;</span><br><span class="line"><span class="comment">#c模块     </span></span><br><span class="line"><span class="attribute">lua_package_cpath</span> <span class="string">"/usr/local/openresty/lualib/?.so;;"</span>;  </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）监听/api/item路径</p>
+<p>修改<code>/usr/local/openresty/nginx/conf/nginx.conf</code>文件，在nginx.conf的server下面，添加对/api/item这个路径的监听：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span>  /api/item {</span><br><span class="line">    <span class="comment"># 默认的响应类型</span></span><br><span class="line">    <span class="attribute">default_type</span> application/json;</span><br><span class="line">    <span class="comment"># 响应结果由lua/item.lua文件来决定</span></span><br><span class="line">    <span class="attribute">content_by_lua_file</span> lua/item.lua;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>这个监听，就类似于SpringMVC中的<code>@GetMapping("/api/item")</code>做路径映射。</p>
+<p>而<code>content_by_lua_file lua/item.lua</code>则相当于调用item.lua这个文件，执行其中的业务，把结果返回给用户。相当于java中调用service。</p>
+<h3 id="4-2-3-编写item-lua"><a href="#4-2-3-编写item-lua" class="headerlink" title="4.2.3.编写item.lua"></a>4.2.3.编写item.lua</h3><p>1）在<code>/usr/loca/openresty/nginx</code>目录创建文件夹：lua</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F7b034e41e86acdc9f8cf26b065d66d51.png" alt="image-20210821100755080"></p>
+<p>2）在<code>/usr/loca/openresty/nginx/lua</code>文件夹下，新建文件：item.lua</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fedc1a1136500d46b0d49c0101177072f.png" alt="image-20210821100801756"></p>
+<p>3）编写item.lua，返回假数据</p>
+<p>item.lua中，利用ngx.say()函数返回数据到Response中</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ngx.say(<span class="string">'{"id":10001,"name":"SALSA AIR","title":"RIMOWA 21寸托运箱拉杆箱 SALSA AIR系列果绿色 820.70.36.4","price":17900,"image":"https://m.360buyimg.com/mobilecms/s720x720_jfs/t6934/364/1195375010/84676/e9f2c55f/597ece38N0ddcbc77.jpg!q70.jpg.webp","category":"拉杆箱","brand":"RIMOWA","spec":"","status":1,"createTime":"2019-04-30T16:00:00.000+00:00","updateTime":"2019-04-30T16:00:00.000+00:00","stock":2999,"sold":31290}'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>4）重新加载配置</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>刷新商品页面：<a target="_blank" rel="noopener external nofollow noreferrer" href="http://localhost/item.html?id=1001%EF%BC%8C%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0%E6%95%88%E6%9E%9C%EF%BC%9A">http://localhost/item.html?id=1001，即可看到效果：</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fa234b8a2e65edcf4172c9be066bae069.png" alt="image-20210821101217089"></p>
+<h2 id="4-3-请求参数处理"><a href="#4-3-请求参数处理" class="headerlink" title="4.3.请求参数处理"></a>4.3.请求参数处理</h2><p>上一节中，我们在OpenResty接收前端请求，但是返回的是假数据。</p>
+<p>要返回真实数据，必须根据前端传递来的商品id，查询商品信息才可以。</p>
+<p>那么如何获取前端传递的商品参数呢？</p>
+<h3 id="4-3-1-获取参数的API"><a href="#4-3-1-获取参数的API" class="headerlink" title="4.3.1.获取参数的API"></a>4.3.1.获取参数的API</h3><p>OpenResty中提供了一些API用来获取不同类型的前端请求参数：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fa463639e5a28beff0bbcd4e0fc8faa36.png" alt="image-20210821101433528"></p>
+<h3 id="4-3-2-获取参数并返回"><a href="#4-3-2-获取参数并返回" class="headerlink" title="4.3.2.获取参数并返回"></a>4.3.2.获取参数并返回</h3><p>在前端发起的ajax请求如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fe646cf8a4bf7e893450307e12f903cd5.png" alt="image-20210821101721649"></p>
+<p>可以看到商品id是以路径占位符方式传递的，因此可以利用正则表达式匹配的方式来获取ID</p>
+<p>1）获取商品id</p>
+<p>修改<code>/usr/loca/openresty/nginx/nginx.conf</code>文件中监听/api/item的代码，利用正则表达式获取ID：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> <span class="regexp">~ /api/item/(\d+)</span> {</span><br><span class="line">    <span class="comment"># 默认的响应类型</span></span><br><span class="line">    <span class="attribute">default_type</span> application/json;</span><br><span class="line">    <span class="comment"># 响应结果由lua/item.lua文件来决定</span></span><br><span class="line">    <span class="attribute">content_by_lua_file</span> lua/item.lua;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）拼接ID并返回</p>
+<p>修改<code>/usr/loca/openresty/nginx/lua/item.lua</code>文件，获取id并拼接到结果中返回：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 获取商品id</span></span><br><span class="line"><span class="keyword">local</span> id = ngx.var[<span class="number">1</span>]</span><br><span class="line"><span class="comment">-- 拼接并返回</span></span><br><span class="line">ngx.say(<span class="string">'{"id":'</span> .. id .. <span class="string">',"name":"SALSA AIR","title":"RIMOWA 21寸托运箱拉杆箱 SALSA AIR系列果绿色 820.70.36.4","price":17900,"image":"https://m.360buyimg.com/mobilecms/s720x720_jfs/t6934/364/1195375010/84676/e9f2c55f/597ece38N0ddcbc77.jpg!q70.jpg.webp","category":"拉杆箱","brand":"RIMOWA","spec":"","status":1,"createTime":"2019-04-30T16:00:00.000+00:00","updateTime":"2019-04-30T16:00:00.000+00:00","stock":2999,"sold":31290}'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>3）重新加载并测试</p>
+<p>运行命令以重新加载OpenResty配置：</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>刷新页面可以看到结果中已经带上了ID：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F241588638a7d972a5b1b9dd22acd4de4.png" alt="image-20210821102235467"> </p>
+<h2 id="4-4-查询Tomcat"><a href="#4-4-查询Tomcat" class="headerlink" title="4.4.查询Tomcat"></a>4.4.查询Tomcat</h2><p>拿到商品ID后，本应去缓存中查询商品信息，不过目前我们还未建立nginx、redis缓存。因此，这里我们先根据商品id去tomcat查询商品信息。我们实现如图部分：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F91cdecae5122cf956a391ea044762392.png" alt="image-20210821102610167"></p>
+<p>需要注意的是，我们的OpenResty是在虚拟机，Tomcat是在Windows电脑上。两者IP一定不要搞错了。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F32a800aec6362575808d9764a7e16b55.png" alt="image-20210821102959829"></p>
+<h3 id="4-4-1-发送http请求的API"><a href="#4-4-1-发送http请求的API" class="headerlink" title="4.4.1.发送http请求的API"></a>4.4.1.发送http请求的API</h3><p>nginx提供了内部API用以发送http请求：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> resp = ngx.location.capture(<span class="string">"/path"</span>,{</span><br><span class="line">    method = ngx.HTTP_GET,   <span class="comment">-- 请求方式</span></span><br><span class="line">    args = {a=<span class="number">1</span>,b=<span class="number">2</span>},  <span class="comment">-- get方式传参数</span></span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+
+<p>返回的响应内容包括：</p>
+<ul>
+<li>resp.status：响应状态码</li>
+<li>resp.header：响应头，是一个table</li>
+<li>resp.body：响应体，就是响应数据</li>
+</ul>
+<p>注意：这里的path是路径，并不包含IP和端口。这个请求会被nginx内部的server监听并处理。</p>
+<p>但是我们希望这个请求发送到Tomcat服务器，所以还需要编写一个server来对这个路径做反向代理：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /path {</span><br><span class="line">    <span class="comment"># 这里是windows电脑的ip和Java服务端口，需要确保windows防火墙处于关闭状态</span></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://192.168.150.1:8081; </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>原理如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fc9985fd87faa3a5a679946be674d1074.png" alt="image-20210821104149061"></p>
+<h3 id="4-4-2-封装http工具"><a href="#4-4-2-封装http工具" class="headerlink" title="4.4.2.封装http工具"></a>4.4.2.封装http工具</h3><p>下面，我们封装一个发送Http请求的工具，基于ngx.location.capture来实现查询tomcat。</p>
+<p>1）添加反向代理，到windows的Java服务</p>
+<p>因为item-service中的接口都是/item开头，所以我们监听/item路径，代理到windows上的tomcat服务。</p>
+<p>修改 <code>/usr/local/openresty/nginx/conf/nginx.conf</code>文件，添加一个location：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /item {</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://192.168.150.1:8081;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>以后，只要我们调用<code>ngx.location.capture("/item")</code>，就一定能发送请求到windows的tomcat服务。</p>
+<p>2）封装工具类</p>
+<p>之前我们说过，OpenResty启动时会加载以下两个目录中的工具文件：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Face78437546ec8de54745fd55f89f87f.png" alt="image-20210821104857413"></p>
+<p>所以，自定义的http工具也需要放到这个目录下。</p>
+<p>在<code>/usr/local/openresty/lualib</code>目录下，新建一个common.lua文件：</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/local/openresty/lualib/common.lua</span><br></pre></td></tr></tbody></table></figure>
+
+<p>内容如下:</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 封装函数，发送http请求，并解析响应</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">read_http</span><span class="params">(path, params)</span></span></span><br><span class="line">    <span class="keyword">local</span> resp = ngx.location.capture(<span class="built_in">path</span>,{</span><br><span class="line">        method = ngx.HTTP_GET,</span><br><span class="line">        args = params,</span><br><span class="line">    })</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> resp <span class="keyword">then</span></span><br><span class="line">        <span class="comment">-- 记录错误信息，返回404</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"http请求查询失败, path: "</span>, <span class="built_in">path</span> , <span class="string">", args: "</span>, args)</span><br><span class="line">        ngx.<span class="built_in">exit</span>(<span class="number">404</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> resp.body</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">-- 将方法导出</span></span><br><span class="line"><span class="keyword">local</span> _M = {  </span><br><span class="line">    read_http = read_http</span><br><span class="line">}  </span><br><span class="line"><span class="keyword">return</span> _M</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>这个工具将read_http函数封装到_M这个table类型的变量中，并且返回，这类似于导出。</p>
+<p>使用的时候，可以利用<code>require('common')</code>来导入该函数库，这里的common是函数库的文件名。</p>
+<p>3）实现商品查询</p>
+<p>最后，我们修改<code>/usr/local/openresty/lua/item.lua</code>文件，利用刚刚封装的函数库实现对tomcat的查询：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 引入自定义common工具模块，返回值是common中返回的 _M</span></span><br><span class="line"><span class="keyword">local</span> common = <span class="built_in">require</span>(<span class="string">"common"</span>)</span><br><span class="line"><span class="comment">-- 从 common中获取read_http这个函数</span></span><br><span class="line"><span class="keyword">local</span> read_http = common.read_http</span><br><span class="line"><span class="comment">-- 获取路径参数</span></span><br><span class="line"><span class="keyword">local</span> id = ngx.var[<span class="number">1</span>]</span><br><span class="line"><span class="comment">-- 根据id查询商品</span></span><br><span class="line"><span class="keyword">local</span> itemJSON = read_http(<span class="string">"/item/"</span>.. id, <span class="literal">nil</span>)</span><br><span class="line"><span class="comment">-- 根据id查询商品库存</span></span><br><span class="line"><span class="keyword">local</span> itemStockJSON = read_http(<span class="string">"/item/stock/"</span>.. id, <span class="literal">nil</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>这里查询到的结果是json字符串，并且包含商品、库存两个json字符串，页面最终需要的是把两个json拼接为一个json：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fa45f6896c839decce59a15054b0487a6.png" alt="image-20210821110441222"></p>
+<p>这就需要我们先把JSON变为lua的table，完成数据整合后，再转为JSON。</p>
+<h3 id="4-4-3-CJSON工具类"><a href="#4-4-3-CJSON工具类" class="headerlink" title="4.4.3.CJSON工具类"></a>4.4.3.CJSON工具类</h3><p>OpenResty提供了一个cjson的模块用来处理JSON的序列化和反序列化。</p>
+<p>官方地址： <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/openresty/lua-cjson/">https://github.com/openresty/lua-cjson/</a></p>
+<p>1）引入cjson模块：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> cjson = <span class="built_in">require</span> <span class="string">"cjson"</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）序列化：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> obj = {</span><br><span class="line">    name = <span class="string">'jack'</span>,</span><br><span class="line">    age = <span class="number">21</span></span><br><span class="line">}</span><br><span class="line"><span class="comment">-- 把 table 序列化为 json</span></span><br><span class="line"><span class="keyword">local</span> json = cjson.encode(obj)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>3）反序列化：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> json = <span class="string">'{"name": "jack", "age": 21}'</span></span><br><span class="line"><span class="comment">-- 反序列化 json为 table</span></span><br><span class="line"><span class="keyword">local</span> obj = cjson.decode(json);</span><br><span class="line"><span class="built_in">print</span>(obj.name)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h3 id="4-4-4-实现Tomcat查询"><a href="#4-4-4-实现Tomcat查询" class="headerlink" title="4.4.4.实现Tomcat查询"></a>4.4.4.实现Tomcat查询</h3><p>下面，我们修改之前的item.lua中的业务，添加json处理功能：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入common函数库</span></span><br><span class="line"><span class="keyword">local</span> common = <span class="built_in">require</span>(<span class="string">'common'</span>)</span><br><span class="line"><span class="keyword">local</span> read_http = common.read_http</span><br><span class="line"><span class="comment">-- 导入cjson库</span></span><br><span class="line"><span class="keyword">local</span> cjson = <span class="built_in">require</span>(<span class="string">'cjson'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 获取路径参数</span></span><br><span class="line"><span class="keyword">local</span> id = ngx.var[<span class="number">1</span>]</span><br><span class="line"><span class="comment">-- 根据id查询商品</span></span><br><span class="line"><span class="keyword">local</span> itemJSON = read_http(<span class="string">"/item/"</span>.. id, <span class="literal">nil</span>)</span><br><span class="line"><span class="comment">-- 根据id查询商品库存</span></span><br><span class="line"><span class="keyword">local</span> itemStockJSON = read_http(<span class="string">"/item/stock/"</span>.. id, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- JSON转化为lua的table</span></span><br><span class="line"><span class="keyword">local</span> item = cjson.decode(itemJSON)</span><br><span class="line"><span class="keyword">local</span> stock = cjson.decode(stockJSON)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 组合数据</span></span><br><span class="line">item.stock = stock.stock</span><br><span class="line">item.sold = stock.sold</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 把item序列化为json 返回结果</span></span><br><span class="line">ngx.say(cjson.encode(item))</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="4-4-5-基于ID负载均衡"><a href="#4-4-5-基于ID负载均衡" class="headerlink" title="4.4.5.基于ID负载均衡"></a>4.4.5.基于ID负载均衡</h3><p>刚才的代码中，我们的tomcat是单机部署。而实际开发中，tomcat一定是集群模式：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F6cf7c77102cfb266d56255f9893bb01a.png" alt="image-20210821111023255"></p>
+<p>因此，OpenResty需要对tomcat集群做负载均衡。</p>
+<p>而默认的负载均衡规则是轮询模式，当我们查询/item/10001时：</p>
+<ul>
+<li>第一次会访问8081端口的tomcat服务，在该服务内部就形成了JVM进程缓存</li>
+<li>第二次会访问8082端口的tomcat服务，该服务内部没有JVM缓存（因为JVM缓存无法共享），会查询数据库</li>
+<li>…</li>
+</ul>
+<p>你看，因为轮询的原因，第一次查询8081形成的JVM缓存并未生效，直到下一次再次访问到8081时才可以生效，缓存命中率太低了。</p>
+<p>怎么办？</p>
+<p>如果能让同一个商品，每次查询时都访问同一个tomcat服务，那么JVM缓存就一定能生效了。</p>
+<p>也就是说，我们需要根据商品id做负载均衡，而不是轮询。</p>
+<h4 id="1）原理"><a href="#1）原理" class="headerlink" title="1）原理"></a>1）原理</h4><p>nginx提供了基于请求路径做负载均衡的算法：</p>
+<p>nginx根据请求路径做hash运算，把得到的数值对tomcat服务的数量取余，余数是几，就访问第几个服务，实现负载均衡。</p>
+<p>例如：</p>
+<ul>
+<li>我们的请求路径是 /item/10001</li>
+<li>tomcat总数为2台（8081、8082）</li>
+<li>对请求路径/item/1001做hash运算求余的结果为1</li>
+<li>则访问第一个tomcat服务，也就是8081</li>
+</ul>
+<p>只要id不变，每次hash运算结果也不会变，那就可以保证同一个商品，一直访问同一个tomcat服务，确保JVM缓存生效。</p>
+<h4 id="2）实现"><a href="#2）实现" class="headerlink" title="2）实现"></a>2）实现</h4><p>修改<code>/usr/local/openresty/nginx/conf/nginx.conf</code>文件，实现基于ID做负载均衡。</p>
+<p>首先，定义tomcat集群，并设置基于路径做负载均衡：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">upstream</span> tomcat-cluster {</span><br><span class="line">    <span class="attribute">hash</span> <span class="variable">$request_uri</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.150.1:8081</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.150.1:8082</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后，修改对tomcat服务的反向代理，目标指向tomcat集群：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /item {</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://tomcat-cluster;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重新加载OpenResty</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h4 id="3）测试"><a href="#3）测试" class="headerlink" title="3）测试"></a>3）测试</h4><p>启动两台tomcat服务：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F25a1f0a5c42d56b368d4ea6dfde093c1.png" alt="image-20210821112420464"></p>
+<p>同时启动：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fd69b685d87fa9ae8f036f5a1f21c2724.png" alt="image-20210821112444482"> </p>
+<p>清空日志后，再次访问页面，可以看到不同id的商品，访问到了不同的tomcat服务：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F07797dc2d9100fd798b6f506f3aca19c.png" alt="image-20210821112559965"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F97183375cf0ed03b45d83a384c9700ec.png" alt="image-20210821112637430"></p>
+<h2 id="4-5-Redis缓存预热"><a href="#4-5-Redis缓存预热" class="headerlink" title="4.5.Redis缓存预热"></a>4.5.Redis缓存预热</h2><p>Redis缓存会面临冷启动问题：</p>
+<p><strong>冷启动</strong>：服务刚刚启动时，Redis中并没有缓存，如果所有商品数据都在第一次查询时添加缓存，可能会给数据库带来较大压力。</p>
+<p><strong>缓存预热</strong>：在实际开发中，我们可以利用大数据统计用户访问的热点数据，在项目启动时将这些热点数据提前查询并保存到Redis中。</p>
+<p>我们数据量较少，并且没有数据统计相关功能，目前可以在启动时将所有数据都放入缓存中。</p>
+<p>1）利用Docker安装Redis</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name redis -p 6379:6379 -d redis redis-server --appendonly <span class="built_in">yes</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）在item-service服务中引入Redis依赖</p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>3）配置Redis地址</p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>4）编写初始化类</p>
+<p>缓存预热需要在项目启动时完成，并且必须是拿到RedisTemplate之后。</p>
+<p>这里我们利用InitializingBean接口来实现，因为InitializingBean可以在对象被Spring创建并且成员变量全部注入后执行。</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.heima.item.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.core.JsonProcessingException;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.Item;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.ItemStock;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.service.IItemService;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.service.IItemStockService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.InitializingBean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.StringRedisTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RedisHandler</span> <span class="keyword">implements</span> <span class="title class_">InitializingBean</span> {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemService itemService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemStockService stockService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">MAPPER</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception {</span><br><span class="line">        <span class="comment">// 初始化缓存</span></span><br><span class="line">        <span class="comment">// 1.查询商品信息</span></span><br><span class="line">        List&lt;Item&gt; itemList = itemService.list();</span><br><span class="line">        <span class="comment">// 2.放入缓存</span></span><br><span class="line">        <span class="keyword">for</span> (Item item : itemList) {</span><br><span class="line">            <span class="comment">// 2.1.item序列化为JSON</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> MAPPER.writeValueAsString(item);</span><br><span class="line">            <span class="comment">// 2.2.存入redis</span></span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">"item:id:"</span> + item.getId(), json);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3.查询商品库存信息</span></span><br><span class="line">        List&lt;ItemStock&gt; stockList = stockService.list();</span><br><span class="line">        <span class="comment">// 4.放入缓存</span></span><br><span class="line">        <span class="keyword">for</span> (ItemStock stock : stockList) {</span><br><span class="line">            <span class="comment">// 2.1.item序列化为JSON</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> MAPPER.writeValueAsString(stock);</span><br><span class="line">            <span class="comment">// 2.2.存入redis</span></span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">"item:stock:id:"</span> + stock.getId(), json);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="4-6-查询Redis缓存"><a href="#4-6-查询Redis缓存" class="headerlink" title="4.6.查询Redis缓存"></a>4.6.查询Redis缓存</h2><p>现在，Redis缓存已经准备就绪，我们可以再OpenResty中实现查询Redis的逻辑了。如下图红框所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fabf4482e21d6f15fdc59e057f0da188e.png" alt="image-20210821113340111"></p>
+<p>当请求进入OpenResty之后：</p>
+<ul>
+<li>优先查询Redis缓存</li>
+<li>如果Redis缓存未命中，再查询Tomcat</li>
+</ul>
+<h3 id="4-6-1-封装Redis工具"><a href="#4-6-1-封装Redis工具" class="headerlink" title="4.6.1.封装Redis工具"></a>4.6.1.封装Redis工具</h3><p>OpenResty提供了操作Redis的模块，我们只要引入该模块就能直接使用。但是为了方便，我们将Redis操作封装到之前的common.lua工具库中。</p>
+<p>修改<code>/usr/local/openresty/lualib/common.lua</code>文件：</p>
+<p>1）引入Redis模块，并初始化Redis对象</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入redis</span></span><br><span class="line"><span class="keyword">local</span> redis = <span class="built_in">require</span>(<span class="string">'resty.redis'</span>)</span><br><span class="line"><span class="comment">-- 初始化redis</span></span><br><span class="line"><span class="keyword">local</span> red = redis:new()</span><br><span class="line">red:set_timeouts(<span class="number">1000</span>, <span class="number">1000</span>, <span class="number">1000</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）封装函数，用来释放Redis连接，其实是放入连接池</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 关闭redis连接的工具方法，其实是放入连接池</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">close_redis</span><span class="params">(red)</span></span></span><br><span class="line">    <span class="keyword">local</span> pool_max_idle_time = <span class="number">10000</span> <span class="comment">-- 连接的空闲时间，单位是毫秒</span></span><br><span class="line">    <span class="keyword">local</span> pool_size = <span class="number">100</span> <span class="comment">--连接池大小</span></span><br><span class="line">    <span class="keyword">local</span> ok, err = red:set_keepalive(pool_max_idle_time, pool_size)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"放入redis连接池失败: "</span>, err)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>3）封装函数，根据key查询Redis数据</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询redis的方法 ip和port是redis地址，key是查询的key</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">read_redis</span><span class="params">(ip, port, key)</span></span></span><br><span class="line">    <span class="comment">-- 获取一个连接</span></span><br><span class="line">    <span class="keyword">local</span> ok, err = red:connect(ip, port)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"连接redis失败 : "</span>, err)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 查询redis</span></span><br><span class="line">    <span class="keyword">local</span> resp, err = red:get(key)</span><br><span class="line">    <span class="comment">-- 查询失败处理</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> resp <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"查询Redis失败: "</span>, err, <span class="string">", key = "</span> , key)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">--得到的数据为空处理</span></span><br><span class="line">    <span class="keyword">if</span> resp == ngx.null <span class="keyword">then</span></span><br><span class="line">        resp = <span class="literal">nil</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"查询Redis数据为空, key = "</span>, key)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    close_redis(red)</span><br><span class="line">    <span class="keyword">return</span> resp</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>4）导出</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 将方法导出</span></span><br><span class="line"><span class="keyword">local</span> _M = {  </span><br><span class="line">    read_http = read_http,</span><br><span class="line">    read_redis = read_redis</span><br><span class="line">}  </span><br><span class="line"><span class="keyword">return</span> _M</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>完整的common.lua：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入redis</span></span><br><span class="line"><span class="keyword">local</span> redis = <span class="built_in">require</span>(<span class="string">'resty.redis'</span>)</span><br><span class="line"><span class="comment">-- 初始化redis</span></span><br><span class="line"><span class="keyword">local</span> red = redis:new()</span><br><span class="line">red:set_timeouts(<span class="number">1000</span>, <span class="number">1000</span>, <span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 关闭redis连接的工具方法，其实是放入连接池</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">close_redis</span><span class="params">(red)</span></span></span><br><span class="line">    <span class="keyword">local</span> pool_max_idle_time = <span class="number">10000</span> <span class="comment">-- 连接的空闲时间，单位是毫秒</span></span><br><span class="line">    <span class="keyword">local</span> pool_size = <span class="number">100</span> <span class="comment">--连接池大小</span></span><br><span class="line">    <span class="keyword">local</span> ok, err = red:set_keepalive(pool_max_idle_time, pool_size)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"放入redis连接池失败: "</span>, err)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询redis的方法 ip和port是redis地址，key是查询的key</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">read_redis</span><span class="params">(ip, port, key)</span></span></span><br><span class="line">    <span class="comment">-- 获取一个连接</span></span><br><span class="line">    <span class="keyword">local</span> ok, err = red:connect(ip, port)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"连接redis失败 : "</span>, err)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 查询redis</span></span><br><span class="line">    <span class="keyword">local</span> resp, err = red:get(key)</span><br><span class="line">    <span class="comment">-- 查询失败处理</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> resp <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"查询Redis失败: "</span>, err, <span class="string">", key = "</span> , key)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">--得到的数据为空处理</span></span><br><span class="line">    <span class="keyword">if</span> resp == ngx.null <span class="keyword">then</span></span><br><span class="line">        resp = <span class="literal">nil</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"查询Redis数据为空, key = "</span>, key)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    close_redis(red)</span><br><span class="line">    <span class="keyword">return</span> resp</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 封装函数，发送http请求，并解析响应</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">read_http</span><span class="params">(path, params)</span></span></span><br><span class="line">    <span class="keyword">local</span> resp = ngx.location.capture(<span class="built_in">path</span>,{</span><br><span class="line">        method = ngx.HTTP_GET,</span><br><span class="line">        args = params,</span><br><span class="line">    })</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> resp <span class="keyword">then</span></span><br><span class="line">        <span class="comment">-- 记录错误信息，返回404</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"http查询失败, path: "</span>, <span class="built_in">path</span> , <span class="string">", args: "</span>, args)</span><br><span class="line">        ngx.<span class="built_in">exit</span>(<span class="number">404</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> resp.body</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">-- 将方法导出</span></span><br><span class="line"><span class="keyword">local</span> _M = {  </span><br><span class="line">    read_http = read_http,</span><br><span class="line">    read_redis = read_redis</span><br><span class="line">}  </span><br><span class="line"><span class="keyword">return</span> _M</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h3 id="4-6-2-实现Redis查询"><a href="#4-6-2-实现Redis查询" class="headerlink" title="4.6.2.实现Redis查询"></a>4.6.2.实现Redis查询</h3><p>接下来，我们就可以去修改item.lua文件，实现对Redis的查询了。</p>
+<p>查询逻辑是：</p>
+<ul>
+<li>根据id查询Redis</li>
+<li>如果查询失败则继续查询Tomcat</li>
+<li>将查询结果返回</li>
+</ul>
+<p>1）修改<code>/usr/local/openresty/lua/item.lua</code>文件，添加一个查询函数：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入common函数库</span></span><br><span class="line"><span class="keyword">local</span> common = <span class="built_in">require</span>(<span class="string">'common'</span>)</span><br><span class="line"><span class="keyword">local</span> read_http = common.read_http</span><br><span class="line"><span class="keyword">local</span> read_redis = common.read_redis</span><br><span class="line"><span class="comment">-- 封装查询函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read_data</span><span class="params">(key, path, params)</span></span></span><br><span class="line">    <span class="comment">-- 查询本地缓存</span></span><br><span class="line">    <span class="keyword">local</span> val = read_redis(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>, key)</span><br><span class="line">    <span class="comment">-- 判断查询结果</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"redis查询失败，尝试查询http， key: "</span>, key)</span><br><span class="line">        <span class="comment">-- redis查询失败，去查询http</span></span><br><span class="line">        val = read_http(<span class="built_in">path</span>, params)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 返回数据</span></span><br><span class="line">    <span class="keyword">return</span> val</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）而后修改商品查询、库存查询的业务：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fb9038b725532ba179f2b25b36aedcadd.png" alt="image-20210821114528954"></p>
+<p>3）完整的item.lua代码：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入common函数库</span></span><br><span class="line"><span class="keyword">local</span> common = <span class="built_in">require</span>(<span class="string">'common'</span>)</span><br><span class="line"><span class="keyword">local</span> read_http = common.read_http</span><br><span class="line"><span class="keyword">local</span> read_redis = common.read_redis</span><br><span class="line"><span class="comment">-- 导入cjson库</span></span><br><span class="line"><span class="keyword">local</span> cjson = <span class="built_in">require</span>(<span class="string">'cjson'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 封装查询函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read_data</span><span class="params">(key, path, params)</span></span></span><br><span class="line">    <span class="comment">-- 查询本地缓存</span></span><br><span class="line">    <span class="keyword">local</span> val = read_redis(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>, key)</span><br><span class="line">    <span class="comment">-- 判断查询结果</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"redis查询失败，尝试查询http， key: "</span>, key)</span><br><span class="line">        <span class="comment">-- redis查询失败，去查询http</span></span><br><span class="line">        val = read_http(<span class="built_in">path</span>, params)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 返回数据</span></span><br><span class="line">    <span class="keyword">return</span> val</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 获取路径参数</span></span><br><span class="line"><span class="keyword">local</span> id = ngx.var[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询商品信息</span></span><br><span class="line"><span class="keyword">local</span> itemJSON = read_data(<span class="string">"item:id:"</span> .. id,  <span class="string">"/item/"</span> .. id, <span class="literal">nil</span>)</span><br><span class="line"><span class="comment">-- 查询库存信息</span></span><br><span class="line"><span class="keyword">local</span> stockJSON = read_data(<span class="string">"item:stock:id:"</span> .. id, <span class="string">"/item/stock/"</span> .. id, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- JSON转化为lua的table</span></span><br><span class="line"><span class="keyword">local</span> item = cjson.decode(itemJSON)</span><br><span class="line"><span class="keyword">local</span> stock = cjson.decode(stockJSON)</span><br><span class="line"><span class="comment">-- 组合数据</span></span><br><span class="line">item.stock = stock.stock</span><br><span class="line">item.sold = stock.sold</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 把item序列化为json 返回结果</span></span><br><span class="line">ngx.say(cjson.encode(item))</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="4-7-Nginx本地缓存"><a href="#4-7-Nginx本地缓存" class="headerlink" title="4.7.Nginx本地缓存"></a>4.7.Nginx本地缓存</h2><p>现在，整个多级缓存中只差最后一环，也就是nginx的本地缓存了。如图：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fc27e589579588a9b83cd646e603b848d.png" alt="image-20210821114742950"></p>
+<h3 id="4-7-1-本地缓存API"><a href="#4-7-1-本地缓存API" class="headerlink" title="4.7.1.本地缓存API"></a>4.7.1.本地缓存API</h3><p>OpenResty为Nginx提供了<strong>shard dict</strong>的功能，可以在nginx的多个worker之间共享数据，实现缓存功能。</p>
+<p>1）开启共享字典，在nginx.conf的http下添加配置：</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 共享字典，也就是本地缓存，名称叫做：item_cache，大小150m</span></span><br><span class="line"><span class="attribute">lua_shared_dict</span> item_cache <span class="number">150m</span>; </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>2）操作共享字典：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 获取本地缓存对象</span></span><br><span class="line"><span class="keyword">local</span> item_cache = ngx.shared.item_cache</span><br><span class="line"><span class="comment">-- 存储, 指定key、value、过期时间，单位s，默认为0代表永不过期</span></span><br><span class="line">item_cache:set(<span class="string">'key'</span>, <span class="string">'value'</span>, <span class="number">1000</span>)</span><br><span class="line"><span class="comment">-- 读取</span></span><br><span class="line"><span class="keyword">local</span> val = item_cache:get(<span class="string">'key'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="4-7-2-实现本地缓存查询"><a href="#4-7-2-实现本地缓存查询" class="headerlink" title="4.7.2.实现本地缓存查询"></a>4.7.2.实现本地缓存查询</h3><p>1）修改<code>/usr/local/openresty/lua/item.lua</code>文件，修改read_data查询函数，添加本地缓存逻辑：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入共享词典，本地缓存</span></span><br><span class="line"><span class="keyword">local</span> item_cache = ngx.shared.item_cache</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 封装查询函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read_data</span><span class="params">(key, expire, path, params)</span></span></span><br><span class="line">    <span class="comment">-- 查询本地缓存</span></span><br><span class="line">    <span class="keyword">local</span> val = item_cache:get(key)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"本地缓存查询失败，尝试查询Redis， key: "</span>, key)</span><br><span class="line">        <span class="comment">-- 查询redis</span></span><br><span class="line">        val = read_redis(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>, key)</span><br><span class="line">        <span class="comment">-- 判断查询结果</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">            ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"redis查询失败，尝试查询http， key: "</span>, key)</span><br><span class="line">            <span class="comment">-- redis查询失败，去查询http</span></span><br><span class="line">            val = read_http(<span class="built_in">path</span>, params)</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 查询成功，把数据写入本地缓存</span></span><br><span class="line">    item_cache:set(key, val, expire)</span><br><span class="line">    <span class="comment">-- 返回数据</span></span><br><span class="line">    <span class="keyword">return</span> val</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<p>2）修改item.lua中查询商品和库存的业务，实现最新的read_data函数：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0fed4f9c84aedf49d2de6ed21c935c6d.png" alt="image-20210821115108528"></p>
+<p>其实就是多了缓存时间参数，过期后nginx缓存会自动删除，下次访问即可更新缓存。</p>
+<p>这里给商品基本信息设置超时时间为30分钟，库存为1分钟。</p>
+<p>因为库存更新频率较高，如果缓存时间过长，可能与数据库差异较大。</p>
+<p>3）完整的item.lua文件：</p>
+<figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 导入common函数库</span></span><br><span class="line"><span class="keyword">local</span> common = <span class="built_in">require</span>(<span class="string">'common'</span>)</span><br><span class="line"><span class="keyword">local</span> read_http = common.read_http</span><br><span class="line"><span class="keyword">local</span> read_redis = common.read_redis</span><br><span class="line"><span class="comment">-- 导入cjson库</span></span><br><span class="line"><span class="keyword">local</span> cjson = <span class="built_in">require</span>(<span class="string">'cjson'</span>)</span><br><span class="line"><span class="comment">-- 导入共享词典，本地缓存</span></span><br><span class="line"><span class="keyword">local</span> item_cache = ngx.shared.item_cache</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 封装查询函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read_data</span><span class="params">(key, expire, path, params)</span></span></span><br><span class="line">    <span class="comment">-- 查询本地缓存</span></span><br><span class="line">    <span class="keyword">local</span> val = item_cache:get(key)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">        ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"本地缓存查询失败，尝试查询Redis， key: "</span>, key)</span><br><span class="line">        <span class="comment">-- 查询redis</span></span><br><span class="line">        val = read_redis(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>, key)</span><br><span class="line">        <span class="comment">-- 判断查询结果</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> val <span class="keyword">then</span></span><br><span class="line">            ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"redis查询失败，尝试查询http， key: "</span>, key)</span><br><span class="line">            <span class="comment">-- redis查询失败，去查询http</span></span><br><span class="line">            val = read_http(<span class="built_in">path</span>, params)</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 查询成功，把数据写入本地缓存</span></span><br><span class="line">    item_cache:set(key, val, expire)</span><br><span class="line">    <span class="comment">-- 返回数据</span></span><br><span class="line">    <span class="keyword">return</span> val</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 获取路径参数</span></span><br><span class="line"><span class="keyword">local</span> id = ngx.var[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询商品信息</span></span><br><span class="line"><span class="keyword">local</span> itemJSON = read_data(<span class="string">"item:id:"</span> .. id, <span class="number">1800</span>,  <span class="string">"/item/"</span> .. id, <span class="literal">nil</span>)</span><br><span class="line"><span class="comment">-- 查询库存信息</span></span><br><span class="line"><span class="keyword">local</span> stockJSON = read_data(<span class="string">"item:stock:id:"</span> .. id, <span class="number">60</span>, <span class="string">"/item/stock/"</span> .. id, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- JSON转化为lua的table</span></span><br><span class="line"><span class="keyword">local</span> item = cjson.decode(itemJSON)</span><br><span class="line"><span class="keyword">local</span> stock = cjson.decode(stockJSON)</span><br><span class="line"><span class="comment">-- 组合数据</span></span><br><span class="line">item.stock = stock.stock</span><br><span class="line">item.sold = stock.sold</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 把item序列化为json 返回结果</span></span><br><span class="line">ngx.say(cjson.encode(item))</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="5-缓存同步"><a href="#5-缓存同步" class="headerlink" title="5.缓存同步"></a>5.缓存同步</h1><p>大多数情况下，浏览器查询到的都是缓存数据，如果缓存数据与数据库数据存在较大差异，可能会产生比较严重的后果。</p>
+<p>所以我们必须保证数据库数据、缓存数据的一致性，这就是缓存与数据库的同步。</p>
+<h2 id="5-1-数据同步策略"><a href="#5-1-数据同步策略" class="headerlink" title="5.1.数据同步策略"></a>5.1.数据同步策略</h2><p>缓存数据同步的常见方式有三种：</p>
+<p><strong>设置有效期</strong>：给缓存设置有效期，到期后自动删除。再次查询时更新</p>
+<ul>
+<li>优势：简单、方便</li>
+<li>缺点：时效性差，缓存过期之前可能不一致</li>
+<li>场景：更新频率较低，时效性要求低的业务</li>
+</ul>
+<p><strong>同步双写</strong>：在修改数据库的同时，直接修改缓存</p>
+<ul>
+<li>优势：时效性强，缓存与数据库强一致</li>
+<li>缺点：有代码侵入，耦合度高；</li>
+<li>场景：对一致性、时效性要求较高的缓存数据</li>
+</ul>
+<p><strong>异步通知：</strong>修改数据库时发送事件通知，相关服务监听到通知后修改缓存数据</p>
+<ul>
+<li>优势：低耦合，可以同时通知多个缓存服务</li>
+<li>缺点：时效性一般，可能存在中间不一致状态</li>
+<li>场景：时效性要求一般，有多个服务需要同步</li>
+</ul>
+<p>而异步实现又可以基于MQ或者Canal来实现：</p>
+<p>1）基于MQ的异步通知：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F86f59ecb2a24e24545f0cb885769860f.png" alt="image-20210821115552327"></p>
+<p>解读：</p>
+<ul>
+<li>商品服务完成对数据的修改后，只需要发送一条消息到MQ中。</li>
+<li>缓存服务监听MQ消息，然后完成对缓存的更新</li>
+</ul>
+<p>依然有少量的代码侵入。</p>
+<p>2）基于Canal的通知</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0bc4b2ea4ccc47c2516c57f87643389e.png" alt="image-20210821115719363"></p>
+<p>解读：</p>
+<ul>
+<li>商品服务完成商品修改后，业务直接结束，没有任何代码侵入</li>
+<li>Canal监听MySQL变化，当发现变化后，立即通知缓存服务</li>
+<li>缓存服务接收到canal通知，更新缓存</li>
+</ul>
+<p>代码零侵入</p>
+<h2 id="5-2-安装Canal"><a href="#5-2-安装Canal" class="headerlink" title="5.2.安装Canal"></a>5.2.安装Canal</h2><h3 id="5-2-1-认识Canal"><a href="#5-2-1-认识Canal" class="headerlink" title="5.2.1.认识Canal"></a>5.2.1.认识Canal</h3><p>**Canal [kə’næl]**，译意为水道/管道/沟渠，canal是阿里巴巴旗下的一款开源项目，基于Java开发。基于数据库增量日志解析，提供增量数据订阅&amp;消费。GitHub的地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/alibaba/canal">https://github.com/alibaba/canal</a></p>
+<p>Canal是基于mysql的主从同步来实现的，MySQL主从同步的原理如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fa849893155f6cd07507eb70dd5c973ca.png" alt="image-20210821115914748"></p>
+<ul>
+<li>1）MySQL master 将数据变更写入二进制日志( binary log），其中记录的数据叫做binary log events</li>
+<li>2）MySQL slave 将 master 的 binary log events拷贝到它的中继日志(relay log)</li>
+<li>3）MySQL slave 重放 relay log 中事件，将数据变更反映它自己的数据</li>
+</ul>
+<p>而Canal就是把自己伪装成MySQL的一个slave节点，从而监听master的binary log变化。再把得到的变化信息通知给Canal的客户端，进而完成对其它数据库的同步。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fafcdbb6010f069273deaf9e8ddd910a2.png" alt="image-20210821115948395"></p>
+<h3 id="5-2-2-安装Canal"><a href="#5-2-2-安装Canal" class="headerlink" title="5.2.2.安装Canal"></a>5.2.2.安装Canal</h3><p>安装和配置Canal参考课前资料文档：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F9b32638f12260c73a7c3222da5959385.png" alt="image-20210821120017324"> </p>
+<h2 id="5-3-监听Canal"><a href="#5-3-监听Canal" class="headerlink" title="5.3.监听Canal"></a>5.3.监听Canal</h2><p>Canal提供了各种语言的客户端，当Canal监听到binlog变化时，会通知Canal的客户端。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F8ecf713360efef53c429f4bbadb47f66.png" alt="image-20210821120049024"></p>
+<p>我们可以利用Canal提供的Java客户端，监听Canal通知消息。当收到变化的消息时，完成对缓存的更新。</p>
+<p>不过这里我们会使用GitHub上的第三方开源的canal-starter客户端。地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/NormanGyllenhaal/canal-client">https://github.com/NormanGyllenhaal/canal-client</a></p>
+<p>与SpringBoot完美整合，自动装配，比官方客户端要简单好用很多。</p>
+<h3 id="5-3-1-引入依赖："><a href="#5-3-1-引入依赖：" class="headerlink" title="5.3.1.引入依赖："></a>5.3.1.引入依赖：</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>top.javatool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>canal-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1-RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="5-3-2-编写配置："><a href="#5-3-2-编写配置：" class="headerlink" title="5.3.2.编写配置："></a>5.3.2.编写配置：</h3><figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">canal:</span></span><br><span class="line">  <span class="attr">destination:</span> <span class="string">heima</span> <span class="comment"># canal的集群名字，要与安装canal时设置的名称一致</span></span><br><span class="line">  <span class="attr">server:</span> <span class="number">192.168</span><span class="number">.150</span><span class="number">.101</span><span class="string">:11111</span> <span class="comment"># canal服务地址</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="5-3-3-修改Item实体类"><a href="#5-3-3-修改Item实体类" class="headerlink" title="5.3.3.修改Item实体类"></a>5.3.3.修改Item实体类</h3><p>通过@Id、@Column、等注解完成Item与数据库表字段的映射：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.heima.item.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.annotation.IdType;</span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.annotation.TableField;</span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.annotation.TableId;</span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.annotation.TableName;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.annotation.Id;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.annotation.Transient;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Column;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@TableName("tb_item")</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Item</span> {</span><br><span class="line">    <span class="meta">@TableId(type = IdType.AUTO)</span></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;<span class="comment">//商品id</span></span><br><span class="line">    <span class="meta">@Column(name = "name")</span></span><br><span class="line">    <span class="keyword">private</span> String name;<span class="comment">//商品名称</span></span><br><span class="line">    <span class="keyword">private</span> String title;<span class="comment">//商品标题</span></span><br><span class="line">    <span class="keyword">private</span> Long price;<span class="comment">//价格（分）</span></span><br><span class="line">    <span class="keyword">private</span> String image;<span class="comment">//商品图片</span></span><br><span class="line">    <span class="keyword">private</span> String category;<span class="comment">//分类名称</span></span><br><span class="line">    <span class="keyword">private</span> String brand;<span class="comment">//品牌名称</span></span><br><span class="line">    <span class="keyword">private</span> String spec;<span class="comment">//规格</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;<span class="comment">//商品状态 1-正常，2-下架</span></span><br><span class="line">    <span class="keyword">private</span> Date createTime;<span class="comment">//创建时间</span></span><br><span class="line">    <span class="keyword">private</span> Date updateTime;<span class="comment">//更新时间</span></span><br><span class="line">    <span class="meta">@TableField(exist = false)</span></span><br><span class="line">    <span class="meta">@Transient</span></span><br><span class="line">    <span class="keyword">private</span> Integer stock;</span><br><span class="line">    <span class="meta">@TableField(exist = false)</span></span><br><span class="line">    <span class="meta">@Transient</span></span><br><span class="line">    <span class="keyword">private</span> Integer sold;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="5-3-4-编写监听器"><a href="#5-3-4-编写监听器" class="headerlink" title="5.3.4.编写监听器"></a>5.3.4.编写监听器</h3><p>通过实现<code>EntryHandler&lt;T&gt;</code>接口编写监听器，监听Canal消息。注意两点：</p>
+<ul>
+<li>实现类通过<code>@CanalTable("tb_item")</code>指定监听的表信息</li>
+<li>EntryHandler的泛型是与表对应的实体类</li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.heima.item.canal;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.github.benmanes.caffeine.cache.Cache;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.config.RedisHandler;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.Item;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> top.javatool.canal.client.annotation.CanalTable;</span><br><span class="line"><span class="keyword">import</span> top.javatool.canal.client.handler.EntryHandler;</span><br><span class="line"></span><br><span class="line"><span class="meta">@CanalTable("tb_item")</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ItemHandler</span> <span class="keyword">implements</span> <span class="title class_">EntryHandler</span>&lt;Item&gt; {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisHandler redisHandler;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Cache&lt;Long, Item&gt; itemCache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(Item item)</span> {</span><br><span class="line">        <span class="comment">// 写数据到JVM进程缓存</span></span><br><span class="line">        itemCache.put(item.getId(), item);</span><br><span class="line">        <span class="comment">// 写数据到redis</span></span><br><span class="line">        redisHandler.saveItem(item);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">(Item before, Item after)</span> {</span><br><span class="line">        <span class="comment">// 写数据到JVM进程缓存</span></span><br><span class="line">        itemCache.put(after.getId(), after);</span><br><span class="line">        <span class="comment">// 写数据到redis</span></span><br><span class="line">        redisHandler.saveItem(after);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(Item item)</span> {</span><br><span class="line">        <span class="comment">// 删除数据到JVM进程缓存</span></span><br><span class="line">        itemCache.invalidate(item.getId());</span><br><span class="line">        <span class="comment">// 删除数据到redis</span></span><br><span class="line">        redisHandler.deleteItemById(item.getId());</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>在这里对Redis的操作都封装到了RedisHandler这个对象中，是我们之前做缓存预热时编写的一个类，内容如下：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.heima.item.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.core.JsonProcessingException;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.Item;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.pojo.ItemStock;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.service.IItemService;</span><br><span class="line"><span class="keyword">import</span> com.heima.item.service.IItemStockService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.InitializingBean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.StringRedisTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RedisHandler</span> <span class="keyword">implements</span> <span class="title class_">InitializingBean</span> {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemService itemService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IItemStockService stockService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">MAPPER</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception {</span><br><span class="line">        <span class="comment">// 初始化缓存</span></span><br><span class="line">        <span class="comment">// 1.查询商品信息</span></span><br><span class="line">        List&lt;Item&gt; itemList = itemService.list();</span><br><span class="line">        <span class="comment">// 2.放入缓存</span></span><br><span class="line">        <span class="keyword">for</span> (Item item : itemList) {</span><br><span class="line">            <span class="comment">// 2.1.item序列化为JSON</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> MAPPER.writeValueAsString(item);</span><br><span class="line">            <span class="comment">// 2.2.存入redis</span></span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">"item:id:"</span> + item.getId(), json);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3.查询商品库存信息</span></span><br><span class="line">        List&lt;ItemStock&gt; stockList = stockService.list();</span><br><span class="line">        <span class="comment">// 4.放入缓存</span></span><br><span class="line">        <span class="keyword">for</span> (ItemStock stock : stockList) {</span><br><span class="line">            <span class="comment">// 2.1.item序列化为JSON</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> MAPPER.writeValueAsString(stock);</span><br><span class="line">            <span class="comment">// 2.2.存入redis</span></span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">"item:stock:id:"</span> + stock.getId(), json);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveItem</span><span class="params">(Item item)</span> {</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> MAPPER.writeValueAsString(item);</span><br><span class="line">            redisTemplate.opsForValue().set(<span class="string">"item:id:"</span> + item.getId(), json);</span><br><span class="line">        } <span class="keyword">catch</span> (JsonProcessingException e) {</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">deleteItemById</span><span class="params">(Long id)</span> {</span><br><span class="line">        redisTemplate.delete(<span class="string">"item:id:"</span> + id);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.chenjiabin.xyz">青墨染烟雨</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.chenjiabin.xyz/posts/14931/index.html">https://blog.chenjiabin.xyz/posts/14931/index.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.chenjiabin.xyz" target="_blank">青墨染烟雨</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/sharejs/dist/js/social-share.min.js" defer=""></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020504.jpg" rel="external nofollow noreferrer" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020504.jpg" alt="微信"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020503.png" rel="external nofollow noreferrer" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202502282020503.png" alt="支付宝"></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/26629/index.html" title="Redis高级篇-分布式缓存"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Ffd1007df270a60127a38a39ae049db3d.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Redis高级篇-分布式缓存</div></div><div class="info-2"><div class="info-item-1">Redis高级篇-分布式缓存</div></div></div></a><a class="pagination-related" href="/posts/3907/index.html" title="Redis高级篇-最佳实践"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F1b73e4e04c9dc67f845b8b9e6c790119.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Redis高级篇-最佳实践</div></div><div class="info-2"><div class="info-item-1">Redis高级篇-最佳实践</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/54987/index.html" title="Docker学习笔记-黑马"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Fc18429b5e963f818e94d4f852cbed922.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-13</div><div class="info-item-2">Docker学习笔记-黑马</div></div><div class="info-2"><div class="info-item-1">Docker学习笔记-黑马</div></div></div></a><a class="pagination-related" href="/posts/10048/index.html" title="Docker学习笔记"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2Faa90ae7420321f0930ea6719b29c828d.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-04</div><div class="info-item-2">Docker学习笔记</div></div><div class="info-2"><div class="info-item-1">Docker的安装和扫盲，以及学习网站</div></div></div></a><a class="pagination-related" href="/posts/36256/index.html" title="ElasticSearch学习笔记-黑马(1)"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F6a1abf8f861845db7da03c3903eac6cb.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-13</div><div class="info-item-2">ElasticSearch学习笔记-黑马(1)</div></div><div class="info-2"><div class="info-item-1">ElasticSearch学习笔记-黑马(1)</div></div></div></a><a class="pagination-related" href="/posts/32160/index.html" title="ElasticSearch学习笔记-黑马(2)"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F64c89bbb78c3f10c0edd432144a8986e.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-13</div><div class="info-item-2">ElasticSearch学习笔记-黑马(2)</div></div><div class="info-2"><div class="info-item-1">ElasticSearch学习笔记-黑马(2)</div></div></div></a></div></div><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Waline</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011603481.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">青墨染烟雨</div><div class="author-info-description">回首向来萧瑟处,归去,也无风雨也无晴</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/qinmoranyanyu"><i class="fab fa-github"></i><span>My GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://www.cnblogs.com/chenjiabin" rel="external nofollow noreferrer" target="_blank" title="博客园"><i class="fa-solid fa-blog"></i></a><a class="social-icon" href="https://gitee.com/forever-or-moment" rel="external nofollow noreferrer" target="_blank" title="gitee"><i class="fa-brands fa-gratipay"></i></a><a class="social-icon" href="mailto:2948429338@qq.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://blog.chenjiabin.xyz/atom.xml" target="_blank" title="RSS"><i class="fa-solid fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">基于hexo的博客网站,终于搭好了!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E9%AB%98%E7%BA%A7%E7%AF%87-%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">1.</span> <span class="toc-text">Redis高级篇-多级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">2.</span> <span class="toc-text">1.什么是多级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-JVM%E8%BF%9B%E7%A8%8B%E7%BC%93%E5%AD%98"><span class="toc-number">3.</span> <span class="toc-text">2.JVM进程缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%AF%BC%E5%85%A5%E6%A1%88%E4%BE%8B"><span class="toc-number">3.1.</span> <span class="toc-text">2.1.导入案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%88%9D%E8%AF%86Caffeine"><span class="toc-number">3.2.</span> <span class="toc-text">2.2.初识Caffeine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%AE%9E%E7%8E%B0JVM%E8%BF%9B%E7%A8%8B%E7%BC%93%E5%AD%98"><span class="toc-number">3.3.</span> <span class="toc-text">2.3.实现JVM进程缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-1-%E9%9C%80%E6%B1%82"><span class="toc-number">3.3.1.</span> <span class="toc-text">2.3.1.需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-2-%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.3.2.</span> <span class="toc-text">2.3.2.实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Lua%E8%AF%AD%E6%B3%95%E5%85%A5%E9%97%A8"><span class="toc-number">4.</span> <span class="toc-text">3.Lua语法入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%88%9D%E8%AF%86Lua"><span class="toc-number">4.1.</span> <span class="toc-text">3.1.初识Lua</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-HelloWorld"><span class="toc-number">4.2.</span> <span class="toc-text">3.1.HelloWorld</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E5%8F%98%E9%87%8F%E5%92%8C%E5%BE%AA%E7%8E%AF"><span class="toc-number">4.3.</span> <span class="toc-text">3.2.变量和循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-Lua%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">4.3.1.</span> <span class="toc-text">3.2.1.Lua的数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-%E5%A3%B0%E6%98%8E%E5%8F%98%E9%87%8F"><span class="toc-number">4.3.2.</span> <span class="toc-text">3.2.2.声明变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-%E5%BE%AA%E7%8E%AF"><span class="toc-number">4.3.3.</span> <span class="toc-text">3.2.3.循环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%9D%A1%E4%BB%B6%E6%8E%A7%E5%88%B6%E3%80%81%E5%87%BD%E6%95%B0"><span class="toc-number">4.4.</span> <span class="toc-text">3.3.条件控制、函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1-%E5%87%BD%E6%95%B0"><span class="toc-number">4.4.1.</span> <span class="toc-text">3.3.1.函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2-%E6%9D%A1%E4%BB%B6%E6%8E%A7%E5%88%B6"><span class="toc-number">4.4.2.</span> <span class="toc-text">3.3.2.条件控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-3-%E6%A1%88%E4%BE%8B"><span class="toc-number">4.4.3.</span> <span class="toc-text">3.3.3.案例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%AE%9E%E7%8E%B0%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">5.</span> <span class="toc-text">4.实现多级缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%AE%89%E8%A3%85OpenResty"><span class="toc-number">5.1.</span> <span class="toc-text">4.1.安装OpenResty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-OpenResty%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">5.2.</span> <span class="toc-text">4.2.OpenResty快速入门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">5.2.1.</span> <span class="toc-text">4.2.1.反向代理流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-2-OpenResty%E7%9B%91%E5%90%AC%E8%AF%B7%E6%B1%82"><span class="toc-number">5.2.2.</span> <span class="toc-text">4.2.2.OpenResty监听请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3-%E7%BC%96%E5%86%99item-lua"><span class="toc-number">5.2.3.</span> <span class="toc-text">4.2.3.编写item.lua</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86"><span class="toc-number">5.3.</span> <span class="toc-text">4.3.请求参数处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84API"><span class="toc-number">5.3.1.</span> <span class="toc-text">4.3.1.获取参数的API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E5%B9%B6%E8%BF%94%E5%9B%9E"><span class="toc-number">5.3.2.</span> <span class="toc-text">4.3.2.获取参数并返回</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-%E6%9F%A5%E8%AF%A2Tomcat"><span class="toc-number">5.4.</span> <span class="toc-text">4.4.查询Tomcat</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-%E5%8F%91%E9%80%81http%E8%AF%B7%E6%B1%82%E7%9A%84API"><span class="toc-number">5.4.1.</span> <span class="toc-text">4.4.1.发送http请求的API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-2-%E5%B0%81%E8%A3%85http%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.2.</span> <span class="toc-text">4.4.2.封装http工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-3-CJSON%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="toc-number">5.4.3.</span> <span class="toc-text">4.4.3.CJSON工具类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-4-%E5%AE%9E%E7%8E%B0Tomcat%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.4.4.</span> <span class="toc-text">4.4.4.实现Tomcat查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-5-%E5%9F%BA%E4%BA%8EID%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">5.4.5.</span> <span class="toc-text">4.4.5.基于ID负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%EF%BC%89%E5%8E%9F%E7%90%86"><span class="toc-number">5.4.5.1.</span> <span class="toc-text">1）原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.4.5.2.</span> <span class="toc-text">2）实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%EF%BC%89%E6%B5%8B%E8%AF%95"><span class="toc-number">5.4.5.3.</span> <span class="toc-text">3）测试</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Redis%E7%BC%93%E5%AD%98%E9%A2%84%E7%83%AD"><span class="toc-number">5.5.</span> <span class="toc-text">4.5.Redis缓存预热</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-%E6%9F%A5%E8%AF%A2Redis%E7%BC%93%E5%AD%98"><span class="toc-number">5.6.</span> <span class="toc-text">4.6.查询Redis缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-1-%E5%B0%81%E8%A3%85Redis%E5%B7%A5%E5%85%B7"><span class="toc-number">5.6.1.</span> <span class="toc-text">4.6.1.封装Redis工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-2-%E5%AE%9E%E7%8E%B0Redis%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.6.2.</span> <span class="toc-text">4.6.2.实现Redis查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-7-Nginx%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98"><span class="toc-number">5.7.</span> <span class="toc-text">4.7.Nginx本地缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-1-%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98API"><span class="toc-number">5.7.1.</span> <span class="toc-text">4.7.1.本地缓存API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-2-%E5%AE%9E%E7%8E%B0%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.7.2.</span> <span class="toc-text">4.7.2.实现本地缓存查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E7%BC%93%E5%AD%98%E5%90%8C%E6%AD%A5"><span class="toc-number">6.</span> <span class="toc-text">5.缓存同步</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E7%AD%96%E7%95%A5"><span class="toc-number">6.1.</span> <span class="toc-text">5.1.数据同步策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E5%AE%89%E8%A3%85Canal"><span class="toc-number">6.2.</span> <span class="toc-text">5.2.安装Canal</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-1-%E8%AE%A4%E8%AF%86Canal"><span class="toc-number">6.2.1.</span> <span class="toc-text">5.2.1.认识Canal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-2-%E5%AE%89%E8%A3%85Canal"><span class="toc-number">6.2.2.</span> <span class="toc-text">5.2.2.安装Canal</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-%E7%9B%91%E5%90%ACCanal"><span class="toc-number">6.3.</span> <span class="toc-text">5.3.监听Canal</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-1-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="toc-number">6.3.1.</span> <span class="toc-text">5.3.1.引入依赖：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-2-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">6.3.2.</span> <span class="toc-text">5.3.2.编写配置：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-3-%E4%BF%AE%E6%94%B9Item%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="toc-number">6.3.3.</span> <span class="toc-text">5.3.3.修改Item实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-4-%E7%BC%96%E5%86%99%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-number">6.3.4.</span> <span class="toc-text">5.3.4.编写监听器</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-post-series"><div class="item-headline"><i class="fa-solid fa-layer-group"></i><span>Redis从入门到精通</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/38894/index.html" title="Redis原理篇"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F7ba7a58ec4a4ab144be4b62b1bcf7914.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis原理篇"></a><div class="content"><a class="title" href="/posts/38894/index.html" title="Redis原理篇">Redis原理篇</a><time datetime="2025-04-01T01:07:13.000Z" title="发表于 2025-04-01 09:07:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/3907/index.html" title="Redis高级篇-最佳实践"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F1b73e4e04c9dc67f845b8b9e6c790119.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis高级篇-最佳实践"></a><div class="content"><a class="title" href="/posts/3907/index.html" title="Redis高级篇-最佳实践">Redis高级篇-最佳实践</a><time datetime="2025-04-01T01:06:13.000Z" title="发表于 2025-04-01 09:06:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/14931/index.html" title="Redis高级篇-多级缓存"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis高级篇-多级缓存"></a><div class="content"><a class="title" href="/posts/14931/index.html" title="Redis高级篇-多级缓存">Redis高级篇-多级缓存</a><time datetime="2025-04-01T01:05:13.000Z" title="发表于 2025-04-01 09:05:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/26629/index.html" title="Redis高级篇-分布式缓存"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Ffd1007df270a60127a38a39ae049db3d.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis高级篇-分布式缓存"></a><div class="content"><a class="title" href="/posts/26629/index.html" title="Redis高级篇-分布式缓存">Redis高级篇-分布式缓存</a><time datetime="2025-04-01T01:04:13.000Z" title="发表于 2025-04-01 09:04:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7122/index.html" title="Redis集群部署"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F4aa91d2df115afc9d1c6ae76bc413f50.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis集群部署"></a><div class="content"><a class="title" href="/posts/7122/index.html" title="Redis集群部署">Redis集群部署</a><time datetime="2025-04-01T01:03:13.000Z" title="发表于 2025-04-01 09:03:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/46299/index.html" title="Redis实战篇"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F88984e666cf4a5ef5b097d517e6a2bfe.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis实战篇"></a><div class="content"><a class="title" href="/posts/46299/index.html" title="Redis实战篇">Redis实战篇</a><time datetime="2025-04-01T01:02:13.000Z" title="发表于 2025-04-01 09:02:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/55591/index.html" title="Redis基础篇"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0061c2cd95cf882e1b4e341d5c02500b.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis基础篇"></a><div class="content"><a class="title" href="/posts/55591/index.html" title="Redis基础篇">Redis基础篇</a><time datetime="2025-04-01T01:01:13.000Z" title="发表于 2025-04-01 09:01:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/34539/index.html" title="Redis安装"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2Fb6ba99d5f0dae9e8cd088110c60c7892.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis安装"></a><div class="content"><a class="title" href="/posts/34539/index.html" title="Redis安装">Redis安装</a><time datetime="2025-04-01T01:00:13.000Z" title="发表于 2025-04-01 09:00:13">2025-04-01</time></div></div></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/35140/index.html" title="Docker中MySQL安装"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F9f0a2fc752df42a1bfcb40f7852bdbf0.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker中MySQL安装"></a><div class="content"><a class="title" href="/posts/35140/index.html" title="Docker中MySQL安装">Docker中MySQL安装</a><time datetime="2025-04-01T01:07:13.000Z" title="发表于 2025-04-01 09:07:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/38894/index.html" title="Redis原理篇"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F7ba7a58ec4a4ab144be4b62b1bcf7914.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis原理篇"></a><div class="content"><a class="title" href="/posts/38894/index.html" title="Redis原理篇">Redis原理篇</a><time datetime="2025-04-01T01:07:13.000Z" title="发表于 2025-04-01 09:07:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/43669/index.html" title="安装和配置Canal"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F43208add9565ec0e401577720a8d1890.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="安装和配置Canal"></a><div class="content"><a class="title" href="/posts/43669/index.html" title="安装和配置Canal">安装和配置Canal</a><time datetime="2025-04-01T01:07:13.000Z" title="发表于 2025-04-01 09:07:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/5355/index.html" title="安装OpenResty"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F4555a9406d7eca58bb69eb9d24b90a69.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="安装OpenResty"></a><div class="content"><a class="title" href="/posts/5355/index.html" title="安装OpenResty">安装OpenResty</a><time datetime="2025-04-01T01:07:13.000Z" title="发表于 2025-04-01 09:07:13">2025-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/3907/index.html" title="Redis高级篇-最佳实践"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F1b73e4e04c9dc67f845b8b9e6c790119.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis高级篇-最佳实践"></a><div class="content"><a class="title" href="/posts/3907/index.html" title="Redis高级篇-最佳实践">Redis高级篇-最佳实践</a><time datetime="2025-04-01T01:06:13.000Z" title="发表于 2025-04-01 09:06:13">2025-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F04%2F0f4b55d24b3b6d4357097544f6193269.webp);"><div id="footer-wrap"><div class="copyright">©2025 By 青墨染烟雨</div><div class="footer_custom_text">我的心是簇拥烈日的花,在你的眼里找到了家</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.2.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  let initFn = window.walineFn || null
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const destroyWaline = ele => ele.destroy()
+
+  const initWaline = (Fn, el = document, path = window.location.pathname) => {
+    const waline = Fn({
+      el: el.querySelector('#waline-wrap'),
+      serverURL: 'https://blog.meng-project.top/',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      comment: true,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyWaline = () => {
+        destroyWaline(waline)
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const loadWaline = (el, path) => {
+    if (initFn) initWaline(initFn, el, path)
+    else {
+      btf.getCSS('/css/waline.css')
+        .then(() => import('/js/waline.js'))
+        .then(({ init }) => {
+          initFn = init || Waline.init
+          initWaline(initFn, el, path)
+          window.walineFn = initFn
+        })
+    }
+  }
+
+  if (isShuoshuo) {
+    'Waline' === 'Waline'
+      ? window.shuoshuoComment = { loadComment: loadWaline } 
+      : window.loadOtherComment = loadWaline
+    return
+  }
+
+  if ('Waline' === 'Waline' || !false) {
+    if (false) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+    else setTimeout(loadWaline, 0)
+  } else {
+    window.loadOtherComment = loadWaline
+  }
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://blog.chenjiabin.love/.netlify/functions/twikoo',
+      region: 'ap-chengdu',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://blog.chenjiabin.love/.netlify/functions/twikoo',
+      region: 'ap-chengdu',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.41/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Waline' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Waline' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="3136952023" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false"> </div><script type="text/javascript" src="/js/title.js"></script><script type="text/javascript" src="/js/calendar.js"></script><script type="text/javascript" src="/js/chinese-lunar.js"></script><script type="text/javascript" src="/js/welcome.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/canvas-fluttering-ribbon.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/click-heart.min.js" async="async" mobile="true"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.4/metingjs/dist/Meting.min.js"></script><script>(() => {
+  const destroyAplayer = () => {
+    if (window.aplayers) {
+      for (let i = 0; i < window.aplayers.length; i++) {
+        if (!window.aplayers[i].options.fixed) {
+          window.aplayers[i].destroy()
+        }
+      }
+    }
+  }
+
+  const runMetingJS = () => {
+    typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+  }
+
+  btf.addGlobalFn('pjaxSend', destroyAplayer, 'destroyAplayer')
+  btf.addGlobalFn('pjaxComplete', loadMeting, 'runMetingJS')
+})()</script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="开始搜索" type="text"></div></div><hr><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax="">function history_calendar_injector_config(){
+                var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+                var item_html = '<div class="card-widget card-history"><div class="card-content"><div class="item-headline"><i class="fas fa-clock fa-spin"></i><span>那年今日</span></div><div id="history-baidu" style="height: 100px;overflow: hidden"><div class="history_swiper-container" id="history-container" style="width: 100%;height: 100%"><div class="swiper-wrapper" id="history_container_wrapper" style="height:20px"></div></div></div></div>';
+                console.log('已挂载history_calendar')
+                // parent_div_git.innerHTML=item_html+parent_div_git.innerHTML // 无报错，但不影响使用(支持pjax跳转)
+                parent_div_git.insertAdjacentHTML("afterbegin",item_html) // 有报错，但不影响使用(支持pjax跳转)
+            }if( document.getElementsByClassName('sticky_layout')[0] && (location.pathname ==='/'|| '/' ==='all' || location.pathname ==='/index.html' || !location.pathname.startsWith('/posts'))){
+
+            history_calendar_injector_config()
+        } </script><script data-pjax="" src="/js/baiduhistory/main.js"></script><script data-pjax="">
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="background:url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/2025%2F03%2F013f3144c6fd4dabceb0ff25ba9a35a4.jpg);border-radius:12px;opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><div class="blog-slider__content"><span class="blog-slider__code">2025-03-05</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/13423/index.html&quot;);" href="javascript:void(0);" rel="external nofollow noreferrer" alt="">离散数学学习笔记</a><div class="blog-slider__text">离散数学学习笔记，图，关系，计数，基本结构，命题</div></div></div><div class="blog-slider__item swiper-slide" style="background:url(https://cdn.xiaolincoding.com//picgo/image-20240725230247664.png);border-radius:12px;opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><div class="blog-slider__content"><span class="blog-slider__code">2025-03-01</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/48798/index.html&quot;);" href="javascript:void(0);" rel="external nofollow noreferrer" alt="">Java八股学习</a><div class="blog-slider__text">Java八股学习总结</div></div></div><div class="blog-slider__item swiper-slide" style="background:url(https://typora-1329750222.cos.ap-chengdu.myqcloud.com/img/202503011807922.png);border-radius:12px;opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><div class="blog-slider__content"><span class="blog-slider__code">2025-03-01</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/59639/index.html&quot;);" href="javascript:void(0);" rel="external nofollow noreferrer" alt="">Python算法学习笔记</a><div class="blog-slider__text">包括各种数据结构和常用算法</div></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div><div class="swiper-button-prev"></div><div class="swiper-button-next"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage || cpage==='/index.html'){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/5.4.5/js/swiper.min.js"></script><script defer="" data-pjax="" src="https://npm.elemecdn.com/hexo-butterfly-swiper-lyx/lib/swiper_init.js"></script><!-- hexo injector body_end end -->
+    <link rel="stylesheet" href="https://ai.tianli0.top/static/public/postChatUser_summary.min.css">
+    <script>
+        let tianliGPT_key = '4g3wZAoKRKY';
+        let tianliGPT_postSelector = '#post #article-container';
+        let tianliGPT_Title = '文章摘要';
+        let tianliGPT_postURL = '/^https?://[^/]+/posts/[0-9]+/';
+        let tianliGPT_blacklist = '';
+        let tianliGPT_wordLimit = '1000';
+        let tianliGPT_typingAnimate = true;
+        let tianliGPT_theme = 'default';
+        var postChatConfig = {
+          backgroundColor: "#3e86f6",
+          bottom: "16px",
+          left: "16px",
+          fill: "#FFFFFF",
+          width: "44px",
+          frameWidth: "375px",
+          frameHeight: "600px",
+          defaultInput: true,
+          upLoadWeb: true,
+          showInviteLink: true,
+          userTitle: "PostChat",
+          userDesc: "如果你对网站的内容有任何疑问，可以来问我哦～",
+          addButton: true,
+          beginningText: "这篇文章介绍了",
+          userIcon: "https://ai.tianli0.top/static/img/PostChat.webp",
+          userMode: "magic",
+          defaultChatQuestions: ["你好","你是谁"],
+          defaultSearchQuestions: ["视频压缩","设计"]
+        };
+    </script>
+    <script data-postchat_key="4g3wZAoKRKY" src="https://ai.tianli0.top/static/public/tianli_gpt.min.js"></script>
+  </body></html>

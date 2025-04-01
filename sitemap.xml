@@ -2,6 +2,105 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.chenjiabin.xyz/posts/46299/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/43669/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/5355/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/14931/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/3907/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/38894/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/26629/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/7122/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/55591/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/34539/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/posts/35140/index.html</loc>
+    
+    <lastmod>2025-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.chenjiabin.xyz/json/12.json</loc>
     
     <lastmod>2025-03-21</lastmod>
@@ -639,6 +738,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://blog.chenjiabin.xyz/tags/%E9%83%A8%E7%BD%B2/</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -663,14 +769,14 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/Java/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/Kafka/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/Kafka/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/Java/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -684,14 +790,14 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/typora/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/MybatisPlus/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/MybatisPlus/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/typora/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -747,13 +853,6 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/</loc>
-    <lastmod>2025-04-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.chenjiabin.xyz/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -782,7 +881,21 @@
   </url>
   
   <url>
+    <loc>https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.chenjiabin.xyz/categories/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/categories/MySQL/</loc>
     <lastmod>2025-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

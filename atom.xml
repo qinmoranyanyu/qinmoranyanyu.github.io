@@ -6,7 +6,7 @@
   <link href="https://blog.chenjiabin.xyz/atom.xml" rel="self"/>
   
   <link href="https://blog.chenjiabin.xyz/"/>
-  <updated>2025-03-13T17:15:04.204Z</updated>
+  <updated>2025-04-01T13:09:00.827Z</updated>
   <id>https://blog.chenjiabin.xyz/</id>
   
   <author>
@@ -15,6 +15,215 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Docker中MySQL安装</title>
+    <link href="https://blog.chenjiabin.xyz/posts/35140/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/35140/index.html</id>
+    <published>2025-04-01T01:07:13.000Z</published>
+    <updated>2025-04-01T13:09:00.827Z</updated>
+    
+    
+    <summary type="html">Docker中MySQL安装</summary>
+    
+    
+    
+    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis原理篇</title>
+    <link href="https://blog.chenjiabin.xyz/posts/38894/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/38894/index.html</id>
+    <published>2025-04-01T01:07:13.000Z</published>
+    <updated>2025-04-01T13:09:00.834Z</updated>
+    
+    
+    <summary type="html">Redis原理篇</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安装和配置Canal</title>
+    <link href="https://blog.chenjiabin.xyz/posts/43669/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/43669/index.html</id>
+    <published>2025-04-01T01:07:13.000Z</published>
+    <updated>2025-04-01T13:09:00.838Z</updated>
+    
+    
+    <summary type="html">安装和配置Canal</summary>
+    
+    
+    
+    <category term="MySQL" scheme="https://blog.chenjiabin.xyz/categories/MySQL/"/>
+    
+    
+    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安装OpenResty</title>
+    <link href="https://blog.chenjiabin.xyz/posts/5355/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/5355/index.html</id>
+    <published>2025-04-01T01:07:13.000Z</published>
+    <updated>2025-04-01T13:09:00.837Z</updated>
+    
+    
+    <summary type="html">安装OpenResty</summary>
+    
+    
+    
+    <category term="Nginx" scheme="https://blog.chenjiabin.xyz/categories/Nginx/"/>
+    
+    
+    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis高级篇-最佳实践</title>
+    <link href="https://blog.chenjiabin.xyz/posts/3907/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/3907/index.html</id>
+    <published>2025-04-01T01:06:13.000Z</published>
+    <updated>2025-04-01T13:09:00.835Z</updated>
+    
+    
+    <summary type="html">Redis高级篇-最佳实践</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis高级篇-多级缓存</title>
+    <link href="https://blog.chenjiabin.xyz/posts/14931/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/14931/index.html</id>
+    <published>2025-04-01T01:05:13.000Z</published>
+    <updated>2025-04-01T13:09:00.836Z</updated>
+    
+    
+    <summary type="html">Redis高级篇-多级缓存</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis高级篇-分布式缓存</title>
+    <link href="https://blog.chenjiabin.xyz/posts/26629/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/26629/index.html</id>
+    <published>2025-04-01T01:04:13.000Z</published>
+    <updated>2025-04-01T13:09:00.833Z</updated>
+    
+    
+    <summary type="html">Redis高级篇-分布式缓存</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis集群部署</title>
+    <link href="https://blog.chenjiabin.xyz/posts/7122/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/7122/index.html</id>
+    <published>2025-04-01T01:03:13.000Z</published>
+    <updated>2025-04-01T13:09:00.832Z</updated>
+    
+    
+    <summary type="html">Redis集群部署</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="部署" scheme="https://blog.chenjiabin.xyz/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis实战篇</title>
+    <link href="https://blog.chenjiabin.xyz/posts/46299/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/46299/index.html</id>
+    <published>2025-04-01T01:02:13.000Z</published>
+    <updated>2025-04-01T13:09:00.840Z</updated>
+    
+    
+    <summary type="html">Redis实战篇</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis基础篇</title>
+    <link href="https://blog.chenjiabin.xyz/posts/55591/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/55591/index.html</id>
+    <published>2025-04-01T01:01:13.000Z</published>
+    <updated>2025-04-01T13:09:00.829Z</updated>
+    
+    
+    <summary type="html">Redis基础篇</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis安装</title>
+    <link href="https://blog.chenjiabin.xyz/posts/34539/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/34539/index.html</id>
+    <published>2025-04-01T01:00:13.000Z</published>
+    <updated>2025-04-01T13:09:00.829Z</updated>
+    
+    
+    <summary type="html">Redis安装</summary>
+    
+    
+    
+    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    
+    
+    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
   
   <entry>
     <title>MybatisPlus学习笔记</title>
@@ -283,6 +492,25 @@
   </entry>
   
   <entry>
+    <title>若依基础应用</title>
+    <link href="https://blog.chenjiabin.xyz/posts/16493/index.html"/>
+    <id>https://blog.chenjiabin.xyz/posts/16493/index.html</id>
+    <published>2025-03-13T14:05:53.000Z</published>
+    <updated>2025-03-13T17:11:58.460Z</updated>
+    
+    
+    <summary type="html">若依基础应用</summary>
+    
+    
+    
+    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>若依原理学习</title>
     <link href="https://blog.chenjiabin.xyz/posts/62238/index.html"/>
     <id>https://blog.chenjiabin.xyz/posts/62238/index.html</id>
@@ -300,25 +528,6 @@
     <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     <category term="原理" scheme="https://blog.chenjiabin.xyz/tags/%E5%8E%9F%E7%90%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>若依基础应用</title>
-    <link href="https://blog.chenjiabin.xyz/posts/16493/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/16493/index.html</id>
-    <published>2025-03-13T14:05:53.000Z</published>
-    <updated>2025-03-13T17:11:58.460Z</updated>
-    
-    
-    <summary type="html">若依基础应用</summary>
-    
-    
-    
-    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
-    
-    
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
