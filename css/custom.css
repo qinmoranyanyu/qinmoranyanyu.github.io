@@ -715,3 +715,7 @@
 .aplayer .aplayer-lrc p {
   color: #ffffff;
 }
+
+a.blog-slider__title:hover {
+  color: #49b1f5;
+}
