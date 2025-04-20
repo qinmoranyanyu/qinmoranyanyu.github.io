@@ -716,6 +716,11 @@
   color: #ffffff;
 }
 
-a.blog-slider__title:hover {
-  color: #49b1f5;
+.blog-slider__title:hover {
+  color: #49b1f5 !important;
+  font-size: 2.1rem !important;
+}
+
+.blog-slider__title {
+  font-size: 2rem !important;
 }

@@ -662,14 +662,14 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>https://blog.chenjiabin.xyz/tags/%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/tags/%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -732,14 +732,14 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/tags/%E9%83%A8%E7%BD%B2/</loc>
+    <loc>https://blog.chenjiabin.xyz/tags/%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/tags/%E5%8E%9F%E7%90%86/</loc>
+    <loc>https://blog.chenjiabin.xyz/tags/%E9%83%A8%E7%BD%B2/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -769,13 +769,6 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/Linux/</loc>
-    <lastmod>2025-04-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.chenjiabin.xyz/categories/typora/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -783,14 +776,7 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/Nginx/</loc>
-    <lastmod>2025-04-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/Linux/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -804,13 +790,6 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/RabbitMQ/</loc>
-    <lastmod>2025-04-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.chenjiabin.xyz/categories/Python/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -818,7 +797,35 @@
   </url>
   
   <url>
+    <loc>https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/</loc>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.chenjiabin.xyz/categories/Java/</loc>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/categories/Nginx/</loc>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/categories/RabbitMQ/</loc>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.chenjiabin.xyz/categories/Kafka/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -839,13 +846,6 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/Kafka/</loc>
-    <lastmod>2025-04-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.chenjiabin.xyz/categories/vim/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -853,14 +853,14 @@
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://blog.chenjiabin.xyz/categories/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/</loc>
     <lastmod>2025-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
