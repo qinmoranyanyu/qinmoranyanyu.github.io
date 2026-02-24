@@ -3,11 +3,11 @@
   <title>青墨染烟雨</title>
   <icon>https://www.gravatar.com/avatar/4974f1ced1324aa10aa7fb2f9ac0e724</icon>
   <subtitle>悟已往之不谏，知来者之可追</subtitle>
-  <link href="https://blog.chenjiabin.xyz/atom.xml" rel="self"/>
+  <link href="https://blog.chenjiabin.cn/atom.xml" rel="self"/>
   
-  <link href="https://blog.chenjiabin.xyz/"/>
+  <link href="https://blog.chenjiabin.cn/"/>
   <updated>2025-04-01T13:09:00.827Z</updated>
-  <id>https://blog.chenjiabin.xyz/</id>
+  <id>https://blog.chenjiabin.cn/</id>
   
   <author>
     <name>青墨染烟雨</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Docker中MySQL安装</title>
-    <link href="https://blog.chenjiabin.xyz/posts/35140/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/35140/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/35140/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/35140/index.html</id>
     <published>2025-04-01T01:07:13.000Z</published>
     <updated>2025-04-01T13:09:00.827Z</updated>
     
@@ -28,17 +28,17 @@
     
     
     
-    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    <category term="Docker" scheme="https://blog.chenjiabin.cn/categories/Docker/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis原理篇</title>
-    <link href="https://blog.chenjiabin.xyz/posts/38894/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/38894/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/38894/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/38894/index.html</id>
     <published>2025-04-01T01:07:13.000Z</published>
     <updated>2025-04-01T13:09:00.834Z</updated>
     
@@ -47,17 +47,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>安装和配置Canal</title>
-    <link href="https://blog.chenjiabin.xyz/posts/43669/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/43669/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/43669/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/43669/index.html</id>
     <published>2025-04-01T01:07:13.000Z</published>
     <updated>2025-04-01T13:09:00.838Z</updated>
     
@@ -66,17 +66,17 @@
     
     
     
-    <category term="MySQL" scheme="https://blog.chenjiabin.xyz/categories/MySQL/"/>
+    <category term="MySQL" scheme="https://blog.chenjiabin.cn/categories/MySQL/"/>
     
     
-    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    <category term="安装" scheme="https://blog.chenjiabin.cn/tags/%E5%AE%89%E8%A3%85/"/>
     
   </entry>
   
   <entry>
     <title>安装OpenResty</title>
-    <link href="https://blog.chenjiabin.xyz/posts/5355/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/5355/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/5355/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/5355/index.html</id>
     <published>2025-04-01T01:07:13.000Z</published>
     <updated>2025-04-01T13:09:00.837Z</updated>
     
@@ -85,17 +85,17 @@
     
     
     
-    <category term="Nginx" scheme="https://blog.chenjiabin.xyz/categories/Nginx/"/>
+    <category term="Nginx" scheme="https://blog.chenjiabin.cn/categories/Nginx/"/>
     
     
-    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    <category term="安装" scheme="https://blog.chenjiabin.cn/tags/%E5%AE%89%E8%A3%85/"/>
     
   </entry>
   
   <entry>
     <title>Redis高级篇-最佳实践</title>
-    <link href="https://blog.chenjiabin.xyz/posts/3907/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/3907/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/3907/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/3907/index.html</id>
     <published>2025-04-01T01:06:13.000Z</published>
     <updated>2025-04-01T13:09:00.835Z</updated>
     
@@ -104,17 +104,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis高级篇-多级缓存</title>
-    <link href="https://blog.chenjiabin.xyz/posts/14931/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/14931/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/14931/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/14931/index.html</id>
     <published>2025-04-01T01:05:13.000Z</published>
     <updated>2025-04-01T13:09:00.836Z</updated>
     
@@ -123,17 +123,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis高级篇-分布式缓存</title>
-    <link href="https://blog.chenjiabin.xyz/posts/26629/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/26629/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/26629/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/26629/index.html</id>
     <published>2025-04-01T01:04:13.000Z</published>
     <updated>2025-04-01T13:09:00.833Z</updated>
     
@@ -142,17 +142,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis集群部署</title>
-    <link href="https://blog.chenjiabin.xyz/posts/7122/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/7122/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/7122/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/7122/index.html</id>
     <published>2025-04-01T01:03:13.000Z</published>
     <updated>2025-04-01T13:09:00.832Z</updated>
     
@@ -161,17 +161,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="部署" scheme="https://blog.chenjiabin.xyz/tags/%E9%83%A8%E7%BD%B2/"/>
+    <category term="部署" scheme="https://blog.chenjiabin.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
   <entry>
     <title>Redis实战篇</title>
-    <link href="https://blog.chenjiabin.xyz/posts/46299/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/46299/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/46299/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/46299/index.html</id>
     <published>2025-04-01T01:02:13.000Z</published>
     <updated>2025-04-01T13:09:00.840Z</updated>
     
@@ -180,17 +180,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis基础篇</title>
-    <link href="https://blog.chenjiabin.xyz/posts/55591/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/55591/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/55591/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/55591/index.html</id>
     <published>2025-04-01T01:01:13.000Z</published>
     <updated>2025-04-01T13:09:00.829Z</updated>
     
@@ -199,17 +199,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Redis安装</title>
-    <link href="https://blog.chenjiabin.xyz/posts/34539/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/34539/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/34539/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/34539/index.html</id>
     <published>2025-04-01T01:00:13.000Z</published>
     <updated>2025-04-01T13:09:00.829Z</updated>
     
@@ -218,17 +218,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    <category term="安装" scheme="https://blog.chenjiabin.cn/tags/%E5%AE%89%E8%A3%85/"/>
     
   </entry>
   
   <entry>
     <title>MybatisPlus学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/18374/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/18374/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/18374/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/18374/index.html</id>
     <published>2025-03-13T14:09:22.000Z</published>
     <updated>2025-03-13T17:15:04.204Z</updated>
     
@@ -237,17 +237,17 @@
     
     
     
-    <category term="MybatisPlus" scheme="https://blog.chenjiabin.xyz/categories/MybatisPlus/"/>
+    <category term="MybatisPlus" scheme="https://blog.chenjiabin.cn/categories/MybatisPlus/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>SpringCloud学习笔记(1)</title>
-    <link href="https://blog.chenjiabin.xyz/posts/11496/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/11496/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/11496/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/11496/index.html</id>
     <published>2025-03-13T14:08:58.000Z</published>
     <updated>2025-03-13T17:18:02.118Z</updated>
     
@@ -256,17 +256,17 @@
     
     
     
-    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.cn/categories/SpringCloud/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>SpringCloud学习笔记(2)</title>
-    <link href="https://blog.chenjiabin.xyz/posts/48361/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/48361/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/48361/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/48361/index.html</id>
     <published>2025-03-13T14:08:58.000Z</published>
     <updated>2025-03-13T17:11:58.452Z</updated>
     
@@ -275,17 +275,17 @@
     
     
     
-    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.cn/categories/SpringCloud/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>SpringCloud学习笔记(3)</title>
-    <link href="https://blog.chenjiabin.xyz/posts/11497/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/11497/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/11497/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/11497/index.html</id>
     <published>2025-03-13T14:08:58.000Z</published>
     <updated>2025-03-13T17:11:58.453Z</updated>
     
@@ -294,17 +294,17 @@
     
     
     
-    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.cn/categories/SpringCloud/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>SpringCloud面试题</title>
-    <link href="https://blog.chenjiabin.xyz/posts/39180/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/39180/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/39180/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/39180/index.html</id>
     <published>2025-03-13T14:08:33.000Z</published>
     <updated>2025-03-13T17:11:58.454Z</updated>
     
@@ -313,17 +313,17 @@
     
     
     
-    <category term="SpringCloud" scheme="https://blog.chenjiabin.xyz/categories/SpringCloud/"/>
+    <category term="SpringCloud" scheme="https://blog.chenjiabin.cn/categories/SpringCloud/"/>
     
     
-    <category term="面试" scheme="https://blog.chenjiabin.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
+    <category term="面试" scheme="https://blog.chenjiabin.cn/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
   <entry>
     <title>Redis面试题</title>
-    <link href="https://blog.chenjiabin.xyz/posts/43042/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/43042/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/43042/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/43042/index.html</id>
     <published>2025-03-13T14:08:23.000Z</published>
     <updated>2025-03-13T17:11:58.449Z</updated>
     
@@ -332,17 +332,17 @@
     
     
     
-    <category term="Redis" scheme="https://blog.chenjiabin.xyz/categories/Redis/"/>
+    <category term="Redis" scheme="https://blog.chenjiabin.cn/categories/Redis/"/>
     
     
-    <category term="面试" scheme="https://blog.chenjiabin.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
+    <category term="面试" scheme="https://blog.chenjiabin.cn/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
   <entry>
     <title>RabbitMQ进阶</title>
-    <link href="https://blog.chenjiabin.xyz/posts/59211/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/59211/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/59211/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/59211/index.html</id>
     <published>2025-03-13T14:08:05.000Z</published>
     <updated>2025-03-13T17:18:39.605Z</updated>
     
@@ -351,17 +351,17 @@
     
     
     
-    <category term="RabbitMQ" scheme="https://blog.chenjiabin.xyz/categories/RabbitMQ/"/>
+    <category term="RabbitMQ" scheme="https://blog.chenjiabin.cn/categories/RabbitMQ/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>RabbitMQ基础</title>
-    <link href="https://blog.chenjiabin.xyz/posts/33842/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/33842/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/33842/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/33842/index.html</id>
     <published>2025-03-13T14:07:13.000Z</published>
     <updated>2025-03-13T17:18:26.479Z</updated>
     
@@ -370,17 +370,17 @@
     
     
     
-    <category term="RabbitMQ" scheme="https://blog.chenjiabin.xyz/categories/RabbitMQ/"/>
+    <category term="RabbitMQ" scheme="https://blog.chenjiabin.cn/categories/RabbitMQ/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>安装Docker</title>
-    <link href="https://blog.chenjiabin.xyz/posts/56896/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/56896/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/56896/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/56896/index.html</id>
     <published>2025-03-13T14:06:54.000Z</published>
     <updated>2025-03-13T17:11:58.455Z</updated>
     
@@ -389,17 +389,17 @@
     
     
     
-    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    <category term="Docker" scheme="https://blog.chenjiabin.cn/categories/Docker/"/>
     
     
-    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    <category term="安装" scheme="https://blog.chenjiabin.cn/tags/%E5%AE%89%E8%A3%85/"/>
     
   </entry>
   
   <entry>
     <title>Docker学习笔记-黑马</title>
-    <link href="https://blog.chenjiabin.xyz/posts/54987/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/54987/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/54987/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/54987/index.html</id>
     <published>2025-03-13T14:06:46.000Z</published>
     <updated>2025-03-13T17:11:58.435Z</updated>
     
@@ -408,17 +408,17 @@
     
     
     
-    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    <category term="Docker" scheme="https://blog.chenjiabin.cn/categories/Docker/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>ElasticSearch学习笔记-黑马(2)</title>
-    <link href="https://blog.chenjiabin.xyz/posts/32160/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/32160/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/32160/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/32160/index.html</id>
     <published>2025-03-13T14:06:32.000Z</published>
     <updated>2025-03-13T17:11:58.442Z</updated>
     
@@ -427,17 +427,17 @@
     
     
     
-    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.cn/categories/ElasticSearch/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>ElasticSearch学习笔记-黑马(1)</title>
-    <link href="https://blog.chenjiabin.xyz/posts/36256/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/36256/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/36256/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/36256/index.html</id>
     <published>2025-03-13T14:06:23.000Z</published>
     <updated>2025-03-13T17:11:58.444Z</updated>
     
@@ -446,17 +446,17 @@
     
     
     
-    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.cn/categories/ElasticSearch/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Linux环境搭建</title>
-    <link href="https://blog.chenjiabin.xyz/posts/6951/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/6951/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/6951/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/6951/index.html</id>
     <published>2025-03-13T14:06:09.000Z</published>
     <updated>2025-03-13T17:11:58.443Z</updated>
     
@@ -465,17 +465,17 @@
     
     
     
-    <category term="Linux" scheme="https://blog.chenjiabin.xyz/categories/Linux/"/>
+    <category term="Linux" scheme="https://blog.chenjiabin.cn/categories/Linux/"/>
     
     
-    <category term="安装" scheme="https://blog.chenjiabin.xyz/tags/%E5%AE%89%E8%A3%85/"/>
+    <category term="安装" scheme="https://blog.chenjiabin.cn/tags/%E5%AE%89%E8%A3%85/"/>
     
   </entry>
   
   <entry>
     <title>帝可得实战项目学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/31714/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/31714/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/31714/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/31714/index.html</id>
     <published>2025-03-13T14:05:53.000Z</published>
     <updated>2025-03-13T17:11:58.456Z</updated>
     
@@ -484,36 +484,17 @@
     
     
     
-    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    <category term="若依" scheme="https://blog.chenjiabin.cn/categories/%E8%8B%A5%E4%BE%9D/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>若依基础应用</title>
-    <link href="https://blog.chenjiabin.xyz/posts/16493/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/16493/index.html</id>
-    <published>2025-03-13T14:05:53.000Z</published>
-    <updated>2025-03-13T17:11:58.460Z</updated>
-    
-    
-    <summary type="html">若依基础应用</summary>
-    
-    
-    
-    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
-    
-    
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>若依原理学习</title>
-    <link href="https://blog.chenjiabin.xyz/posts/62238/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/62238/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/62238/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/62238/index.html</id>
     <published>2025-03-13T14:05:53.000Z</published>
     <updated>2025-03-13T17:11:58.459Z</updated>
     
@@ -522,19 +503,38 @@
     
     
     
-    <category term="若依" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%A5%E4%BE%9D/"/>
+    <category term="若依" scheme="https://blog.chenjiabin.cn/categories/%E8%8B%A5%E4%BE%9D/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
-    <category term="原理" scheme="https://blog.chenjiabin.xyz/tags/%E5%8E%9F%E7%90%86/"/>
+    <category term="原理" scheme="https://blog.chenjiabin.cn/tags/%E5%8E%9F%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>若依基础应用</title>
+    <link href="https://blog.chenjiabin.cn/posts/16493/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/16493/index.html</id>
+    <published>2025-03-13T14:05:53.000Z</published>
+    <updated>2025-03-13T17:11:58.460Z</updated>
+    
+    
+    <summary type="html">若依基础应用</summary>
+    
+    
+    
+    <category term="若依" scheme="https://blog.chenjiabin.cn/categories/%E8%8B%A5%E4%BE%9D/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>程序员常用英语词汇</title>
-    <link href="https://blog.chenjiabin.xyz/posts/59644/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/59644/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/59644/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/59644/index.html</id>
     <published>2025-03-12T05:45:29.000Z</published>
     <updated>2025-03-12T05:47:34.692Z</updated>
     
@@ -543,17 +543,17 @@
     
     
     
-    <category term="英语" scheme="https://blog.chenjiabin.xyz/categories/%E8%8B%B1%E8%AF%AD/"/>
+    <category term="英语" scheme="https://blog.chenjiabin.cn/categories/%E8%8B%B1%E8%AF%AD/"/>
     
     
-    <category term="词汇" scheme="https://blog.chenjiabin.xyz/tags/%E8%AF%8D%E6%B1%87/"/>
+    <category term="词汇" scheme="https://blog.chenjiabin.cn/tags/%E8%AF%8D%E6%B1%87/"/>
     
   </entry>
   
   <entry>
     <title>Markdown语法学习</title>
-    <link href="https://blog.chenjiabin.xyz/posts/3969/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/3969/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/3969/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/3969/index.html</id>
     <published>2025-03-06T15:42:14.000Z</published>
     <updated>2025-03-06T15:44:26.983Z</updated>
     
@@ -562,17 +562,17 @@
     
     
     
-    <category term="typora" scheme="https://blog.chenjiabin.xyz/categories/typora/"/>
+    <category term="typora" scheme="https://blog.chenjiabin.cn/categories/typora/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>typora图床搭建+完美解决PicGo图片上传重命名问题</title>
-    <link href="https://blog.chenjiabin.xyz/posts/47929/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/47929/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/47929/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/47929/index.html</id>
     <published>2025-03-05T16:58:31.000Z</published>
     <updated>2025-03-05T17:08:57.456Z</updated>
     
@@ -581,17 +581,17 @@
     
     
     
-    <category term="typora" scheme="https://blog.chenjiabin.xyz/categories/typora/"/>
+    <category term="typora" scheme="https://blog.chenjiabin.cn/categories/typora/"/>
     
     
-    <category term="技巧" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
+    <category term="技巧" scheme="https://blog.chenjiabin.cn/tags/%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
   <entry>
     <title>测试文件2</title>
-    <link href="https://blog.chenjiabin.xyz/posts/60895/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/60895/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/60895/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/60895/index.html</id>
     <published>2025-03-05T16:00:00.000Z</published>
     <updated>2025-03-08T04:18:50.864Z</updated>
     
@@ -600,17 +600,17 @@
     
     
     
-    <category term="测试" scheme="https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/"/>
+    <category term="测试" scheme="https://blog.chenjiabin.cn/categories/%E6%B5%8B%E8%AF%95/"/>
     
     
-    <category term="测试" scheme="https://blog.chenjiabin.xyz/tags/%E6%B5%8B%E8%AF%95/"/>
+    <category term="测试" scheme="https://blog.chenjiabin.cn/tags/%E6%B5%8B%E8%AF%95/"/>
     
   </entry>
   
   <entry>
     <title>离散数学学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/13423/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/13423/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/13423/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/13423/index.html</id>
     <published>2025-03-04T16:00:47.000Z</published>
     <updated>2025-03-19T07:56:26.464Z</updated>
     
@@ -619,17 +619,17 @@
     
     
     
-    <category term="离散数学" scheme="https://blog.chenjiabin.xyz/categories/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/"/>
+    <category term="离散数学" scheme="https://blog.chenjiabin.cn/categories/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>ElasticSearch入门到精通</title>
-    <link href="https://blog.chenjiabin.xyz/posts/52481/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/52481/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/52481/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/52481/index.html</id>
     <published>2025-03-04T15:34:24.000Z</published>
     <updated>2025-03-05T07:32:05.080Z</updated>
     
@@ -638,17 +638,17 @@
     
     
     
-    <category term="ElasticSearch" scheme="https://blog.chenjiabin.xyz/categories/ElasticSearch/"/>
+    <category term="ElasticSearch" scheme="https://blog.chenjiabin.cn/categories/ElasticSearch/"/>
     
     
-    <category term="入门到精通" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
+    <category term="入门到精通" scheme="https://blog.chenjiabin.cn/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
     
   </entry>
   
   <entry>
     <title>Kafka入门到精通</title>
-    <link href="https://blog.chenjiabin.xyz/posts/14310/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/14310/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/14310/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/14310/index.html</id>
     <published>2025-03-04T15:34:11.000Z</published>
     <updated>2025-03-04T15:39:57.933Z</updated>
     
@@ -657,17 +657,17 @@
     
     
     
-    <category term="Kafka" scheme="https://blog.chenjiabin.xyz/categories/Kafka/"/>
+    <category term="Kafka" scheme="https://blog.chenjiabin.cn/categories/Kafka/"/>
     
     
-    <category term="入门到精通" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
+    <category term="入门到精通" scheme="https://blog.chenjiabin.cn/tags/%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A/"/>
     
   </entry>
   
   <entry>
     <title>Docker学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/10048/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/10048/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/10048/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/10048/index.html</id>
     <published>2025-03-04T14:20:33.000Z</published>
     <updated>2025-03-04T15:39:29.080Z</updated>
     
@@ -676,17 +676,17 @@
     
     
     
-    <category term="Docker" scheme="https://blog.chenjiabin.xyz/categories/Docker/"/>
+    <category term="Docker" scheme="https://blog.chenjiabin.cn/categories/Docker/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>测试文档</title>
-    <link href="https://blog.chenjiabin.xyz/posts/28980/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/28980/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/28980/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/28980/index.html</id>
     <published>2025-03-01T17:55:30.000Z</published>
     <updated>2025-03-18T06:44:15.894Z</updated>
     
@@ -695,17 +695,17 @@
     
     
     
-    <category term="测试" scheme="https://blog.chenjiabin.xyz/categories/%E6%B5%8B%E8%AF%95/"/>
+    <category term="测试" scheme="https://blog.chenjiabin.cn/categories/%E6%B5%8B%E8%AF%95/"/>
     
     
-    <category term="测试" scheme="https://blog.chenjiabin.xyz/tags/%E6%B5%8B%E8%AF%95/"/>
+    <category term="测试" scheme="https://blog.chenjiabin.cn/tags/%E6%B5%8B%E8%AF%95/"/>
     
   </entry>
   
   <entry>
     <title>Git学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/8520/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/8520/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/8520/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/8520/index.html</id>
     <published>2025-03-01T10:15:02.000Z</published>
     <updated>2025-03-02T09:21:03.466Z</updated>
     
@@ -714,17 +714,17 @@
     
     
     
-    <category term="Git" scheme="https://blog.chenjiabin.xyz/categories/Git/"/>
+    <category term="Git" scheme="https://blog.chenjiabin.cn/categories/Git/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Nginx学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/39886/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/39886/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/39886/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/39886/index.html</id>
     <published>2025-03-01T10:15:02.000Z</published>
     <updated>2025-03-02T09:21:03.466Z</updated>
     
@@ -733,17 +733,17 @@
     
     
     
-    <category term="Nginx" scheme="https://blog.chenjiabin.xyz/categories/Nginx/"/>
+    <category term="Nginx" scheme="https://blog.chenjiabin.cn/categories/Nginx/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>OJ在线代码测评系统</title>
-    <link href="https://blog.chenjiabin.xyz/posts/52220/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/52220/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/52220/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/52220/index.html</id>
     <published>2025-03-01T10:15:02.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -752,17 +752,17 @@
     
     
     
-    <category term="项目" scheme="https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/"/>
+    <category term="项目" scheme="https://blog.chenjiabin.cn/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-    <category term="介绍" scheme="https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/"/>
+    <category term="介绍" scheme="https://blog.chenjiabin.cn/tags/%E4%BB%8B%E7%BB%8D/"/>
     
   </entry>
   
   <entry>
     <title>自定义博客网站搭建教程（2）</title>
-    <link href="https://blog.chenjiabin.xyz/posts/23403/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/23403/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/23403/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/23403/index.html</id>
     <published>2025-03-01T10:09:30.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -771,19 +771,19 @@
     
     
     
-    <category term="博客" scheme="https://blog.chenjiabin.xyz/categories/%E5%8D%9A%E5%AE%A2/"/>
+    <category term="博客" scheme="https://blog.chenjiabin.cn/categories/%E5%8D%9A%E5%AE%A2/"/>
     
     
-    <category term="教程" scheme="https://blog.chenjiabin.xyz/tags/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://blog.chenjiabin.cn/tags/%E6%95%99%E7%A8%8B/"/>
     
-    <category term="技术" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E6%9C%AF/"/>
+    <category term="技术" scheme="https://blog.chenjiabin.cn/tags/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
   <entry>
     <title>自定义博客网站搭建教程（1）</title>
-    <link href="https://blog.chenjiabin.xyz/posts/8043/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/8043/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/8043/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/8043/index.html</id>
     <published>2025-03-01T10:08:30.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -792,38 +792,19 @@
     
     
     
-    <category term="博客" scheme="https://blog.chenjiabin.xyz/categories/%E5%8D%9A%E5%AE%A2/"/>
+    <category term="博客" scheme="https://blog.chenjiabin.cn/categories/%E5%8D%9A%E5%AE%A2/"/>
     
     
-    <category term="教程" scheme="https://blog.chenjiabin.xyz/tags/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://blog.chenjiabin.cn/tags/%E6%95%99%E7%A8%8B/"/>
     
-    <category term="技术" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/30369/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/30369/index.html</id>
-    <published>2025-03-01T09:58:28.000Z</published>
-    <updated>2025-03-02T09:21:03.481Z</updated>
-    
-    
-    <summary type="html">Nginx的学习笔记，包括Nginx的部署，配置文件的含义，集群化等内容</summary>
-    
-    
-    
-    <category term="Linux" scheme="https://blog.chenjiabin.xyz/categories/Linux/"/>
-    
-    
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="技术" scheme="https://blog.chenjiabin.cn/tags/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
   <entry>
     <title>Java八股学习</title>
-    <link href="https://blog.chenjiabin.xyz/posts/48798/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/48798/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/48798/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/48798/index.html</id>
     <published>2025-03-01T09:58:28.000Z</published>
     <updated>2025-06-04T16:39:59.223Z</updated>
     
@@ -832,19 +813,38 @@
     
     
     
-    <category term="Java" scheme="https://blog.chenjiabin.xyz/categories/Java/"/>
+    <category term="Java" scheme="https://blog.chenjiabin.cn/categories/Java/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
-    <category term="八股文" scheme="https://blog.chenjiabin.xyz/tags/%E5%85%AB%E8%82%A1%E6%96%87/"/>
+    <category term="八股文" scheme="https://blog.chenjiabin.cn/tags/%E5%85%AB%E8%82%A1%E6%96%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 学习笔记</title>
+    <link href="https://blog.chenjiabin.cn/posts/30369/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/30369/index.html</id>
+    <published>2025-03-01T09:58:28.000Z</published>
+    <updated>2025-03-02T09:21:03.481Z</updated>
+    
+    
+    <summary type="html">Nginx的学习笔记，包括Nginx的部署，配置文件的含义，集群化等内容</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://blog.chenjiabin.cn/categories/Linux/"/>
+    
+    
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Python算法学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/59639/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/59639/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/59639/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/59639/index.html</id>
     <published>2025-03-01T09:58:28.000Z</published>
     <updated>2025-03-19T07:55:56.690Z</updated>
     
@@ -853,19 +853,19 @@
     
     
     
-    <category term="Python" scheme="https://blog.chenjiabin.xyz/categories/Python/"/>
+    <category term="Python" scheme="https://blog.chenjiabin.cn/categories/Python/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
-    <category term="算法" scheme="https://blog.chenjiabin.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    <category term="算法" scheme="https://blog.chenjiabin.cn/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>Xtimer定时微服务</title>
-    <link href="https://blog.chenjiabin.xyz/posts/17805/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/17805/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/17805/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/17805/index.html</id>
     <published>2025-03-01T09:58:28.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -874,17 +874,17 @@
     
     
     
-    <category term="项目" scheme="https://blog.chenjiabin.xyz/categories/%E9%A1%B9%E7%9B%AE/"/>
+    <category term="项目" scheme="https://blog.chenjiabin.cn/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-    <category term="介绍" scheme="https://blog.chenjiabin.xyz/tags/%E4%BB%8B%E7%BB%8D/"/>
+    <category term="介绍" scheme="https://blog.chenjiabin.cn/tags/%E4%BB%8B%E7%BB%8D/"/>
     
   </entry>
   
   <entry>
     <title>vi和vim快捷键</title>
-    <link href="https://blog.chenjiabin.xyz/posts/61951/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/61951/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/61951/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/61951/index.html</id>
     <published>2025-03-01T09:58:28.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -893,19 +893,19 @@
     
     
     
-    <category term="vim" scheme="https://blog.chenjiabin.xyz/categories/vim/"/>
+    <category term="vim" scheme="https://blog.chenjiabin.cn/categories/vim/"/>
     
     
-    <category term="技巧" scheme="https://blog.chenjiabin.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
+    <category term="技巧" scheme="https://blog.chenjiabin.cn/tags/%E6%8A%80%E5%B7%A7/"/>
     
-    <category term="总结" scheme="https://blog.chenjiabin.xyz/tags/%E6%80%BB%E7%BB%93/"/>
+    <category term="总结" scheme="https://blog.chenjiabin.cn/tags/%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
   <entry>
     <title>数学建模学习笔记</title>
-    <link href="https://blog.chenjiabin.xyz/posts/43478/index.html"/>
-    <id>https://blog.chenjiabin.xyz/posts/43478/index.html</id>
+    <link href="https://blog.chenjiabin.cn/posts/43478/index.html"/>
+    <id>https://blog.chenjiabin.cn/posts/43478/index.html</id>
     <published>2025-03-01T09:58:28.000Z</published>
     <updated>2025-03-02T09:21:03.481Z</updated>
     
@@ -914,10 +914,10 @@
     
     
     
-    <category term="数学建模" scheme="https://blog.chenjiabin.xyz/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/"/>
+    <category term="数学建模" scheme="https://blog.chenjiabin.cn/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.chenjiabin.xyz/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="学习笔记" scheme="https://blog.chenjiabin.cn/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

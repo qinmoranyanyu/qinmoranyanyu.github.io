@@ -130,7 +130,7 @@
         '<div class="post-gemini-ai-result-wrap"> <div class="note primary no-icon flat"> <p class="post-gemini-ai-result"></p>  <span class="ai-typed-cursor">|</span></div> </div>',
       );
       postAI.classList.add('post-gemini-noclick');
-      let GeminiFetch = 'https://www.chenjiabin.love/v1/chat/completions';
+      let GeminiFetch = 'https://www.chenjiabin.work/v1/chat/completions';
       try {
         let postAIResult = document.querySelector('.post-gemini-ai-result');
         let input = document.querySelector('.post-content').innerText;
